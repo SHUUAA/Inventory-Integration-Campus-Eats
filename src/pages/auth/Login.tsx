@@ -48,7 +48,7 @@ const Login = () => {
     <div className="flex min-h-screen items-center justify-center">
       <div className="max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-lg">
-          <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
+          <h1 className="text-center text-2xl font-bold text-rose-700 sm:text-3xl">
             Get started today
           </h1>
 
@@ -139,7 +139,7 @@ const Login = () => {
 
             <button
               type="submit"
-              className="block w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white"
+              className="block w-full rounded-lg bg-rose-700 px-5 py-3 text-sm font-medium text-white"
             >
               Sign in
             </button>
