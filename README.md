@@ -1,5 +1,19 @@
 # React + TypeScript + Vite
 
+**Create the test branch project**
+
+
+`git clone https://github.com/SHUUAA/Inventory-Integration-Campus-Eats`
+
+`cd Inventory-Integration-Campus-Eats`
+
+`git checkout test`
+
+`npm install`
+
+`npm run dev`
+
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
