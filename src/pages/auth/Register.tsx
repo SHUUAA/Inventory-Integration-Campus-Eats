@@ -1,18 +1,26 @@
 // @ts-nocheck
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
+import { authentication } from "../../config/firebase";
+import { database } from "../../config/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
+import validator from "validator";
 
 const Register = () => {
   const [successMessage, setSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  // This function handles user sign-up using Firebase authentication.
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    occupation: "",
+    type: "",
   });
 
   function updateForm(value) {
@@ -29,27 +37,37 @@ const Register = () => {
       !form.lastName.trim() ||
       !form.email.trim() ||
       !form.password.trim() ||
-      !form.occupation.trim()
+      !form.type.trim()
     ) {
       setErrorMessage(true);
       return;
     }
 
-    const newUser = { ...form };
+    if (!validator.isEmail(form.email)) {
+      setEmailError(true);
+      return;
+    }
 
     try {
-      await axios.post("http://0.0.0.0:5000/users", newUser, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      await createUserWithEmailAndPassword(
+        authentication,
+        form.email,
+        form.password,
+      );
 
+      await addDoc(collection(database, "users"), {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        type: form.type,
+        createdOn: Timestamp.now(),
+      });
       setForm({
         firstName: "",
         lastName: "",
         email: "",
         password: "",
-        occupation: "",
+        type: "",
       });
 
       setSuccessMessage(true);
@@ -179,18 +197,18 @@ const Register = () => {
                     htmlFor="HeadlineAct"
                     className="block text-sm font-medium text-gray-900"
                   >
-                    Occupation
+                    Type
                   </label>
 
                   <select
                     name="HeadlineAct"
                     id="HeadlineAct"
                     className="mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm"
-                    onChange={(e) => updateForm({ occupation: e.target.value })}
+                    onChange={(e) => updateForm({ type: e.target.value })}
                   >
                     <option value="">Please select</option>
-                    <option value="Student">Student</option>
-                    <option value="Teacher">Teacher</option>
+                    <option value="Student">Seller</option>
+                    <option value="Teacher">Buyer</option>
                   </select>
                 </div>
               </div>
@@ -226,8 +244,7 @@ const Register = () => {
                   )}
                   {emailError && (
                     <p className="text-red-500">
-                      This email address is already in use. Please choose
-                      another one.
+                      Please enter a valid email address.
                     </p>
                   )}
                   {successMessage && (
