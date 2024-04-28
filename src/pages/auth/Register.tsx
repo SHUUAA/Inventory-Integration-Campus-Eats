@@ -89,9 +89,9 @@ const Register = () => {
           />
         </aside>
 
-        <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
-          <div className="max-w-xl lg:max-w-3xl">
-            <a className="block text-rose-700" href="/">
+        <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6 bg-neutral-950">
+          <div className="max-w-xl lg:max-w-3xl bg-white-950 p-6 md:p-8 lg:p-12 rounded-lg">
+            <a className="block text-red-950" href="/">
               <span className="sr-only">Home</span>
               <svg
                 className="h-8 sm:h-10"
@@ -133,7 +133,7 @@ const Register = () => {
                   name="first_name"
                   value={form.firstName}
                   onChange={(e) => updateForm({ firstName: e.target.value })}
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full p-1 rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
 
@@ -151,7 +151,7 @@ const Register = () => {
                   name="last_name"
                   value={form.lastName}
                   onChange={(e) => updateForm({ lastName: e.target.value })}
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full p-1 rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
 
@@ -169,7 +169,7 @@ const Register = () => {
                   name="email"
                   value={form.email}
                   onChange={(e) => updateForm({ email: e.target.value })}
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full p-1 rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
 
@@ -187,7 +187,7 @@ const Register = () => {
                   name="password"
                   value={form.password}
                   onChange={(e) => updateForm({ password: e.target.value })}
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full p-1 rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
 
@@ -203,7 +203,7 @@ const Register = () => {
                   <select
                     name="HeadlineAct"
                     id="HeadlineAct"
-                    className="mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm"
+                    className="mt-1.5 w-full p-1 rounded-lg border-gray-300 text-gray-700 sm:text-sm"
                     onChange={(e) => updateForm({ type: e.target.value })}
                   >
                     <option value="">Please select</option>
@@ -228,7 +228,7 @@ const Register = () => {
               </div>
 
               <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                <button className="inline-block shrink-0 rounded-md border border-rose-700 bg-rose-700 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-rose-700 focus:outline-none focus:ring active:text-rose-600">
+                <button className="inline-block shrink-0 rounded-md border border-red-950 bg-red-950 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-red-950 focus:outline-none focus:ring active:text-rose-600">
                   Create an account
                 </button>
 
