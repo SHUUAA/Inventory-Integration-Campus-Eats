@@ -1,8 +1,7 @@
 // @ts-nocheck
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { authentication, database } from "../../config/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { authentication } from "../../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
@@ -16,11 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(authentication, email, password);
-      //localStorage.setItem("id", user.id);
-      //localStorage.setItem("firstName", user.firstName);
-      //localStorage.setItem("lastName", user.lastName);
-      //localStorage.setItem("email", user.email);
-      //localStorage.setItem("occupation", user.occupation);
+      localStorage.setItem("email", email);
       alert("Yis");
     } catch (error) {
       setErrorMessage(true);
