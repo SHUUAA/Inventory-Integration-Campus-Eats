@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
+import "../css/Settings.css";
 
 const Settings = () => {
   const handleLanguageSave = () => {
@@ -13,7 +14,10 @@ const Settings = () => {
     <div>
       <h2>Settings</h2>
       <h3>Inventory System</h3>
-      <p>Allow store owners to configure preferences and settings related to the inventory system.</p>
+      <p>
+        Allow store owners to configure preferences and settings related to the
+        inventory system.
+      </p>
 
       <h4>Language Settings</h4>
       <select>
@@ -32,10 +36,15 @@ const Settings = () => {
         <input type="checkbox" name="sms" value="sms" />
         SMS
       </label>
-      <button onClick={handleNotificationSave}>Save Notification Preferences</button>
+      <button onClick={handleNotificationSave}>
+        Save Notification Preferences
+      </button>
 
       <h3>Help & Support</h3>
-      <p>Include FAQs, troubleshooting guides, and contact information for technical assistance.</p>
+      <p>
+        Include FAQs, troubleshooting guides, and contact information for
+        technical assistance.
+      </p>
       <h4>FAQs</h4>
       {/* Add FAQ section */}
 
