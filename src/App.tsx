@@ -1,5 +1,4 @@
 import "./App.css";
-import "dotenv/config";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Route, Routes, Navigate, BrowserRouter } from "react-router-dom";
 const Loader = lazy(() => import("./components/Loader"));
