@@ -5,6 +5,7 @@ const Loader = lazy(() => import("./components/Loader"));
 const Error = lazy(() => import("./pages/Error"));
 const Auth = lazy(() => import ("./pages/Auth"));
 import ProtectedRoute from "./auth/ProtectedRoute";
+import ForgotPassword from "./pages/ForgotPasswordPage";
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path ="/" element={<ProtectedRoute/>} />
+            <Route path ="/forgot-password" element={<ForgotPassword/>} />
             <Route path="/login" element={<Auth />} />
             <Route path="/signup" element={<Auth />} />
 

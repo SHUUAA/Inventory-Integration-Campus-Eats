@@ -8,7 +8,7 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import "../css/Auth.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
 
@@ -262,7 +262,7 @@ const Auth = () => {
                   />
                   <label>Password</label>
                 </div>
-                <span className="ls-subtext-link">Forgot Password?</span>
+                <Link to="/forgot-password" className="ls-subtext-link" >Forgot Password?</Link>
                 <button onClick={handleLoginSubmit} className="ls-sign-btn">
                   Sign In
                 </button>
