@@ -153,6 +153,7 @@ const Auth = () => {
 
       const response = await login(loginEmail, loginPwd);
       console.log(response.email);
+      navigate("/dashboard");
     } catch (e) {
       console.log("Error:", e);
       setError("Invalid email or password", e.message);

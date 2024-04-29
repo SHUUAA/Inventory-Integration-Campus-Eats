@@ -1,21 +1,20 @@
-import { Navigate } from 'react-router-dom';
-import { authentication} from '../config/firebase';
-import { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
-const ProtectedRoute = () => {
-  const [user, setUser] = useState(null);
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useContext(AuthContext);
+  const location = useLocation();
 
-  useEffect(() => {
-    authentication.onAuthStateChanged((user) => {
-      setUser(user);
-    });
-  }, []);
-
-  if (!user) {
-    return <Navigate to="/login" />;
+  if (loading) {
+    return <div>Loading...</div>; 
   }
 
-  return <div>Protected Route</div>;
+  if (!user) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;
