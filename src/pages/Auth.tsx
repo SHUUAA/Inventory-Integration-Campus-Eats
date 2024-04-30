@@ -56,6 +56,10 @@ const Auth = () => {
   const [validRegisConfirmPwd] = useState(true);
   const [regisConfirmPwdFocus, setRegisConfirmPwdFocus] = useState(false);
 
+  const [regisRole, setRegisRole] = useState("");
+  const [validRegisRole] = useState(true);
+  const [regisRoleFocus, setRegisRoleFocus] = useState();
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -79,12 +83,14 @@ const Auth = () => {
       return setError("Passwords do not match");
     }
 
+
     if (
       !regisEmail ||
       !regisFirstname ||
       !regisLastname ||
       !regisPwd ||
-      !regisConfirmPwd
+      !regisConfirmPwd ||
+      !regisRole
     ) {
       return setError("Please fill in all fields");
     }
@@ -105,7 +111,7 @@ const Auth = () => {
     try {
       setLoading(true);
 
-      await signup(regisEmail, regisPwd, regisFirstname, regisLastname);
+      await signup(regisEmail, regisPwd, regisFirstname, regisLastname, regisRole);
 
       const user = authentication.currentUser;
       console.log("user:", user);
@@ -396,6 +402,19 @@ const Auth = () => {
                   />
                   <label>Confirm Password</label>
                 </div>
+                <div className="" >
+                  <select
+                    id="role"
+                    required
+                    value={regisRole}
+                    onChange={(e) => setRegisRole(e.target.value)}
+                  >
+                    <option value="">Select Role</option>
+                    <option value="Seller">Seller</option>
+                    <option value="Customer">Customer</option>
+                  </select>
+                </div>
+
                 <button
                   disabled={loading}
                   onClick={handleRegisSubmit}
