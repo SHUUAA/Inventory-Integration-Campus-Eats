@@ -11,6 +11,7 @@ import "../css/Auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
+import DataFetch from "../components/data/Fetch";
 
 const Auth = () => {
   const location = useLocation();
@@ -159,7 +160,17 @@ const Auth = () => {
 
       const response = await login(loginEmail, loginPwd);
       console.log(response.email);
-      navigate("/dashboard");
+      const userType = localStorage.getItem("UserType");
+      console.log(userType);
+      if (userType == "Customer") {
+        navigate("/customer");
+      }
+      if (userType == "Seller") {
+        navigate("/seller");
+      }
+      if (userType == "Admin") {
+        navigate("/admin");
+      }
     } catch (e) {
       console.log("Error:", e);
       setError("Invalid email or password", e.message);
