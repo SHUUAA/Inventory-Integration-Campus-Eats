@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import SideBar from "../components/SideBar";
 
-const BuyerLayout = () => {
+const CustomerLayout = () => {
 
     return(
         <div className="flex h-screen overflow-hidden">
@@ -20,4 +20,4 @@ const BuyerLayout = () => {
 
 } 
 
-export default BuyerLayout;
+export default CustomerLayout;

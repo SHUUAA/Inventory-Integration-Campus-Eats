@@ -14,8 +14,8 @@ import { AuthProvider } from "./auth/AuthContext";
 import AdminLayout from "./layout/AdminLayout";
 import SellerLayout from "./layout/SellerLayout";
 import Profile from "./components/Profile";
-import BuyerLayout from "./layout/BuyerLayout";
 import { UserProvider } from "./types/UserTypeContext";
+import CustomerLayout from "./layout/CustomerLayout";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -90,18 +90,18 @@ function App() {
                   />
                 </Route>
 
-                {/* Buyer Layout */}
+                {/* Customer Layout */}
                 <Route
                   element={
                     <Suspense fallback={<Loader></Loader>}>
                       <ProtectedRoute>
-                        <BuyerLayout />
+                        <CustomerLayout />
                       </ProtectedRoute>
                     </Suspense>
                   }
                 >
                   <Route
-                    path="/buyer/dashboard"
+                    path="/customer/dashboard"
                     element={
                       <ProtectedRoute>
                         <Dashboard />
@@ -109,7 +109,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/buyer/profile"
+                    path="/customer/profile"
                     element={
                       <ProtectedRoute>
                         <Profile />
@@ -117,7 +117,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/buyer/inventory"
+                    path="/customer/inventory"
                     element={
                       <ProtectedRoute>
                         <Inventory />
@@ -125,7 +125,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/buyer/settings"
+                    path="/customer/settings"
                     element={
                       <ProtectedRoute>
                         <Settings />
@@ -133,7 +133,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/buyer/orders"
+                    path="/customer/orders"
                     element={
                       <ProtectedRoute>
                         <Orders />

@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { logout } from "../auth/Logout";
+import { useUserContext } from "../types/UserTypeContext";
 const SideBar = () => {
-    const userType = localStorage.getItem("UserType");
+  const { userType } = useUserContext(); 
   return (
     <div className="flex h-screen flex-col justify-between border-e bg-red-950">
       <div className="px-8 py-12">
