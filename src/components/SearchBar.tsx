@@ -27,6 +27,8 @@ const SearchBar: React.FC = () => {
   };
 
   return (
+
+    <div className="inventory-container">
       <div className="inventory-header">
           <form onSubmit={handleSearchSubmit} className="search-form">
               <div className="search-box">
@@ -51,6 +53,7 @@ const SearchBar: React.FC = () => {
               </div>
           </div>
       </div>
+    </div>
   );
 };
 
