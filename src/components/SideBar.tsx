@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import { logout } from "../auth/Logout";
 const SideBar = () => {
+    const userType = localStorage.getItem("UserType");
   return (
     <div className="flex h-screen flex-col justify-between border-e bg-red-950">
       <div className="px-8 py-12">
         <ul className="mt-6 space-y-1">
           <li>
             <Link
-              to="/dashboard"
+              to={`/${userType}/dashboard`}
               className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
             >
               <svg
@@ -30,7 +31,7 @@ const SideBar = () => {
 
           <li>
             <Link
-              to="/orders"
+              to={`/${userType}/orders`}
               className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
             >
               <svg
@@ -53,7 +54,7 @@ const SideBar = () => {
 
           <li>
             <Link
-              to="/profile"
+              to={`/${userType}/profile`}
               className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
             >
               <svg
@@ -78,7 +79,7 @@ const SideBar = () => {
       <div className="sticky inset-x-0 list-none px-8 py-12 border-gray-100">
         <li>
           <Link
-            to="/settings"
+              to={`/${userType}/settings`}
             className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
           >
             <svg
@@ -113,13 +114,13 @@ const SideBar = () => {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
-              class="w-6 h-6 mr-3"
+              className="w-6 h-6 mr-3"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
               />
             </svg>

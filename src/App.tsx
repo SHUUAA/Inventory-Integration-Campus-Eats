@@ -15,9 +15,18 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthContext";
 import SellerPage from "./pages/Seller";
 import AdminLayout from "./layout/AdminLayout";
+import SellerLayout from "./layout/SellerLayout";
 
 function App() {
-  return (
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 1000);
+  }, []);
+
+  return loading ? (
+    <Loader />
+  ) : (
     <>
       <Suspense fallback={<Loader></Loader>}>
         <AuthProvider>
@@ -27,62 +36,60 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/login" element={<Auth />} />
               <Route path="/signup" element={<Auth />} />
+
+              {/* Seller Layout */}
               <Route
-                path="/dashboard"
                 element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
+                  <Suspense fallback={<Loader></Loader>}>
+                    <ProtectedRoute>
+                      <SellerLayout />
+                    </ProtectedRoute>
+                  </Suspense>
                 }
-              />
-              <Route
-                path="/inventory"
-                element={
-                  <ProtectedRoute>
-                    <Inventory />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <ProtectedRoute>
-                    <Settings />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/orders"
-                element={
-                  <ProtectedRoute>
-                    <Orders />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminLayout />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/customer"
-                element={
-                  <ProtectedRoute>
-                    <CustomerPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/seller"
-                element={
-                  <ProtectedRoute>
-                    <SellerPage />
-                  </ProtectedRoute>
-                }
-              />
+              >
+                <Route
+                  path="/seller/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/seller/inventory"
+                  element={
+                    <ProtectedRoute>
+                      <Inventory />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/seller/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/seller/orders"
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/seller/customer"
+                  element={
+                    <ProtectedRoute>
+                      <CustomerPage />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+
+
               <Route path="*" element={<Error />} />
             </Routes>
           </BrowserRouter>

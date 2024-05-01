@@ -17,17 +17,17 @@ import { signal } from "@preact/signals-react";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   useEffect(() => {
-      //const userType = localStorage.getItem("UserType");
       const userType = localStorage.getItem("UserType"); 
       if (userType === "Customer") {
           navigate("/customer");
       }
       if (userType === "Seller") {
-          navigate("/seller");
+          navigate("/seller/dashboard");
       }
       if (userType === "Admin") {
-          navigate("/admin");
+          navigate("/admin/dashboard");
       }
   }, []); // Run only once when the component mounts
   
@@ -184,6 +184,7 @@ const Auth = () => {
 
           const userDoc = snapshot.docs[0]; 
           localStorage.setItem("UserType", userDoc.data().type);
+          setLoading(false);
           navigate(0);
         }
       });
