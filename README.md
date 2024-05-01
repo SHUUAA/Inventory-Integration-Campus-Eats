@@ -1,13 +1,11 @@
 # React + TypeScript + Vite
 
-**Create the test branch project**
+**Create the project**
 
 
 `git clone https://github.com/SHUUAA/Inventory-Integration-Campus-Eats`
 
 `cd Inventory-Integration-Campus-Eats`
-
-`git checkout test`
 
 `npm install`
 
