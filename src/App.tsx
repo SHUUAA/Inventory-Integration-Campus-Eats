@@ -14,6 +14,7 @@ import { AuthProvider } from "./auth/AuthContext";
 import AdminLayout from "./layout/AdminLayout";
 import SellerLayout from "./layout/SellerLayout";
 import Profile from "./components/Profile";
+import BuyerLayout from "./layout/BuyerLayout";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,6 +88,110 @@ function App() {
                 />
               </Route>
 
+              {/* Buyer Layout */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader></Loader>}>
+                    <ProtectedRoute>
+                      <BuyerLayout />
+                    </ProtectedRoute>
+                  </Suspense>
+                }
+              >
+                <Route
+                  path="/buyer/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/buyer/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/buyer/inventory"
+                  element={
+                    <ProtectedRoute>
+                      <Inventory />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/buyer/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/buyer/orders"
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+
+
+              {/* Admin Layout */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader></Loader>}>
+                    <ProtectedRoute>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  </Suspense>
+                }
+              >
+                <Route
+                  path="/admin/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/inventory"
+                  element={
+                    <ProtectedRoute>
+                      <Inventory />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/orders"
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
 
               <Route path="*" element={<Error />} />
             </Routes>
