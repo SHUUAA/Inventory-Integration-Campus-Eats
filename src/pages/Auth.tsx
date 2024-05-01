@@ -13,7 +13,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { signal } from "@preact/signals-react";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();

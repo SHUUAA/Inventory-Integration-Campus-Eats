@@ -9,13 +9,11 @@ const Dashboard = lazy(() => import("./components/Dashboard"));
 const Inventory = lazy(() => import("./components/Inventory"));
 const Settings = lazy(() => import("./components/Settings"));
 const Orders = lazy(() => import("./components/Orders"));
-const CustomerPage = lazy(() => import("./pages/Customer"));
-const AdminPage = lazy(() => import("./pages/Admin"));
 import ProtectedRoute from "./auth/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthContext";
-import SellerPage from "./pages/Seller";
 import AdminLayout from "./layout/AdminLayout";
 import SellerLayout from "./layout/SellerLayout";
+import Profile from "./components/Profile";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -56,6 +54,14 @@ function App() {
                   }
                 />
                 <Route
+                  path="/seller/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/seller/inventory"
                   element={
                     <ProtectedRoute>
@@ -76,14 +82,6 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Orders />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/seller/customer"
-                  element={
-                    <ProtectedRoute>
-                      <CustomerPage />
                     </ProtectedRoute>
                   }
                 />
