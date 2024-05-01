@@ -14,6 +14,7 @@ const AdminPage = lazy(() => import("./pages/Admin"));
 import ProtectedRoute from "./auth/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthContext";
 import SellerPage from "./pages/Seller";
+import AdminLayout from "./layout/AdminLayout";
 
 function App() {
   return (
@@ -62,7 +63,7 @@ function App() {
                 path="/admin"
                 element={
                   <ProtectedRoute>
-                    <AdminPage />
+                    <AdminLayout />
                   </ProtectedRoute>
                 }
               />

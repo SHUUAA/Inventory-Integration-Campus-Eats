@@ -1,17 +1,18 @@
 import { useState, useRef, useEffect } from "react";
-import { authentication, microsoftProvider } from "../config/firebase";
+import { authentication, database, microsoftProvider } from "../config/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
   sendEmailVerification,
+  onAuthStateChanged,
 } from "firebase/auth";
 import "../css/Auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
-import DataFetch from "../components/data/Fetch";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const Auth = () => {
   const location = useLocation();
@@ -175,6 +176,17 @@ const Auth = () => {
 
       const response = await login(loginEmail, loginPwd);
       console.log(response.email);
+      onAuthStateChanged(authentication, async (user) => {
+        if (user) {
+          const userRef = collection(database, 'users');
+          const q = query(userRef, where('email', '==', response.email));
+          const snapshot = await getDocs(q);
+
+          const userDoc = snapshot.docs[0]; 
+          localStorage.setItem("UserType", userDoc.data().type);
+        }
+      });
+
       const userType = localStorage.getItem("UserType");
       console.log(userType);
       if (userType == "Customer") {

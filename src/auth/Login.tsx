@@ -1,3 +1,4 @@
+import DataFetch from "../components/data/Fetch";
 import { authentication, database } from "../config/firebase";
 import { signInWithEmailAndPassword, } from "firebase/auth";
 
