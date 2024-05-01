@@ -30,176 +30,175 @@ function App() {
     <>
       <Suspense fallback={<Loader></Loader>}>
         <UserProvider>
-        <AuthProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Navigate to="/login" />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/login" element={<Auth />} />
-              <Route path="/signup" element={<Auth />} />
+          <AuthProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/login" element={<Auth />} />
+                <Route path="/signup" element={<Auth />} />
 
-              {/* Seller Layout */}
-              <Route
-                element={
-                  <Suspense fallback={<Loader></Loader>}>
-                    <ProtectedRoute>
-                      <SellerLayout />
-                    </ProtectedRoute>
-                  </Suspense>
-                }
-              >
+                {/* Seller Layout */}
                 <Route
-                  path="/seller/dashboard"
                   element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
+                    <Suspense fallback={<Loader></Loader>}>
+                      <ProtectedRoute>
+                        <SellerLayout />
+                      </ProtectedRoute>
+                    </Suspense>
                   }
-                />
-                <Route
-                  path="/seller/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/seller/inventory"
-                  element={
-                    <ProtectedRoute>
-                      <Inventory />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/seller/settings"
-                  element={
-                    <ProtectedRoute>
-                      <Settings />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/seller/orders"
-                  element={
-                    <ProtectedRoute>
-                      <Orders />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
+                >
+                  <Route
+                    path="/seller/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/seller/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/seller/inventory"
+                    element={
+                      <ProtectedRoute>
+                        <Inventory />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/seller/settings"
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/seller/orders"
+                    element={
+                      <ProtectedRoute>
+                        <Orders />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
 
-              {/* Buyer Layout */}
-              <Route
-                element={
-                  <Suspense fallback={<Loader></Loader>}>
-                    <ProtectedRoute>
-                      <BuyerLayout />
-                    </ProtectedRoute>
-                  </Suspense>
-                }
-              >
+                {/* Buyer Layout */}
                 <Route
-                  path="/buyer/dashboard"
                   element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
+                    <Suspense fallback={<Loader></Loader>}>
+                      <ProtectedRoute>
+                        <BuyerLayout />
+                      </ProtectedRoute>
+                    </Suspense>
                   }
-                />
-                <Route
-                  path="/buyer/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/buyer/inventory"
-                  element={
-                    <ProtectedRoute>
-                      <Inventory />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/buyer/settings"
-                  element={
-                    <ProtectedRoute>
-                      <Settings />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/buyer/orders"
-                  element={
-                    <ProtectedRoute>
-                      <Orders />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
+                >
+                  <Route
+                    path="/buyer/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/inventory"
+                    element={
+                      <ProtectedRoute>
+                        <Inventory />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/settings"
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/orders"
+                    element={
+                      <ProtectedRoute>
+                        <Orders />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
 
+                {/* Admin Layout */}
+                <Route
+                  element={
+                    <Suspense fallback={<Loader></Loader>}>
+                      <ProtectedRoute>
+                        <AdminLayout />
+                      </ProtectedRoute>
+                    </Suspense>
+                  }
+                >
+                  <Route
+                    path="/admin/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/inventory"
+                    element={
+                      <ProtectedRoute>
+                        <Inventory />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/settings"
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/orders"
+                    element={
+                      <ProtectedRoute>
+                        <Orders />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
 
-              {/* Admin Layout */}
-              <Route
-                element={
-                  <Suspense fallback={<Loader></Loader>}>
-                    <ProtectedRoute>
-                      <AdminLayout />
-                    </ProtectedRoute>
-                  </Suspense>
-                }
-              >
-                <Route
-                  path="/admin/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin/inventory"
-                  element={
-                    <ProtectedRoute>
-                      <Inventory />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin/settings"
-                  element={
-                    <ProtectedRoute>
-                      <Settings />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin/orders"
-                  element={
-                    <ProtectedRoute>
-                      <Orders />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-
-              <Route path="*" element={<Error />} />
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
-</UserProvider>
+                <Route path="*" element={<Error />} />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </UserProvider>
       </Suspense>
     </>
   );

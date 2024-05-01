@@ -22,7 +22,7 @@ const Auth = () => {
   useEffect(() => {
       
       if (userType === "Customer") {
-          navigate("/customer");
+          navigate("/customer/dashboard");
       }
       if (userType === "Seller") {
           navigate("/seller/dashboard");
