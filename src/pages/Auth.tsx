@@ -13,12 +13,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { useUserContext } from "../types/UserTypeContext";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { userType } = useUserContext(); 
 
   useEffect(() => {
-      const userType = localStorage.getItem("UserType"); 
+      
       if (userType === "Customer") {
           navigate("/customer");
       }
@@ -28,7 +30,7 @@ const Auth = () => {
       if (userType === "Admin") {
           navigate("/admin/dashboard");
       }
-  }, []); // Run only once when the component mounts
+  }, [userType]); // Run when userType changes 
   
 
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(
@@ -175,18 +177,8 @@ const Auth = () => {
 
       const response = await login(loginEmail, loginPwd);
       console.log(response.email);
-      onAuthStateChanged(authentication, async (user) => {
-        if (user) {
-          const userRef = collection(database, 'users');
-          const q = query(userRef, where('email', '==', response.email));
-          const snapshot = await getDocs(q);
-
-          const userDoc = snapshot.docs[0]; 
-          localStorage.setItem("UserType", userDoc.data().type);
           setLoading(false);
           navigate(0);
-        }
-      });
  
     } catch (e) {
       console.log("Error:", e);

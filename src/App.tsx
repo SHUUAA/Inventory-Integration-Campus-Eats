@@ -15,6 +15,7 @@ import AdminLayout from "./layout/AdminLayout";
 import SellerLayout from "./layout/SellerLayout";
 import Profile from "./components/Profile";
 import BuyerLayout from "./layout/BuyerLayout";
+import { UserProvider } from "./types/UserTypeContext";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,6 +29,7 @@ function App() {
   ) : (
     <>
       <Suspense fallback={<Loader></Loader>}>
+        <UserProvider>
         <AuthProvider>
           <BrowserRouter>
             <Routes>
@@ -197,6 +199,7 @@ function App() {
             </Routes>
           </BrowserRouter>
         </AuthProvider>
+</UserProvider>
       </Suspense>
     </>
   );

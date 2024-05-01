@@ -3,9 +3,9 @@ import { authentication, database } from '../../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, where, query } from 'firebase/firestore';
 
+
 export function DataFetch() {
   const [userType, setUserType] = useState(null);
-
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -19,7 +19,6 @@ export function DataFetch() {
           const userDoc = snapshot.docs[0]; // Assuming only one matching document
           if (userDoc) {
             setUserType(userDoc.data().type);
-            localStorage.setItem("UserType", userDoc.data().type);
           } else {
             setUserType(null); // User document not found
           }
@@ -33,5 +32,7 @@ export function DataFetch() {
   }, []);
   return userType;
 }
+
+
 
 export default DataFetch; 
