@@ -16,6 +16,21 @@ import DataFetch from "../components/data/Fetch";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+      const userType = localStorage.getItem("UserType");
+      if (userType === "Customer") {
+          navigate("/customer");
+      }
+      if (userType === "Seller") {
+          navigate("/seller");
+      }
+      if (userType === "Admin") {
+          navigate("/admin");
+      }
+  }, []); // Run only once when the component mounts
+  
+
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(
     location.pathname === "/login",
   );

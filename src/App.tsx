@@ -13,6 +13,7 @@ const CustomerPage = lazy(() => import("./pages/Customer"));
 const AdminPage = lazy(() => import("./pages/Admin"));
 import ProtectedRoute from "./auth/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthContext";
+import SellerPage from "./pages/Seller";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<ProtectedRoute></ProtectedRoute>} />
+              <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/login" element={<Auth />} />
               <Route path="/signup" element={<Auth />} />
@@ -70,6 +71,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <CustomerPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/seller"
+                element={
+                  <ProtectedRoute>
+                    <SellerPage />
                   </ProtectedRoute>
                 }
               />
