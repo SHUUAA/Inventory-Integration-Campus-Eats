@@ -13,13 +13,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
 import { collection, getDocs, query, where } from "firebase/firestore";
-
+import { signal } from "@preact/signals-react";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   useEffect(() => {
-      const userType = localStorage.getItem("UserType");
+      //const userType = localStorage.getItem("UserType");
+      const userType = localStorage.getItem("UserType"); 
       if (userType === "Customer") {
           navigate("/customer");
       }
@@ -184,20 +184,10 @@ const Auth = () => {
 
           const userDoc = snapshot.docs[0]; 
           localStorage.setItem("UserType", userDoc.data().type);
+          navigate(0);
         }
       });
-
-      const userType = localStorage.getItem("UserType");
-      console.log(userType);
-      if (userType == "Customer") {
-        navigate("/customer");
-      }
-      if (userType == "Seller") {
-        navigate("/seller");
-      }
-      if (userType == "Admin") {
-        navigate("/admin");
-      }
+ 
     } catch (e) {
       console.log("Error:", e);
       setError("Invalid email or password", e.message);
