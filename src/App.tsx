@@ -6,7 +6,7 @@ const Error = lazy(() => import("./pages/Error"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPasswordPage"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Inventory = lazy(() => import("./components/Inventory"));
+const Inventory = lazy(() => import("./pages/Inventory"));
 const Settings = lazy(() => import("./components/Settings"));
 const Orders = lazy(() => import("./components/Orders"));
 import ProtectedRoute from "./auth/ProtectedRoute";
