@@ -2,14 +2,14 @@ import { Link } from "react-router-dom";
 import { logout } from "../auth/Logout";
 import { useUserContext } from "../types/UserTypeContext";
 const SideBar = () => {
-  const { userType } = useUserContext(); 
+  const { userData } = useUserContext(); 
   return (
     <div className="flex h-screen flex-col justify-between border-e bg-red-950">
       <div className="px-8 py-12">
         <ul className="mt-6 space-y-1">
           <li>
             <Link
-              to={`/${userType}/dashboard`}
+              to={`/${userData.type}/dashboard`}
               className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
             >
               <svg
@@ -32,7 +32,7 @@ const SideBar = () => {
 
           <li>
             <Link
-              to={`/${userType}/orders`}
+              to={`/${userData.type}/orders`}
               className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
             >
               <svg
@@ -55,7 +55,7 @@ const SideBar = () => {
 
           <li>
             <Link
-              to={`/${userType}/profile`}
+              to={`/${userData.type}/profile`}
               className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
             >
               <svg
@@ -80,7 +80,7 @@ const SideBar = () => {
       <div className="sticky inset-x-0 list-none px-8 py-12 border-gray-100">
         <li>
           <Link
-              to={`/${userType}/settings`}
+              to={`/${userData.type}/settings`}
             className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
           >
             <svg

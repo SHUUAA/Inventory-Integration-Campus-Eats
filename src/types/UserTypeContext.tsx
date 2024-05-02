@@ -4,9 +4,9 @@ import DataFetch from '../components/data/Fetch';
 const UserContext = createContext(null); // Default value
 
 export const UserProvider = ({ children }) => {
-    const userType = DataFetch();
+    const {...userData} = DataFetch();
     return (
-        <UserContext.Provider value={{ userType }}>
+        <UserContext.Provider value={{ userData }}>
             {children}
         </UserContext.Provider>
     );

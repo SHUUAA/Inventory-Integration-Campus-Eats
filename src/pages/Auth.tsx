@@ -17,20 +17,20 @@ import { useUserContext } from "../types/UserTypeContext";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { userType } = useUserContext(); 
+  const { userData } = useUserContext(); 
 
   useEffect(() => {
       
-      if (userType === "Customer") {
+      if (userData.type === "Customer") {
           navigate("/customer/dashboard");
       }
-      if (userType === "Seller") {
+      if (userData.type === "Seller") {
           navigate("/seller/dashboard");
       }
-      if (userType === "Admin") {
+      if (userData.type === "Admin") {
           navigate("/admin/dashboard");
       }
-  }, [userType]); // Run when userType changes 
+  }, [userData]); // Run when userType changes 
   
 
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(
@@ -177,8 +177,7 @@ const Auth = () => {
 
       const response = await login(loginEmail, loginPwd);
       console.log(response.email);
-          setLoading(false);
-          navigate(0);
+      setLoading(false);
  
     } catch (e) {
       console.log("Error:", e);

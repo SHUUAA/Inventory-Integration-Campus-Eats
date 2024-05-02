@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useAuthState } from './AuthState'; // Your authentication functions file
+import { User } from 'firebase/auth';
 
 interface AuthContextType {
   user: User | null;
