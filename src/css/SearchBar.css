@@ -1,11 +1,10 @@
 .inventory-container {
-  position: fixed;
+  position: relative;
   top: 0;
   right: 0;
   margin: 0px;
-  width: 85%;
   padding: 15px;
-  background-color: #ffffff;
+  background-color: #FFFAF1;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   z-index: 1000;
 }
@@ -42,6 +41,7 @@
   padding-left: 40px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: #FFFAF1;
 }
 
 .icon-container {

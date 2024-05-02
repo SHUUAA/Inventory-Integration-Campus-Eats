@@ -13,6 +13,9 @@ export default {
         white: {
           950: "#FFFAF1",
         },
+        brown: {
+          950: "#DFD5C5",
+        },
       },
     },
   },
