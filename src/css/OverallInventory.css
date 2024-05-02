@@ -1,34 +1,43 @@
-.inv-inventory-container {
-    background-color: #fffaf1; 
+.overall-inventory-container {
+    background-color: #fffaf1;
     border-radius: 8px;
     padding: 4px;
     display: flex;
     flex-direction: column;
-    align-items: stretch; 
+    align-items: stretch;
+    height: 200px; /* Set a fixed height */
+    overflow: hidden; /* Hide overflow content */
 }
 
-.inv-header-row {
+.overall-header-row {
     display: flex;
-    border-bottom: 2px solid #ece3d6;
     width: 100%;
+    align-items: center;
+    border-bottom: none; /* Ensure the bottom border is removed */
+    height: 50px; /* Set a fixed height */
 }
 
-.inv-data-row .inv-column {
-    color: #6a6f79;
-}
-
-.inv-column {
+.overall-column {
     flex: 1;
     color: #2f7fef;
     padding: 10px;
     text-align: center;
+    position: relative; /* Added for positioning the additional text */
 }
-  
-  .inv-inventory-header {
+
+.overall-column + .overall-column {
+    border-left: 2px solid #ece3d6; /* Add a left border to each column except the first one */
+}
+
+.overall-data-row .overall-column {
+    color: #6a6f79;
+}
+
+.overall-inventory-header {
     margin-top: 4px;
     margin-left: 4px;
     font-size: 1.5em;
-  }
+}
 
 .container-rounded {
     margin-bottom: 20px;
@@ -70,4 +79,25 @@
 
 .other-button:hover {
     background-color: #f1f1f1;
+}
+
+.column-text {
+    font-size: 1em;
+    color: #6a6f79;
+    display: block;
+    position: absolute;
+    bottom: -50px; /* Adjust this value according to your preference */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.column-subtext {
+    font-size: 1em;
+    color: #6a6f79;
+    display: block;
+    position: absolute;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 50%;
 }
