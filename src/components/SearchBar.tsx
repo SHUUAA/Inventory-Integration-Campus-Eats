@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import searchIcon from "../../public/assets/searchicon.png";
-import notificationIcon from "../../public/assets/notificationicon.png";
 import profileIcon from "../../public/assets/profileicon.png";
 import "../css/SearchBar.css";
 
