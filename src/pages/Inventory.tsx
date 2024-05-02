@@ -1,5 +1,4 @@
 import React from 'react';
-import '../css/Inventory.css';
 import OverallInventory from "../components/OverallInventory";
 import ProductList from "../components/ProductList";
 

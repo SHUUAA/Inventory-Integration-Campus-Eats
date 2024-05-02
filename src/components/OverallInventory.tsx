@@ -1,4 +1,4 @@
-import '../css/Inventory.css';
+import '../css/OverallInventory.css';
 
 const OverallInventory = () => {
   return (

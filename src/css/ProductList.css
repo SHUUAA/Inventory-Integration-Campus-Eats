@@ -1,0 +1,73 @@
+.inv-inventory-container {
+    background-color: #fffaf1; 
+    border-radius: 8px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; 
+}
+
+.inv-header-row {
+    display: flex;
+    border-bottom: 2px solid #ece3d6;
+    width: 100%;
+}
+
+.inv-data-row .inv-column {
+    color: #6a6f79;
+}
+
+.inv-column {
+    flex: 1;
+    color: #2f7fef;
+    padding: 10px;
+    text-align: center;
+}
+  
+  .inv-inventory-header {
+    margin-top: 4px;
+    margin-left: 4px;
+    font-size: 1.5em;
+  }
+
+.container-rounded {
+    margin-bottom: 20px;
+}
+
+.header-and-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+}
+
+.add-product-button, .other-button {
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-product-button {
+    background-color: #2f7fef;
+    color: white;
+    border: none;
+}
+
+.add-product-button:hover {
+    background-color: #1e5fbb;
+}
+
+.other-button {
+    background-color: transparent;
+    color: #8b909b;
+    border: 1px solid #8b909b;
+}
+
+.other-button:hover {
+    background-color: #f1f1f1;
+}

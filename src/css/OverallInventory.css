@@ -13,6 +13,10 @@
     width: 100%;
 }
 
+.inv-data-row .inv-column {
+    color: #6a6f79;
+}
+
 .inv-column {
     flex: 1;
     color: #2f7fef;
