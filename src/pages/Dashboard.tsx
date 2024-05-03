@@ -17,9 +17,7 @@ const Dashboard = () => {
                 <div className='salesNumber'>₱832</div>
                 <div className='name'>Sales</div>
             </div>
-            <div className='icon'>
               <img src="/assets/cash-outline.svg" alt="cash" className='icon1'/>
-            </div>
           </div>
 
           {/* Quantity in Hand */}
@@ -28,9 +26,8 @@ const Dashboard = () => {
                 <div className='salesNumber'>310</div>
                 <div className='name'>Quantity in Hand</div>
             </div>
-            <div className='icon'>
               <img src="/assets/cube-outline.svg" alt="cash" className='icon1'/>
-            </div>
+            
           </div>
 
           {/* Purchase */}
@@ -39,9 +36,9 @@ const Dashboard = () => {
                 <div className='salesNumber'>82</div>
                 <div className='name'>Purchase</div>
             </div>
-            <div className='icon'>
+            
             <img src="/assets/bag-check-outline.svg" alt="cash" className='icon1'/>
-            </div>
+         
           </div>
 
           {/* Number of Suppliers */}
@@ -50,9 +47,9 @@ const Dashboard = () => {
                 <div className='salesNumber'>31</div>
                 <div className='name'>Number of Suppliers</div>
             </div>
-            <div className='icon'>
+            
             <img src="/assets/people-outline.svg" alt="cash" className='icon1'/>
-            </div>
+            
           </div>
 
         </div>
