@@ -1,0 +1,221 @@
+body {
+  font-family: 'Sora', sans-serif; /* Replace 'Sora' with the actual font name */
+  background-color: #DFD5C5;
+}
+
+.nav-link {
+color: #FFFAF1;
+text-decoration: none;
+font-family: 'Sora', sans-serif;
+}
+
+
+.account-type{
+position: absolute;
+top: 400px;
+}
+
+.buttons-container {
+display: flex;
+position: absolute;
+top: 460px;
+}
+
+.courier{
+background-color: #E25659;
+color: white;
+font-weight: bold;
+border: none;
+margin-left: 250px;
+cursor: pointer;
+padding: 5px;
+padding-left: 10px;
+padding-right: 10px;
+border-radius: 20px;
+}
+
+.seller {
+background-color: #E25659;
+color: white;
+font-weight: bold;
+border: none;
+margin-left: 1rem;
+cursor: pointer;
+padding: 5px;
+padding-left: 10px;
+padding-right: 10px;
+border-radius: 20px;
+}
+
+.signup-button:hover,
+.login-button:hover {
+background-color: #F8BD00;
+}
+
+
+.main-content{
+  position: absolute;
+  width: auto;
+  left: 180px;
+  top: 110px;
+  flex-direction: column; 
+}
+
+.cardBox{
+  position: relative;
+  width: 1250px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+
+.cardBox .card {
+  position: relative;
+  background-color: #FFFAF1;
+  padding: 30px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cardBox .card .salesNumber{
+  position: relative;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: rgb(42, 38, 38);
+}
+
+.cardBox .card .name{
+  color: #667085;
+  font-weight: medium;
+  font-size: 14px;
+}
+
+.cardBox .card .icon{
+  font-size: 3.5rem;
+  color: black;
+}
+
+.cardBox .card:hover{
+  background: #BC4A4D;
+}
+
+.cardBox .card:hover .name,
+.cardBox .card:hover .icon,
+.cardBox .card:hover .salesNumber{
+  color:white
+}
+
+
+.details{
+  position: relative;
+  width: 100%;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+.details .topSelling{
+  position: relative;
+  display:grid;
+  min-height: 200px;
+  background:#FFFAF1;
+  padding: 20px;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.details .cardHeader{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cardHeader h2{
+  font-weight: 500;
+}
+
+.cardHeader .btn{
+  position: relative;
+  padding: 0px 10px;
+  text-decoration-line: none;
+  color: rgb(48, 34, 245);
+  /* top: 5px; */
+}
+
+.cardHeader .btn:hover{
+  color: grey;
+}
+
+.details table{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+}
+
+.details table thead td{
+  font-weight: 600;
+}
+
+.details .topSelling table tr{
+  color: black;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.details .topSelling table tr:last-child{
+  border-bottom: none;
+}
+
+.details .topSelling table tbody tr:hover{
+  background: #BC4A4D;
+  color: white;
+}
+
+.details .topSelling table tr td{
+  padding: 10px
+}
+
+.low{
+  padding: 2px 4px;
+  background: #FEE7DE;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #AA2F26;
+  font-weight: bold;
+}
+
+.lowStock{
+  position: relative;
+  display: grid;
+  padding: 20px;
+  background:#FFFAF1;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.lowStock table tr:hover{
+  background: #BC4A4D;
+  color: white;
+}
+
+.lowStock table tr td{
+  padding: 12px 10px;
+}
+
+.lowStock table tr td h4{
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2rem;
+}
+
+.lowStock table tr td h4 span{
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2rem;
+}
+

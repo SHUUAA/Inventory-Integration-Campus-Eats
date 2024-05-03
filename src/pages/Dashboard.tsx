@@ -1,55 +1,138 @@
-import InventorySummary from "../components/InventorySummary";
-import LowQuantityStock from "../components/LowQuantityStock";
-import OrderSummary from "../components/OrderSummary";
-import ProductSummary from "../components/ProductSummary";
-import PurchaseOverview from "../components/PurchaseOverview";
-import SalesOverview from "../components/SalesOverview";
-import SalesPurchase from "../components/SalesPurchase";
-import TopSellingStock from "../components/TopSellingStock";
-import "../css/Dashboard.css";
+import React, { useEffect, useState } from 'react';
+import '../css/Dashboard.css';
+import lays from '/assets/temporary/lays.png';
+import tata from '/assets/temporary/tata.png'; // Changed the import name here
+import 'ionicons/dist/css/ionicons.min.css';
 
 const Dashboard = () => {
+
   return (
-    <div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mb-6">
-        <div className="h-40 rounded-lg bg-white-950 lg:col-span-2">
-        <SalesOverview></SalesOverview>
+      <div className='main-content'>
+        
+
+        {/* 1st CardBox */}
+        <div className='cardBox'>
+        {/* Sales */}
+          <div className='card'>
+            <div>
+                <div className='salesNumber'>₱832</div>
+                <div className='name'>Sales</div>
+            </div>
+            <div className='icon'>
+              <ion-icon name="cash-outline"></ion-icon>
+            </div>
+          </div>
+
+          {/* Quantity in Hand */}
+          <div className='card'>
+            <div>
+                <div className='salesNumber'>310</div>
+                <div className='name'>Quantity in Hand</div>
+            </div>
+            <div className='icon'>
+            <ion-icon name="cube-outline"></ion-icon>
+            </div>
+          </div>
+
+          {/* Purchase */}
+          <div className='card'>
+            <div>
+                <div className='salesNumber'>82</div>
+                <div className='name'>Purchase</div>
+            </div>
+            <div className='icon'>
+            <ion-icon name="bag-check-outline"></ion-icon>
+            </div>
+          </div>
+
+          {/* Number of Suppliers */}
+          <div className='card'>
+            <div>
+                <div className='salesNumber'>31</div>
+                <div className='name'>Number of Suppliers</div>
+            </div>
+            <div className='icon'>
+            <ion-icon name="people-outline"></ion-icon>
+            </div>
+          </div>
+
         </div>
 
-        <div className="h-40 rounded-lg bg-white-950">
-          <InventorySummary></InventorySummary>
+         {/* Top Selling Stock */}
+        <div className='details'>
+            <div className='topSelling'>
+              <div className='cardHeader'>
+                <h2>Top Selling Stock</h2>
+                <a href='#' className='btn'>See All</a> {/* Changed class to className */}
+              </div>
+
+              <table>
+                  <thead>
+                      <tr>
+                        <td>Name</td>
+                        <td>Sold Quantity</td>
+                        <td>Remaining Quantity</td>
+                        <td>Price</td>
+                      </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                        <td>Surf Excel</td>
+                        <td>30</td>
+                        <td>12</td>
+                        <td>₱100</td>
+                    </tr>
+
+                    <tr>
+                        <td>Rin</td>
+                        <td>21</td>
+                        <td>15</td>
+                        <td>₱207</td>
+                    </tr>
+
+                    <tr>
+                        <td>Parle G</td>
+                        <td>19</td>
+                        <td>17</td>
+                        <td>₱105</td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
+
+            <div className='lowStock'>
+                <div className='cardHeader'>
+                  <h2>Low Quantity Stock</h2>
+                  <a href='#' className='btn'>See All</a> {/* Changed class to className */}
+                </div>
+
+                <table>
+                    <tr>
+                        <td width="60px">
+                          <div className='imgBx'><img src={lays} alt="lays" className="tata" /></div>
+                        </td>
+                        <td>
+                          <h4>Lays <br></br> <span>Remaining Quantity: 12</span> </h4>
+                        </td>
+                        <td><span className='low'>Low</span></td>
+                    </tr>
+
+                    <tr>
+                    <td width="60px">
+                          <div className='imgBx'><img src={tata} alt="Tata" className="tata" /></div>
+                        </td>
+                        <td>
+                          <h4>Tata Salt <br></br> <span>Remaining Quantity: 12</span></h4>
+                        </td>
+                        <td><span className='low'>Low</span></td>
+                    </tr>
+              </table>
+            </div>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mb-6">
-        <div className="h-40 rounded-lg bg-white-950 lg:col-span-2">
-          <PurchaseOverview></PurchaseOverview>
-        </div>
-        <div className="h-40 rounded-lg bg-white-950">
-          <ProductSummary></ProductSummary>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mb-6">
-        <div className="h-56 rounded-lg bg-white-950 lg:col-span-2">
-          <SalesPurchase></SalesPurchase>
-        </div>
-
-        <div className="h-56 rounded-lg bg-white-950">
-          <OrderSummary></OrderSummary>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mb-6">
-        <div className="h-56 rounded-lg bg-white-950 lg:col-span-2">
-          <TopSellingStock></TopSellingStock>
-        </div>
-        <div className="h-56 rounded-lg bg-white-950">
-          <LowQuantityStock></LowQuantityStock>
-        </div>
-      </div>
-    </div>
+      
   );
-};
+}
 
 export default Dashboard;
