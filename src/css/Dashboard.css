@@ -104,9 +104,12 @@ background-color: #F8BD00;
 }
 
 .cardBox .card:hover .name,
-.cardBox .card:hover .icon,
 .cardBox .card:hover .salesNumber{
   color:white
+}
+
+.cardBox .card:hover .icon1{
+  filter: invert(1);
 }
 
 
