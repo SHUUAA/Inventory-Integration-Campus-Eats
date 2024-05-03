@@ -95,9 +95,8 @@ background-color: #F8BD00;
   font-size: 14px;
 }
 
-.cardBox .card .icon{
-  font-size: 3.5rem;
-  color: black;
+.cardBox .card .icon1{
+  height: 50px;
 }
 
 .cardBox .card:hover{

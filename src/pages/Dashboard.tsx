@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
 import '../css/Dashboard.css';
 import lays from '/assets/temporary/lays.png';
 import tata from '/assets/temporary/tata.png'; // Changed the import name here
-import 'ionicons/dist/css/ionicons.min.css';
+
 
 const Dashboard = () => {
 
@@ -19,7 +18,7 @@ const Dashboard = () => {
                 <div className='name'>Sales</div>
             </div>
             <div className='icon'>
-              <ion-icon name="cash-outline"></ion-icon>
+              <img src="/assets/cash-outline.svg" alt="cash" className='icon1'/>
             </div>
           </div>
 
@@ -30,7 +29,7 @@ const Dashboard = () => {
                 <div className='name'>Quantity in Hand</div>
             </div>
             <div className='icon'>
-            <ion-icon name="cube-outline"></ion-icon>
+              <img src="/assets/cube-outline.svg" alt="cash" className='icon1'/>
             </div>
           </div>
 
@@ -41,7 +40,7 @@ const Dashboard = () => {
                 <div className='name'>Purchase</div>
             </div>
             <div className='icon'>
-            <ion-icon name="bag-check-outline"></ion-icon>
+            <img src="/assets/bag-check-outline.svg" alt="cash" className='icon1'/>
             </div>
           </div>
 
@@ -52,7 +51,7 @@ const Dashboard = () => {
                 <div className='name'>Number of Suppliers</div>
             </div>
             <div className='icon'>
-            <ion-icon name="people-outline"></ion-icon>
+            <img src="/assets/people-outline.svg" alt="cash" className='icon1'/>
             </div>
           </div>
 
