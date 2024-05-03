@@ -1,0 +1,58 @@
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    width: 80%;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .inventory-system-container {
+    margin-bottom: 2rem;
+  }
+  
+  .notification-preferences-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 1rem;
+  }
+  
+  .help-support-container {
+    margin-bottom: 2rem;
+  }
+  
+  .faq-container {
+    margin-top: 1rem;
+  }
+  
+  .troubleshooting-guides-container {
+    margin-top: 1rem;
+  }
+
+  .faq-container,
+    .troubleshooting-guides-container {
+    max-width: 500px;
+    margin: 2 auto;
+    margin-top: 10px;
+    background-color: azure;
+    }
+  .p {
+    margin-top: 20px;
+  }
+  .contact-information-header {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .contact-information-link {
+    text-decoration: none;
+    color: #333;
+  }
+
+  .text-left {
+    text-align: left;
+  }
