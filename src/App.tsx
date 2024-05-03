@@ -8,12 +8,11 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPasswordPage"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Inventory = lazy(() => import("./pages/Inventory"));
 const Settings = lazy(() => import("./components/Settings"));
-const Orders = lazy(() => import("./components/Orders"));
+const Profile = lazy(() => import("./components/Profile"));
 import ProtectedRoute from "./auth/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthContext";
 import AdminLayout from "./layout/AdminLayout";
 import SellerLayout from "./layout/SellerLayout";
-import Profile from "./components/Profile";
 import { UserProvider } from "./types/UserTypeContext";
 import CustomerLayout from "./layout/CustomerLayout";
 
@@ -80,14 +79,6 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route
-                    path="/seller/orders"
-                    element={
-                      <ProtectedRoute>
-                        <Orders />
-                      </ProtectedRoute>
-                    }
-                  />
                 </Route>
 
                 {/* Customer Layout */}
@@ -132,14 +123,6 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route
-                    path="/customer/orders"
-                    element={
-                      <ProtectedRoute>
-                        <Orders />
-                      </ProtectedRoute>
-                    }
-                  />
                 </Route>
 
                 {/* Admin Layout */}
@@ -181,14 +164,6 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Settings />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/orders"
-                    element={
-                      <ProtectedRoute>
-                        <Orders />
                       </ProtectedRoute>
                     }
                   />
