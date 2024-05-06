@@ -14,6 +14,7 @@ import signup from "../auth/Signup";
 import login from "../auth/Login";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useUserContext } from "../types/UserTypeContext";
+import EmailVerification from "../auth/EmailVerification";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -132,30 +133,21 @@ const Auth = () => {
       await signup(regisEmail, regisPwd, regisFirstname, regisLastname, regisRole);
 
       const user = authentication.currentUser;
-      console.log("user:", user);
-      //await sendVerificationEmail(user);
-      signOut(authentication);
+      EmailVerification(user);
       toggleForm();
-    } catch (e) {
-      setError(e.message);
+    }catch (e) {
+        console.log("Error:",e);
+        setError('Invalid email or password', e.message);
+        if (e.message === 'Please verify your email before logging in.') {
+            setError('Please verify your email before logging in.');
+          } else {
+            setError('Invalid email or password');
+          }
     }
     setLoading(false);
-  }
+}
 
-  async function sendVerificationEmail(user) {
-    try {
-      if (user) {
-        await sendEmailVerification(user);
-        setSuccess(
-          "Please check your email for a verification link to activate your account.",
-        );
-        console.log("Verification email sent successfully.");
-      }
-    } catch (error) {
-      console.error("Error sending verification email:", error);
-      throw error;
-    }
-  }
+
 
   async function handleLoginSubmit(e) {
     e.preventDefault();

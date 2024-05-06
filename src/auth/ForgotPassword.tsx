@@ -1,6 +1,12 @@
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { authentication } from '../config/firebase'; 
 
+const actionCodeSettings = {
+  url: 'http://localhost:5173/reset-password?oobCode=CODE', // Replace with your app's password reset page
+  handleCodeInApp: true  // Handle the link in your app
+};
+
+
 const forgotpassword = async (email: string) => {
   try {
     const response = await sendPasswordResetEmail(authentication, email);
