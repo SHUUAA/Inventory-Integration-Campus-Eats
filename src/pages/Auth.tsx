@@ -1,18 +1,9 @@
-import { useState, useRef, useEffect } from "react";
-import { authentication, database, microsoftProvider } from "../config/firebase";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  sendEmailVerification,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { useState, useEffect } from "react";
+import { authentication } from "../config/firebase";
 import "../css/Auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { useUserContext } from "../types/UserTypeContext";
 import EmailVerification from "../auth/EmailVerification";
 const Auth = () => {
@@ -183,41 +174,6 @@ const Auth = () => {
     setLoading(false);
   }
 
-  // async function handleSignInWithMicrosoft(e) {
-  //     e.preventDefault();
-
-  //     try{
-  //         setError('');
-  //         setLoading(true);
-  //         const error = await signInWithMicrosoft(microsoftProvider);
-  //         console.log("error:",error);
-  //         if (error) {
-  //             setError(error);
-  //         }
-  //     }catch (e) {
-  //         setError('Failed to sign in with Microsoft', e);
-  //     }
-  //     setLoading(false);
-  // }
-
-  // const signIn = async (event) => {
-  //     event.preventDefault();
-  //     try{
-  //         await createUserWithEmailAndPassword(auth, loginEmail, loginPwd);
-  //     } catch (error) {
-  //         console.error(error);
-  //     }
-
-  // }
-
-  // const signInWithMicrosoft = async () => {
-  //     try{
-  //         await signInWithPopup(auth, microsoftProvider);
-  //     } catch (error) {
-  //         console.error(error);
-  //     }
-  // }
-
   return (
     <main className={`ls-main ${isLoginFormVisible ? "" : "ls-sign-up-mode"}`}>
       <div className="ls-box">
@@ -285,12 +241,6 @@ const Auth = () => {
                   Sign In
                 </button>
 
-                {/* <div className="ls-ms-sign-in">
-                                <span className="ls-subtext">or</span>
-                                <button className="ls-ms-btn" onClick={handleSignInWithMicrosoft}>
-                                    <img className="ls-ms-btn-img" src="/Assets/ms-sign-in.png"></img>
-                                </button>
-                            </div> */}
               </div>
             </form>
 
@@ -368,22 +318,6 @@ const Auth = () => {
                   </div>
                 </div>
 
-                {/* <div className="ls-regis-input-wrap">
-                                <input
-                                    type="text"
-                                    id="username"
-                                    required
-                                    className={`ls-regis-input-field ${regisUsernameFocus || regisUsername ? 'active' : ''}`}
-                                    onChange={(e) => setRegisUsername(e.target.value)}
-                                    aria-invalid={validRegisUsername ? "false" : "true"}
-                                    aria-describedby="uidnote"
-                                    onFocus={()=> setRegisUsernameFocus(true)}
-                                    onBlur={()=> setRegisUsernameFocus(false)}
-                                    
-                                />
-                                <label>Username</label>
-                            </div> */}
-
                 <div className="ls-regis-input-wrap">
                   <input
                     type="password"
@@ -433,13 +367,7 @@ const Auth = () => {
                 >
                   Create Account
                 </button>
-                {/* <div className="ls-ms-sign-in">
-                                <span className="ls-subtext">or</span>
-                                <button className="ls-ms-btn" onClick={handleSignInWithMicrosoft}>
-                                    <img className="ls-ms-btn-img" src="/Assets/ms-sign-in.png"></img>
-                                </button>
-                            </div> */}
-                {/* <span className="ls-subtext">By signing up, you agree to our <span  className="ls-subtext-link">Terms and Conditions</span> </span> */}
+
               </div>
             </form>
           </div>
