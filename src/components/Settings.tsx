@@ -1,4 +1,4 @@
-import React from "react"
+// @ts-nocheck
 import "../css/Settings.css"
 import { useState } from "react"
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"

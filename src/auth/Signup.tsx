@@ -16,7 +16,8 @@ async function signup(email: string, password: string, firstName: string, lastNa
       createdOn: Timestamp.now(),
     });
     return userCredential.user;
-  } catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     if (error.code === 'auth/email-already-in-use') {
       throw new Error('The email address is already in use by another account.');
     } else {

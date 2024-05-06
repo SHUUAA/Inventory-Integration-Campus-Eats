@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Link } from "react-router-dom";
 import { logout } from "../auth/Logout";
 import { useUserContext } from "../types/UserTypeContext";

@@ -1,4 +1,4 @@
-import { authentication, database } from "../config/firebase";
+import { authentication } from "../config/firebase";
 import { signInWithEmailAndPassword, } from "firebase/auth";
 
 async function login(email: string, password: string) {

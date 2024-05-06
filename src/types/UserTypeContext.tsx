@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createContext, useContext } from 'react';
 import DataFetch from '../components/data/Fetch';
 

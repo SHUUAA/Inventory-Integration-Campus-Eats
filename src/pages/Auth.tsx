@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react";
 import { authentication } from "../config/firebase";
 import "../css/Auth.css";

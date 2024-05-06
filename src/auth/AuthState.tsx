@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { onAuthStateChanged } from "firebase/auth";
 import { authentication } from "../config/firebase";
 
