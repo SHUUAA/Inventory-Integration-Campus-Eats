@@ -1,18 +1,17 @@
-import { useState, useEffect } from 'react';
-import { authentication, database } from '../../config/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDocs, where, query } from 'firebase/firestore';
+import { useState, useEffect } from "react";
+import { authentication, database } from "../../config/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs, where, query } from "firebase/firestore";
 
-
-export function DataFetch() {
+const DataFetch = () => {
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
     const fetchUserData = async () => {
       onAuthStateChanged(authentication, async (user) => {
         if (user) {
-          const userRef = collection(database, 'users');
-          const q = query(userRef, where('email', '==', user.email));
+          const userRef = collection(database, "users");
+          const q = query(userRef, where("email", "==", user.email));
           const snapshot = await getDocs(q);
 
           // Extract the 'type' field:
@@ -31,8 +30,6 @@ export function DataFetch() {
     fetchUserData();
   }, []);
   return userData;
-}
+};
 
-
-
-export default DataFetch; 
+export default DataFetch;

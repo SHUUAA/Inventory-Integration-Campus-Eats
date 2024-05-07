@@ -5,25 +5,31 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-
+import "../css/ProfilePicture.css";
+import DataFetch from "../components/data/Fetch";
+import { authentication } from "../config/firebase";
+import defaultProfilePic from "../../public/assets/profile-picture.jpg"
 const Profile = () => {
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0); // Track upload progress
   const [imageURL, setImageURL] = useState(""); // Store the download URL
   const [error, setError] = useState(""); // Handle potential errors
   const [isLoading, setIsLoading] = useState(false);
+
   const storage = getStorage();
+
+  const userData = DataFetch();
+  const userID = authentication.currentUser.uid;
 
   useEffect(() => {
     const fetchImage = async () => {
       setIsLoading(true);
       try {
-        const imageRef = ref(storage, "ProfilePictures/lebron.jpg");
+        const imageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
         const url = await getDownloadURL(imageRef);
         setImageURL(url);
       } catch (error) {
-        console.error("Error fetching image:", error);
-        setError(error.message);
+        setImageURL(defaultProfilePic);
       } finally {
         setIsLoading(false);
       }
@@ -50,7 +56,7 @@ const Profile = () => {
       contentType: file.type, // Use the actual file type
     };
 
-    const storageRef = ref(storage, "ProfilePictures/" + file.name);
+    const storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
     const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
     uploadTask.on(
@@ -68,31 +74,44 @@ const Profile = () => {
           setImageURL(downloadURL);
           setProgress(0); // Reset progress
           setError(""); // Clear error
-          console.log("Image uploaded!", downloadURL);
+          window.location.reload();
         });
       }
     );
   };
 
+  const handleImageClick = () => {
+    const fileInput = document.querySelector('input[type="file"]'); 
+    fileInput.click();
+};
+
   return (
     <div>
       <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
         <div className="p-6">
-          <div className="flex flex-wrap justify-end">
-            <span className="inline-flex overflow-hidden rounded-md bg-red-950 shadow-sm">
-              <a
-                className="inline-block p-3 text-white hover:bg-red-800 focus:relative"
+          <div className="grid">
+            <form onSubmit={handleSubmit}>
+            <div className="flex flex-row-reverse">
+              <button
+                className="p-3 text-white rounded-lg bg-red-950 hover:bg-red-800 focus:relative"
                 title="Edit Quiz"
               >
-                <div>Edit Profile</div>
-              </a>
-            </span>
-            <div className="w-full flex justify-center">
-              <div className="relative">
-                {imageURL && <img src={imageURL} alt="From Storage" className="rounded-full w-32 h-32"/>}
-              </div>
+                <div>Save Edit</div>
+              </button>
             </div>
-            <div className="w-full text-center mt-20">
+            <div className="w-full flex justify-center">
+             <div className="relative" onClick={handleImageClick}> {/* Container for image and overlay */}
+               {imageURL && (
+                 <img src={imageURL} alt="From Storage" className="rounded-full w-32 h-32"/>
+               )}
+                <div className="profile-pic-overlay"> {/* Add overlay */} 
+                    <span>Edit Profile Picture</span>
+                </div>
+                <input type="file" onChange={handleFileUpload} className="hidden" /> {/* Hidden file input */}
+             </div>
+           </div>
+           </form>
+            <div className="w-full text-center">
               <div className="flex justify-center lg:pt-4 pt-8 pb-0">
                 <div className="p-3 text-center">
                   <span className="text-xl font-bold block uppercase tracking-wide text-slate-700">
@@ -118,11 +137,11 @@ const Profile = () => {
           </div>
           <div className="text-center mt-2">
             <h3 className="text-2xl text-slate-700 font-bold leading-normal mb-1">
-              Lebron James 
+              {userData.firstName}  {userData.lastName} 
             </h3>
             <div className="text-xs mt-0 mb-2 text-slate-400 font-bold uppercase">
               <i className="fas fa-map-marker-alt mr-2 text-slate-400 opacity-75"></i>
-              IDK
+              {userData.type}
             </div>
           </div>
           <div className="mt-6 py-6 border-t border-slate-200 text-center">
@@ -152,11 +171,6 @@ const Profile = () => {
           </div>
         </div>
       </footer>
-
-      <form onSubmit={handleSubmit}>
-        <input type="file" onChange={handleFileUpload} />
-        <button type="submit">Upload</button>
-      </form>
 
     </div>
   );
