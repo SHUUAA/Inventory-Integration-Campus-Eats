@@ -3,18 +3,18 @@ import { useAuthState } from './AuthState'; // Your authentication functions fil
 import { User } from 'firebase/auth';
 
 interface AuthContextType {
-  user: User | null;
+  user: User | undefined;
   loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
-  user: null,
+  user: undefined,
   loading: true, // Initially we are checking the auth state
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authState, setAuthState] = useState<AuthContextType>({
-    user: null,
+    user: undefined,
     loading: true,
   });
 

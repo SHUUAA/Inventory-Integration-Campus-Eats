@@ -8,7 +8,9 @@ import {
 import "../css/ProfilePicture.css";
 import DataFetch from "../components/data/Fetch";
 import { authentication } from "../config/firebase";
-import defaultProfilePic from "../../public/assets/profile-picture.jpg"
+import defaultProfilePic from "../../public/assets/profile-picture.jpg";
+import toast, { Toaster } from "react-hot-toast";
+
 const Profile = () => {
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0); // Track upload progress
@@ -36,7 +38,7 @@ const Profile = () => {
     };
 
     fetchImage();
-  }, []); // Empty dependency array: runs only on mount
+  }, [setIsLoading]); // Empty dependency array: runs only on mount
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -74,43 +76,72 @@ const Profile = () => {
           setImageURL(downloadURL);
           setProgress(0); // Reset progress
           setError(""); // Clear error
-          window.location.reload();
+          toast("🎉 Profile Picture updated successfully!")
+          setTimeout(function(){
+            location.reload();
+        }, 3000);
         });
       }
     );
   };
 
   const handleImageClick = () => {
-    const fileInput = document.querySelector('input[type="file"]'); 
+    const fileInput = document.querySelector('input[type="file"]');
     fileInput.click();
-};
+  };
 
   return (
     <div>
       <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
+        <Toaster
+          position="bottom-right"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: "#FFFAF1",
+            },
+          }}
+        />
         <div className="p-6">
           <div className="grid">
             <form onSubmit={handleSubmit}>
-            <div className="flex flex-row-reverse">
-              <button
-                className="p-3 text-white rounded-lg bg-red-950 hover:bg-red-800 focus:relative"
-                title="Edit Quiz"
-              >
-                <div>Save Edit</div>
-              </button>
-            </div>
-            <div className="w-full flex justify-center">
-             <div className="relative" onClick={handleImageClick}> {/* Container for image and overlay */}
-               {imageURL && (
-                 <img src={imageURL} alt="From Storage" className="rounded-full w-32 h-32"/>
-               )}
-                <div className="profile-pic-overlay"> {/* Add overlay */} 
+              <div className="flex flex-row-reverse">
+                <button
+                  className="p-3 text-white rounded-lg bg-red-950 hover:bg-red-800 focus:relative"
+                  title="Edit Quiz"
+                >
+                  <div>Save Edit</div>
+                </button>
+              </div>
+              <div className="w-full flex justify-center">
+                <div className="relative" onClick={handleImageClick}>
+                  {" "}
+                  {/* Container for image and overlay */}
+                  {imageURL && (
+                    <img
+                      src={imageURL}
+                      alt="From Storage"
+                      className="rounded-full w-32 h-32"
+                    />
+                  )}
+                  <div className="profile-pic-overlay">
+                    {" "}
+                    {/* Add overlay */}
                     <span>Edit Profile Picture</span>
+                  </div>
+                  <input
+                    type="file"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />{" "}
+                  {/* Hidden file input */}
                 </div>
-                <input type="file" onChange={handleFileUpload} className="hidden" /> {/* Hidden file input */}
-             </div>
-           </div>
-           </form>
+              </div>
+            </form>
             <div className="w-full text-center">
               <div className="flex justify-center lg:pt-4 pt-8 pb-0">
                 <div className="p-3 text-center">
@@ -137,7 +168,7 @@ const Profile = () => {
           </div>
           <div className="text-center mt-2">
             <h3 className="text-2xl text-slate-700 font-bold leading-normal mb-1">
-              {userData.firstName}  {userData.lastName} 
+              {userData.firstName} {userData.lastName}
             </h3>
             <div className="text-xs mt-0 mb-2 text-slate-400 font-bold uppercase">
               <i className="fas fa-map-marker-alt mr-2 text-slate-400 opacity-75"></i>
@@ -171,7 +202,6 @@ const Profile = () => {
           </div>
         </div>
       </footer>
-
     </div>
   );
 };
