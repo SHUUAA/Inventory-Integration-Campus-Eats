@@ -8,7 +8,7 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPasswordPage"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Inventory = lazy(() => import("./pages/Inventory"));
 const Settings = lazy(() => import("./components/Settings"));
-const Profile = lazy(() => import("./components/Profile"));
+const Profile = lazy(() => import("./pages/Profile"));
 import ProtectedRoute from "./auth/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthContext";
 import AdminLayout from "./layout/AdminLayout";
