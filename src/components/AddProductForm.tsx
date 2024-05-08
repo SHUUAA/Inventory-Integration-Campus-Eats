@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { database } from '../config/firebase';
+import { database, storage } from '../config/firebase';
 import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import '../css/AddProductForm.css';
 
 interface Props {
@@ -8,17 +9,32 @@ interface Props {
 }
 
 const AddProductForm: React.FC<Props> = ({ closeModal }) => {
-  const [name, setName] = useState<string>('');
-  const [productId, setProductId] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
-  const [buyingPrice, setBuyingPrice] = useState<string>('');
-  const [quantity, setQuantity] = useState<number>(0);
-  const [unit, setUnit] = useState<string>('');
-  const [expiryDate, setExpiryDate] = useState<string>('');
-  const [threshold, setThreshold] = useState<number>(0);
+  const [name, setName] = useState('');
+  const [productId, setProductId] = useState('');
+  const [category, setCategory] = useState('');
+  const [buyingPrice, setBuyingPrice] = useState('');
+  const [quantity, setQuantity] = useState(0);
+  const [unit, setUnit] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [threshold, setThreshold] = useState(0);
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const newFile = event.target.files[0];
+      setFile(newFile);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let imageUrl = '';
+    if (file) {
+      const imageRef = ref(storage, `ProductImages/${Date.now()}_${file.name}`);
+      await uploadBytes(imageRef, file);
+      imageUrl = await getDownloadURL(imageRef);
+    }
+
     try {
       await addDoc(collection(database, 'products'), {
         name,
@@ -28,7 +44,8 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         quantity,
         unit,
         expiryDate,
-        threshold
+        threshold,
+        imageUrl
       });
       console.log('Product added successfully');
       closeModal();
@@ -41,6 +58,10 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
     <div className="modal-content">
       <form onSubmit={handleSubmit} className="add-product-form">
         <h1>New Product</h1>
+        <div className="form-row">
+          <label>Upload Photo:</label>
+          <input type="file" onChange={handleFileChange} />
+        </div>
         <div className="form-row">
           <label>Product Name:</label>
           <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Enter product name" required />
