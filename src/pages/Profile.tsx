@@ -5,11 +5,11 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import "../css/ProfilePicture.css";
 import DataFetch from "../components/data/Fetch";
 import { authentication } from "../config/firebase";
 import toast, { Toaster } from "react-hot-toast";
 import * as Avatar from "@radix-ui/react-avatar";
+import * as Dialog from "@radix-ui/react-dialog";
 
 const Profile = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -24,7 +24,9 @@ const Profile = () => {
   const userID = authentication.currentUser.uid;
   const name = authentication.currentUser?.displayName;
   const [firstName, surname] = name.split(" ");
-  const initials = firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
+  const initials =
+    firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
+
   useEffect(() => {
     const fetchImage = async () => {
       setIsLoading(true);
@@ -50,7 +52,6 @@ const Profile = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!file) {
       setError("Please select a file");
       return;
@@ -87,11 +88,6 @@ const Profile = () => {
     );
   };
 
-  const handleImageClick = () => {
-    const fileInput = document.querySelector('input[type="file"]');
-    fileInput.click();
-  };
-
   return (
     <div>
       <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
@@ -110,72 +106,109 @@ const Profile = () => {
         />
         <div className="p-6">
           <div className="grid">
-            <form onSubmit={handleSubmit}>
+            <Dialog.Root>
               <div className="flex flex-row-reverse">
-                <button
-                  className="p-3 text-white rounded-lg bg-red-950 hover:bg-red-800 focus:relative"
-                  title="Edit Quiz"
-                >
-                  <div>Save Edit</div>
-                </button>
+                <Dialog.Trigger asChild>
+                  <button
+                    className="p-3 text-white rounded-lg bg-red-950 hover:bg-red-800 focus:relative"
+                    title="Edit Quiz"
+                  >
+                    <div>Edit Profile</div>
+                  </button>
+                </Dialog.Trigger>
+                <Dialog.Portal>
+                  <Dialog.Overlay className="bg-black-A6 data-[state=open]:animate-overlayShow fixed inset-0" />
+                  <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white-950 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                    <Dialog.Title className="text-black m-0 text-[17px] font-medium">
+                      Edit profile
+                    </Dialog.Title>
+                    <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">
+                      Make changes to your profile here. Click save when you're
+                      done.
+                    </Dialog.Description>
+                    <fieldset className="mb-[15px] flex items-center gap-5">
+                      <label
+                        className="text-black w-[90px] text-right text-[15px]"
+                        htmlFor="name"
+                      >
+                        Upload Photo
+                      </label>
+                      <input type="file" onChange={handleFileUpload} />
+                    </fieldset>
+                    <fieldset className="mb-[15px] flex items-center gap-5">
+                      <label
+                        className="text-black w-[90px] text-right text-[15px]"
+                        htmlFor="bio"
+                      >
+                        Bio
+                      </label>
+                      <textarea
+                        id="Bio"
+                        className="text-black shadow-brown-950 focus:shadow-brown-950 inline-flex h-[200px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                      />
+                    </fieldset>
+                    <div className="mt-[25px] flex justify-end">
+                      <Dialog.Close asChild>
+                        <button
+                          onClick={handleSubmit}
+                          className="bg-red-950 text-black hover:bg-red-800 focus:shadow-red-800 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
+                        >
+                          Save changes
+                        </button>
+                      </Dialog.Close>
+                    </div>
+                    <Dialog.Close asChild>
+                      <button
+                        className="text-slate-700 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+                        aria-label="Close"
+                      >
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 15 15"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
+                            fill="currentColor"
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                          ></path>
+                        </svg>
+                      </button>
+                    </Dialog.Close>
+                  </Dialog.Content>
+                </Dialog.Portal>
               </div>
               <div className="w-full flex justify-center">
-                <Avatar.Root className="relative" onClick={handleImageClick}>
-                  {" "}
-                  {/* Container for image and overlay */}
+                <Avatar.Root className="relative">
                   {imageURL && (
                     <Avatar.AvatarImage
                       src={imageURL}
                       alt="Profile Picture"
-                      className="bg-blackA1 inline-flex h-[100px] w-[100px] select-none items-center justify-center overflow-hidden rounded-full align-middle"
+                      className="bg-blackA1 inline-flex h-[150px] w-[150px] select-none items-center justify-center overflow-hidden rounded-full align-middle"
                     />
                   )}
-                  <Avatar.AvatarFallback className="text-red-950 leading-1 flex h-[100px] w-[100px] items-center justify-center bg-brown-950 rounded-full text-[45px] font-medium">
+                  <Avatar.AvatarFallback className="text-red-950 leading-1 flex h-[150px] w-[150px] items-center justify-center bg-brown-950 rounded-full text-[45px] font-medium">
                     {initials}
                   </Avatar.AvatarFallback>
-                  <div className="profile-pic-overlay">
-                    {" "}
-                    {/* Add overlay */}
-                    <span>Edit Profile Picture</span>
-                  </div>
-                  <input
-                    type="file"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />{" "}
-                  {/* Hidden file input */}
                 </Avatar.Root>
               </div>
-            </form>
+            </Dialog.Root>
             <div className="w-full text-center">
               <div className="flex justify-center lg:pt-4 pt-8 pb-0">
                 <div className="p-3 text-center">
-                  <span className="text-xl font-bold block uppercase tracking-wide text-slate-700">
-                    3,360
-                  </span>
-                  <span className="text-sm text-slate-400">Photos</span>
-                </div>
-                <div className="p-3 text-center">
-                  <span className="text-xl font-bold block uppercase tracking-wide text-slate-700">
-                    2,454
-                  </span>
-                  <span className="text-sm text-slate-400">Followers</span>
-                </div>
-
-                <div className="p-3 text-center">
-                  <span className="text-xl font-bold block uppercase tracking-wide text-slate-700">
-                    564
-                  </span>
-                  <span className="text-sm text-slate-400">Following</span>
+                  <div className="text-md text-slate-600">{userData.email}</div>
                 </div>
               </div>
             </div>
           </div>
           <div className="text-center mt-2">
-            <h3 className="text-2xl text-slate-700 font-bold leading-normal mb-1">
+            <h3 className="text-3xl text-slate-700 font-bold leading-normal mb-1">
               {userData.firstName} {userData.lastName}
             </h3>
-            <div className="text-xs mt-0 mb-2 text-slate-400 font-bold uppercase">
+            <div className="text-md mt-0 mb-2 text-slate-400 font-bold uppercase">
               <i className="fas fa-map-marker-alt mr-2 text-slate-400 opacity-75"></i>
               {userData.type}
             </div>
@@ -188,12 +221,6 @@ const Profile = () => {
                   Melbourne-raised, Brooklyn-based Nick Murphy writes, performs
                   and records all of his own music, giving it a warm.
                 </p>
-                <a
-                  href="javascript:;"
-                  className="font-normal text-slate-700 hover:text-slate-400"
-                >
-                  Follow Account
-                </a>
               </div>
             </div>
           </div>
