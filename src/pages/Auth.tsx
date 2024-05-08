@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import { authentication } from "../config/firebase";
 import "../css/Auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
 import { useUserContext } from "../types/UserTypeContext";
-import EmailVerification from "../auth/EmailVerification";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -122,9 +120,8 @@ const Auth = () => {
       setLoading(true);
 
       await signup(regisEmail, regisPwd, regisFirstname, regisLastname, regisRole);
-
-      const user = authentication.currentUser;
-      EmailVerification(user);
+      window.location.reload();
+      //setSuccess('Please check your email for a verification link to activate your account.');
       toggleForm();
     }catch (e) {
         console.log("Error:",e);
@@ -158,10 +155,7 @@ const Auth = () => {
     try {
       setLoading(true);
 
-      const response = await login(loginEmail, loginPwd);
-      console.log(response.email);
-      setLoading(false);
- 
+      await login(loginEmail, loginPwd);
     } catch (e) {
       console.log("Error:", e);
       setError("Invalid email or password", e.message);

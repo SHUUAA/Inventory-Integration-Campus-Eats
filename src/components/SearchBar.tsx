@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import defaultProfilePic from "../../public/assets/profile-picture.jpg";
 import "../css/SearchBar.css";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { authentication } from "../config/firebase";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../types/UserTypeContext";
+import * as Avatar from "@radix-ui/react-avatar";
 
 const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,6 +28,9 @@ const SearchBar: React.FC = () => {
   const { userData } = useUserContext();
   const storage = getStorage();
   const userID = authentication.currentUser.uid;
+  const name = authentication.currentUser?.displayName;
+  const [firstName, surname] = name.split(" ");
+  const initials = firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -37,7 +40,7 @@ const SearchBar: React.FC = () => {
         const url = await getDownloadURL(imageRef);
         setProfileIcon(url);
       } catch (error) {
-        setProfileIcon(defaultProfilePic);
+        /* empty */
       } finally {
         setIsLoading(false);
       }
@@ -77,36 +80,21 @@ const SearchBar: React.FC = () => {
           </div>
         </form>
         <div className="icon-container">
-          <div className="icon-notif" onClick={toggleNotifications}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+          <Avatar.Root className="bg-blackA1 inline-flex h-[45px] w-[45px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
+            <Link to={`/${userData.type}/profile`}>
+              <Avatar.AvatarImage
+                className="h-full w-full rounded-[inherit] object-cover"
+                src={profileIcon}
+                alt="Profile"
               />
-            </svg>
-
-            {showNotifications && (
-              <div className="dropdown-menu">NEED PAG INFO</div>
-            )}
-          </div>
-          <Link
-            to={`/${userData.type}/profile`}
-            className="icon-profile"
-          >
-            <img
-              src={profileIcon}
-              alt="Profile"
-              className="rounded-full w-10 h-10"
-            />
-          </Link>
+              <Avatar.Fallback
+                className="text-red-950 leading-1 flex h-[45px] w-[45px] items-center justify-center bg-brown-950 rounded-full text-[15px] font-medium"
+                delayMs={600}
+              >
+                {initials}
+              </Avatar.Fallback>
+            </Link>
+          </Avatar.Root>
         </div>
       </div>
     </div>

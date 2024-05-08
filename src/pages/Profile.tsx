@@ -8,8 +8,8 @@ import {
 import "../css/ProfilePicture.css";
 import DataFetch from "../components/data/Fetch";
 import { authentication } from "../config/firebase";
-import defaultProfilePic from "../../public/assets/profile-picture.jpg";
 import toast, { Toaster } from "react-hot-toast";
+import * as Avatar from "@radix-ui/react-avatar";
 
 const Profile = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -22,7 +22,9 @@ const Profile = () => {
 
   const userData = DataFetch();
   const userID = authentication.currentUser.uid;
-
+  const name = authentication.currentUser?.displayName;
+  const [firstName, surname] = name.split(" ");
+  const initials = firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
   useEffect(() => {
     const fetchImage = async () => {
       setIsLoading(true);
@@ -31,7 +33,7 @@ const Profile = () => {
         const url = await getDownloadURL(imageRef);
         setImageURL(url);
       } catch (error) {
-        setImageURL(defaultProfilePic);
+        /* empty */
       } finally {
         setIsLoading(false);
       }
@@ -76,10 +78,10 @@ const Profile = () => {
           setImageURL(downloadURL);
           setProgress(0); // Reset progress
           setError(""); // Clear error
-          toast("🎉 Profile Picture updated successfully!")
-          setTimeout(function(){
+          toast("🎉 Profile Picture updated successfully!");
+          setTimeout(function () {
             location.reload();
-        }, 3000);
+          }, 3000);
         });
       }
     );
@@ -118,16 +120,19 @@ const Profile = () => {
                 </button>
               </div>
               <div className="w-full flex justify-center">
-                <div className="relative" onClick={handleImageClick}>
+                <Avatar.Root className="relative" onClick={handleImageClick}>
                   {" "}
                   {/* Container for image and overlay */}
                   {imageURL && (
-                    <img
+                    <Avatar.AvatarImage
                       src={imageURL}
-                      alt="From Storage"
-                      className="rounded-full w-32 h-32"
+                      alt="Profile Picture"
+                      className="bg-blackA1 inline-flex h-[100px] w-[100px] select-none items-center justify-center overflow-hidden rounded-full align-middle"
                     />
                   )}
+                  <Avatar.AvatarFallback className="text-red-950 leading-1 flex h-[100px] w-[100px] items-center justify-center bg-brown-950 rounded-full text-[45px] font-medium">
+                    {initials}
+                  </Avatar.AvatarFallback>
                   <div className="profile-pic-overlay">
                     {" "}
                     {/* Add overlay */}
@@ -139,7 +144,7 @@ const Profile = () => {
                     className="hidden"
                   />{" "}
                   {/* Hidden file input */}
-                </div>
+                </Avatar.Root>
               </div>
             </form>
             <div className="w-full text-center">
