@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import "../css/SearchBar.css";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { authentication } from "../config/firebase";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../types/UserTypeContext";
 import * as Avatar from "@radix-ui/react-avatar";
+import logo from "../../public/assets/logo.png";
 
 const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,7 +30,8 @@ const SearchBar: React.FC = () => {
   const userID = authentication.currentUser.uid;
   const name = authentication.currentUser?.displayName;
   const [firstName, surname] = name.split(" ");
-  const initials = firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
+  const initials =
+    firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -50,54 +51,85 @@ const SearchBar: React.FC = () => {
   }, []); // Empty dependency array: runs only on mount
 
   return (
-    <div className="inventory-container">
-      <div className="inventory-header">
-        <form onSubmit={handleSearchSubmit} className="search-form">
-          <div className="search-box">
-            <button type="submit" className="search-icon">
-              {" "}
-              {/* Add button */}
+    <nav className="sticky bg-white-950 border-gray-200 p-4 mb-10">
+      <div className="container mx-auto flex flex-wrap items-center justify-between">
+        <a href="#" className="flex">
+          <img className="h-8 mr-2" src={logo} />
+          <span className="self-center text-md font-semibold whitespace-nowrap">
+            Campus Eats
+          </span>
+        </a>
+        <form>
+          <label
+            for="default-search"
+            class="mb-2 text-sm font-medium text-black sr-only"
+          >
+            Search
+          </label>
+          <div className="relative">
+            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
               <svg
+                className="w-5 h-5 text-black"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                style={{ stroke: "#ccc" }}
-                className="w-5 h-5"
               >
                 <path
-                  fillRule="evenodd"
-                  d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                  clipRule="evenodd"
-                />
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
               </svg>
-            </button>
+            </div>
             <input
-              type="text"
-              placeholder="Search product, supplier, orders"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="search-input"
+              type="search"
+              id="default-search"
+              className="block p-4 pl-10 w-full text-sm text-black bg-white-950 rounded-lg border border-gray-300  "
+              placeholder="Search Inventory, Products..."
+              required
             />
           </div>
         </form>
-        <div className="icon-container">
-          <Avatar.Root className="bg-blackA1 inline-flex h-[45px] w-[45px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
-            <Link to={`/${userData.type}/profile`}>
-              <Avatar.AvatarImage
-                className="h-full w-full rounded-[inherit] object-cover"
-                src={profileIcon}
-                alt="Profile"
-              />
-              <Avatar.Fallback
-                className="text-red-950 leading-1 flex h-[45px] w-[45px] items-center justify-center bg-brown-950 rounded-full text-[15px] font-medium"
-                delayMs={600}
+        <div className="flex"></div>
+        <div className="flex w-full md:w-auto md:order-1">
+          <div className="flex-col md:flex-row flex md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
+            <div className="inline-flex h-[45px] w-[45px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
               >
-                {initials}
-              </Avatar.Fallback>
-            </Link>
-          </Avatar.Root>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                />
+              </svg>
+            </div>
+            <Avatar.Root className="inline-flex h-[45px] w-[45px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
+              <Link to={`/${userData.type}/profile`}>
+                <Avatar.AvatarImage
+                  className="h-full w-full rounded-[inherit] object-cover"
+                  src={profileIcon}
+                  alt="Profile"
+                />
+                <Avatar.Fallback
+                  className="text-red-950 leading-1 flex h-[45px] w-[45px] items-center justify-center bg-brown-950 rounded-full text-[15px] font-medium"
+                  delayMs={600}
+                >
+                  {initials}
+                </Avatar.Fallback>
+              </Link>
+            </Avatar.Root>
+          </div>
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 
