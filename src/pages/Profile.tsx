@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   getStorage,
   ref,
@@ -23,12 +23,14 @@ const userEmail = user?.email;
 const userRef = collection(database, "users");
 const q = query(userRef, where("email", "==", userEmail));
 import { useUserContext } from "../auth/UserContext";
+import Loader from "../../public/assets/loader.gif";
 
 const Profile = () => {
   const userContext = useUserContext();
   const { userData } = userContext ?? { userData: {} };
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [loading, setLoading] = useState(true);
   const userID = user?.uid;
   const userName = user?.displayName;
   const storage = getStorage();
@@ -38,14 +40,16 @@ const Profile = () => {
   const initials =
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
 
-  useMemo(() => {
+  useEffect(() => {
     const fetchImage = async () => {
       try {
         const imageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
         const url = await getDownloadURL(imageRef);
         setImageUrl(url);
+        setLoading(false); // Set loading to false when image is fetched
       } catch (error) {
         console.error("Error fetching image:", error);
+        setLoading(false); // Set loading to false on error
       }
     };
     fetchImage();
@@ -69,11 +73,11 @@ const Profile = () => {
       toast("Please select a file!");
       return;
     }
-  
+
     const metadata = {
       contentType: file.type, // Use the actual file type
     };
-  
+
     let storageRef;
     getDocs(q)
       .then((querySnapshot) => {
@@ -97,13 +101,14 @@ const Profile = () => {
               console.error("Error updating document:", error);
             });
         }
-  
+
         const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-        uploadTask.on('state_changed', 
-          () => {}, 
+        uploadTask.on(
+          "state_changed",
+          () => {},
           (error) => {
             console.error(error);
-          }, 
+          },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               setImageUrl(downloadURL);
@@ -119,6 +124,14 @@ const Profile = () => {
         console.error("Error querying documents:", error);
       });
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center">
+        <img src={Loader} alt="Loading..." />
+      </div>
+    );
+  }
 
   return (
     <div>
