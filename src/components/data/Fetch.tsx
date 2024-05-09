@@ -14,7 +14,6 @@ const DataFetch = () => {
           const q = query(userRef, where("email", "==", user.email));
           const snapshot = await getDocs(q);
 
-          // Extract the 'type' field:
           const userDoc = snapshot.docs[0]; // Assuming only one matching document
           if (userDoc) {
             setUserData(userDoc.data());

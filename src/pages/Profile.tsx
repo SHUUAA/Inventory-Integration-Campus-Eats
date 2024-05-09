@@ -10,9 +10,19 @@ import DataFetch from "../components/data/Fetch";
 import toast, { Toaster } from "react-hot-toast";
 import * as Avatar from "@radix-ui/react-avatar";
 import * as Dialog from "@radix-ui/react-dialog";
-
+import {
+  collection,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { database } from "../config/firebase";
 const firebaseController = new FirebaseController();
 const user = await firebaseController.getCurrentUser();
+const userEmail = user?.email;
+const userRef = collection(database, "users");
+const q = query(userRef, where("email", "==", userEmail));
 
 const Profile = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -20,10 +30,11 @@ const Profile = () => {
   const [, setIsLoading] = useState(false);
   const userID = user?.uid;
   const userName = user?.displayName;
-  const userEmail = user?.email;
   const storage = getStorage();
   const userData = DataFetch();
   const userType = (userData as { type: string }).type;
+  const userBio = (userData as { bio: string }).bio;
+  console.log(userBio);
   const [firstName, surname] = userName!.split(" ");
   const initials =
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
@@ -51,6 +62,10 @@ const Profile = () => {
     }
   };
 
+  const [bio, setBio] = useState("");
+  const setBioTextField = (event) => {
+    setBio(event.target.value);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
@@ -65,9 +80,32 @@ const Profile = () => {
     const storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
     const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
+    getDocs(q)
+      .then((querySnapshot) => {
+        if (querySnapshot.empty) {
+          console.log("No document found with email:", userEmail);
+        } else {
+          const document = querySnapshot.docs[0];
+          console.log(document.ref);
+          // Update the document
+          updateDoc(document.ref, {
+            bio: bio,
+          })
+            .then(() => {
+              console.log("Document updated successfully!");
+            })
+            .catch((error) => {
+              console.error("Error updating document:", error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error("Error querying documents:", error);
+      });
+
     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
       setImageURL(downloadURL);
-      toast("🎉 Profile Picture updated successfully!");
+      toast("🎉 Profile updated successfully!");
       setTimeout(function () {
         location.reload();
       }, 1000);
@@ -130,6 +168,7 @@ const Profile = () => {
                       </label>
                       <textarea
                         id="Bio"
+                        onChange={setBioTextField}
                         className="text-black shadow-brown-950 focus:shadow-brown-950 inline-flex h-[200px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                       />
                     </fieldset>
@@ -203,9 +242,7 @@ const Profile = () => {
             <div className="flex flex-wrap justify-center">
               <div className="w-full px-4">
                 <p className="font-light leading-relaxed text-slate-600 mb-4">
-                  An artist of considerable range, Mike is the name taken by
-                  Melbourne-raised, Brooklyn-based Nick Murphy writes, performs
-                  and records all of his own music, giving it a warm.
+                  {userBio}
                 </p>
               </div>
             </div>

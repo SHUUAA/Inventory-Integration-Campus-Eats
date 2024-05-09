@@ -13,6 +13,7 @@ async function signup(email: string, password: string, firstName: string, lastNa
       lastName: lastName,
       email: email,
       type: type,
+      bio: "",
       createdOn: Timestamp.now(),
     });
     return userCredential.user;
