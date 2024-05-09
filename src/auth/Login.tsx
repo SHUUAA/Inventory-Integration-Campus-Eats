@@ -1,5 +1,6 @@
 import { authentication, database } from "../firebase/Config";
 import { signInWithEmailAndPassword, } from "firebase/auth";
+import { logout } from "./Logout";
 
 async function login(email: string, password: string) {
   try {
@@ -7,9 +8,10 @@ async function login(email: string, password: string) {
     const user = userCredential.user
 
     // Check if the user's email is verified
-    // if (!user.emailVerified) {
-    // throw new Error('Please verify your email before logging in.');
-    // }
+     if (!user.emailVerified) {
+      logout();
+     throw new Error('Please verify your email before logging in.');
+     }
     return user;
   } catch (error) {
     console.error("Error logging in:", error);

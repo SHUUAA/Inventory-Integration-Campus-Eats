@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   getStorage,
   ref,
@@ -25,10 +25,10 @@ const q = query(userRef, where("email", "==", userEmail));
 import { useUserContext } from "../auth/UserContext";
 
 const Profile = () => {
-  const { userData } = useUserContext();
+  const userContext = useUserContext();
+  const { userData } = userContext ?? { userData: {} };
   const [file, setFile] = useState<File | null>(null);
-  const [imageURL, setImageURL] = useState(""); // Store the download URL
-  const [, setIsLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
   const userID = user?.uid;
   const userName = user?.displayName;
   const storage = getStorage();
@@ -38,22 +38,18 @@ const Profile = () => {
   const initials =
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
 
-  useEffect(() => {
+  useMemo(() => {
     const fetchImage = async () => {
-      setIsLoading(true);
       try {
         const imageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
         const url = await getDownloadURL(imageRef);
-        setImageURL(url);
+        setImageUrl(url);
       } catch (error) {
-        /* empty */
-      } finally {
-        setIsLoading(false);
+        console.error("Error fetching image:", error);
       }
     };
-
     fetchImage();
-  }, []);
+  }, [storage, userID]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -73,21 +69,23 @@ const Profile = () => {
       toast("Please select a file!");
       return;
     }
-
+  
     const metadata = {
       contentType: file.type, // Use the actual file type
     };
-
-    const storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
-    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-
+  
+    let storageRef;
     getDocs(q)
       .then((querySnapshot) => {
         if (querySnapshot.empty) {
           console.log("No document found with email:", userEmail);
+          // If no document exists, create a new storage reference
+          storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
         } else {
           const document = querySnapshot.docs[0];
           console.log(document.ref);
+          // If a document exists, update the storage reference accordingly
+          storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
           // Update the document
           updateDoc(document.ref, {
             bio: bio,
@@ -99,18 +97,27 @@ const Profile = () => {
               console.error("Error updating document:", error);
             });
         }
+  
+        const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+        uploadTask.on('state_changed', 
+          () => {}, 
+          (error) => {
+            console.error(error);
+          }, 
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              setImageUrl(downloadURL);
+              toast("🎉 Profile updated successfully!");
+              setTimeout(function () {
+                location.reload();
+              }, 1000);
+            });
+          }
+        );
       })
       .catch((error) => {
         console.error("Error querying documents:", error);
       });
-
-    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-      setImageURL(downloadURL);
-      toast("🎉 Profile updated successfully!");
-      setTimeout(function () {
-        location.reload();
-      }, 1000);
-    });
   };
 
   return (
@@ -209,9 +216,9 @@ const Profile = () => {
               </div>
               <div className="w-full flex justify-center">
                 <Avatar.Root className="relative">
-                  {imageURL && (
+                  {imageUrl && (
                     <Avatar.AvatarImage
-                      src={imageURL}
+                      src={imageUrl}
                       alt="Profile Picture"
                       className="bg-blackA1 inline-flex h-[150px] w-[150px] select-none items-center justify-center overflow-hidden rounded-full align-middle"
                     />

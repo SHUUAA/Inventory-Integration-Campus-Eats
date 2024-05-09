@@ -4,6 +4,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
 import { useUserContext } from "../auth/UserContext";
+import EmailVerification from "../auth/EmailVerification";
+import { authentication } from "../firebase/Config";
+import { logout } from "../auth/Logout";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -11,13 +14,13 @@ const Auth = () => {
 
   useEffect(() => {
       
-      if (userData.type === "Customer") {
+      if (userData.type === "Customer" && authentication.currentUser?.emailVerified) {
           navigate("/customer/dashboard");
       }
-      if (userData.type === "Seller") {
+      if (userData.type === "Seller" && authentication.currentUser?.emailVerified) {
           navigate("/seller/dashboard");
       }
-      if (userData.type === "Admin") {
+      if (userData.type === "Admin"&& authentication.currentUser?.emailVerified) {
           navigate("/admin/dashboard");
       }
   }, [userData]); // Run when userType changes 
@@ -120,8 +123,12 @@ const Auth = () => {
       setLoading(true);
 
       await signup(regisEmail, regisPwd, regisFirstname, regisLastname, regisRole);
-      window.location.reload();
-      //setSuccess('Please check your email for a verification link to activate your account.');
+      if(authentication.currentUser){
+        EmailVerification(authentication.currentUser);
+      }
+      logout();
+      //window.location.reload();
+      setSuccess('Please check your email for a verification link to activate your account.');
       toggleForm();
     }catch (e) {
         console.log("Error:",e);
@@ -156,6 +163,7 @@ const Auth = () => {
       setLoading(true);
 
       await login(loginEmail, loginPwd);
+      
     } catch (e) {
       console.log("Error:", e);
       setError("Invalid email or password", e.message);
