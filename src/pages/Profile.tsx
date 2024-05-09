@@ -6,7 +6,6 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import FirebaseController from "../firebase/FirebaseController";
-import DataFetch from "../components/data/Fetch";
 import toast, { Toaster } from "react-hot-toast";
 import * as Avatar from "@radix-ui/react-avatar";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -35,7 +34,6 @@ const Profile = () => {
   const storage = getStorage();
   const userType = (userData as { type: string }).type;
   const userBio = (userData as { bio: string }).bio;
-  console.log(userBio);
   const [firstName, surname] = userName!.split(" ");
   const initials =
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
@@ -55,7 +53,7 @@ const Profile = () => {
     };
 
     fetchImage();
-  }, [setIsLoading, storage, userID]);
+  }, []);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
