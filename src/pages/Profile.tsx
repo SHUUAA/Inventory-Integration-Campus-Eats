@@ -23,15 +23,16 @@ const user = await firebaseController.getCurrentUser();
 const userEmail = user?.email;
 const userRef = collection(database, "users");
 const q = query(userRef, where("email", "==", userEmail));
+import { useUserContext } from "../auth/UserContext";
 
 const Profile = () => {
+  const { userData } = useUserContext();
   const [file, setFile] = useState<File | null>(null);
   const [imageURL, setImageURL] = useState(""); // Store the download URL
   const [, setIsLoading] = useState(false);
   const userID = user?.uid;
   const userName = user?.displayName;
   const storage = getStorage();
-  const userData = DataFetch();
   const userType = (userData as { type: string }).type;
   const userBio = (userData as { bio: string }).bio;
   console.log(userBio);
@@ -63,7 +64,9 @@ const Profile = () => {
   };
 
   const [bio, setBio] = useState("");
-  const setBioTextField = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const setBioTextField = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setBio(event.target.value);
   };
   const handleSubmit = async (e: React.FormEvent) => {
