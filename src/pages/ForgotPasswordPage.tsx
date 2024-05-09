@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import "../css/ForgotPasswordPage.css";
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { authentication } from '../config/firebase'; 
+import { authentication } from '../firebase/Config'; 
 
 const actionCodeSettings = {
   url: 'http://localhost:5173/reset-password?oobCode=CODE', // Replace with your app's password reset page

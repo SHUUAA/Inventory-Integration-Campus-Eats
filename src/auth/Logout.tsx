@@ -1,5 +1,5 @@
 import { signOut } from "firebase/auth";
-import { authentication } from "../config/firebase";
+import { authentication } from "../firebase/Config";
 
 export const logout = async () => {
     localStorage.clear();

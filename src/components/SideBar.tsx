@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import { logout } from "../auth/Logout";
-import { useUserContext } from "../types/UserTypeContext";
+import { useUserContext } from "../auth/UserContext";
 const SideBar = () => {
-
   const { userData } = useUserContext();
   return (
-    <div className="flex h-screen flex-col justify-between border-e bg-red-950">
+    <div className="flex h-screen flex-col justify-between border-e  bg-red-950">
       <div className="px-8 py-12">
         <ul className="mt-6 space-y-1">
           <li>

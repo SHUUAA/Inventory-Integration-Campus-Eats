@@ -3,7 +3,7 @@ import "../css/Auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
-import { useUserContext } from "../types/UserTypeContext";
+import { useUserContext } from "../auth/UserContext";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();

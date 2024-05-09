@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { authentication } from "../config/firebase";
+import { authentication } from "../firebase/Config";
 import { Link } from "react-router-dom";
-import { useUserContext } from "../types/UserTypeContext";
+import { useUserContext } from "../auth/UserContext";
 import * as Avatar from "@radix-ui/react-avatar";
 import logo from "../../public/assets/logo.png";
 

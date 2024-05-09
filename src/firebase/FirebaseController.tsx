@@ -1,5 +1,5 @@
 import { User } from '../types/User';
-import { authentication } from './firebase';
+import { authentication } from './Config';
 
 class FirebaseController {
   private auth: typeof authentication;

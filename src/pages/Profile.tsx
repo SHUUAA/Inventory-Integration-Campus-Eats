@@ -5,7 +5,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import FirebaseController from "../config/FirebaseController";
+import FirebaseController from "../firebase/FirebaseController";
 import DataFetch from "../components/data/Fetch";
 import toast, { Toaster } from "react-hot-toast";
 import * as Avatar from "@radix-ui/react-avatar";
@@ -17,7 +17,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { database } from "../config/firebase";
+import { database } from "../firebase/Config";
 const firebaseController = new FirebaseController();
 const user = await firebaseController.getCurrentUser();
 const userEmail = user?.email;
@@ -63,7 +63,7 @@ const Profile = () => {
   };
 
   const [bio, setBio] = useState("");
-  const setBioTextField = (event) => {
+  const setBioTextField = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setBio(event.target.value);
   };
   const handleSubmit = async (e: React.FormEvent) => {

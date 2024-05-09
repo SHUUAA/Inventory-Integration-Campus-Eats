@@ -1,5 +1,5 @@
-import { authentication } from "../config/firebase";
-import { database } from "../config/firebase";
+import { authentication } from "../firebase/Config";
+import { database } from "../firebase/Config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";

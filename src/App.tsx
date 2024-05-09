@@ -13,7 +13,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthContext";
 import AdminLayout from "./layout/AdminLayout";
 import SellerLayout from "./layout/SellerLayout";
-import { UserProvider } from "./types/UserTypeContext";
+import { UserProvider } from "./auth/UserContext";
 import CustomerLayout from "./layout/CustomerLayout";
 
 function App() {
