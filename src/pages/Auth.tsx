@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import "../css/Auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
@@ -10,24 +10,24 @@ import { logout } from "../auth/Logout";
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { userData } = useUserContext(); 
+  const userContext = useUserContext();
+  const { userData } = userContext ?? { userData: {} };
+  const userType = (userData as { type: string }).type;
 
   useEffect(() => {
-      
-      if (userData.type === "Customer" && authentication.currentUser?.emailVerified) {
-          navigate("/customer/dashboard");
-      }
-      if (userData.type === "Seller" && authentication.currentUser?.emailVerified) {
-          navigate("/seller/dashboard");
-      }
-      if (userData.type === "Admin"&& authentication.currentUser?.emailVerified) {
-          navigate("/admin/dashboard");
-      }
-  }, [userData]); // Run when userType changes 
-  
+    if (userType === "Customer" && authentication.currentUser?.emailVerified) {
+      navigate("/customer/dashboard");
+    }
+    if (userType === "Seller" && authentication.currentUser?.emailVerified) {
+      navigate("/seller/dashboard");
+    }
+    if (userType === "Admin" && authentication.currentUser?.emailVerified) {
+      navigate("/admin/dashboard");
+    }
+  }, [navigate, userData, userType]); // Run when userType changes
 
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(
-    location.pathname === "/login",
+    location.pathname === "/login"
   );
   useEffect(() => {
     // Update isLoginFormVisible state when the location changes
@@ -68,8 +68,8 @@ const Auth = () => {
   const [regisConfirmPwdFocus, setRegisConfirmPwdFocus] = useState(false);
 
   const [regisRole, setRegisRole] = useState("");
-  const [validRegisRole] = useState(true);
-  const [regisRoleFocus, setRegisRoleFocus] = useState();
+  //const [validRegisRole] = useState(true);
+  //const [regisRoleFocus, setRegisRoleFocus] = useState();
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -82,18 +82,17 @@ const Auth = () => {
     setError("");
   };
 
-  const handleBulletClick = (index) => {
+  const handleBulletClick = (index: SetStateAction<number>) => {
     setActiveBulletIndex(index);
   };
 
-  async function handleRegisSubmit(e) {
+  async function handleRegisSubmit(e: { preventDefault: () => void }) {
     e.preventDefault();
     setError("");
 
     if (regisConfirmPwd !== regisPwd) {
       return setError("Passwords do not match");
     }
-
 
     if (
       !regisEmail ||
@@ -108,43 +107,53 @@ const Auth = () => {
 
     if (!regisEmail.endsWith("@cit.edu")) {
       return setError(
-        'Please use a Microsoft account with the domain "@cit.edu"',
+        'Please use a Microsoft account with the domain "@cit.edu"'
       );
     }
 
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(regisPwd)) {
       return setError(
-        "Password must be at least 8 characters long and contain at least one uppercase letter and one digit",
+        "Password must be at least 8 characters long and contain at least one uppercase letter and one digit"
       );
     }
 
     try {
       setLoading(true);
 
-      await signup(regisEmail, regisPwd, regisFirstname, regisLastname, regisRole);
-      if(authentication.currentUser){
+      await signup(
+        regisEmail,
+        regisPwd,
+        regisFirstname,
+        regisLastname,
+        regisRole
+      );
+      if (authentication.currentUser) {
         EmailVerification(authentication.currentUser);
       }
       logout();
       //window.location.reload();
-      setSuccess('Please check your email for a verification link to activate your account.');
+      setSuccess(
+        "Please check your email for a verification link to activate your account."
+      );
       toggleForm();
-    }catch (e) {
-        console.log("Error:",e);
-        setError('Invalid email or password', e.message);
-        if (e.message === 'Please verify your email before logging in.') {
-            setError('Please verify your email before logging in.');
-          } else {
-            setError('Invalid email or password');
-          }
+    } catch (e: unknown) {
+      console.log("Error:", e);
+      setError("Invalid email or password");
+      if (e instanceof Error) {
+        if (e.message === "Please verify your email before logging in.") {
+          setError("Please verify your email before logging in.");
+        } else {
+          setError("Invalid email or password");
+        }
+      } else {
+        setError("An unknown error occurred.");
+      }
     }
     setLoading(false);
-}
+  }
 
-
-
-  async function handleLoginSubmit(e) {
+  async function handleLoginSubmit(e: { preventDefault: () => void }) {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -155,7 +164,7 @@ const Auth = () => {
 
     if (!loginEmail.endsWith("@cit.edu")) {
       return setError(
-        'Please use a Microsoft account with the domain "@cit.edu"',
+        'Please use a Microsoft account with the domain "@cit.edu"'
       );
     }
 
@@ -163,14 +172,15 @@ const Auth = () => {
       setLoading(true);
 
       await login(loginEmail, loginPwd);
-      
-    } catch (e) {
-      console.log("Error:", e);
-      setError("Invalid email or password", e.message);
-      if (e.message === "Please verify your email before logging in.") {
-        setError("Please verify your email before logging in.");
-      } else {
-        setError("Invalid email or password");
+    } catch (error: unknown) {
+      console.log("Error:", error);
+      setError("Invalid email or password");
+      if (error && typeof error === "object" && "message" in error) {
+        if (error.message === "Please verify your email before logging in.") {
+          setError("Please verify your email before logging in.");
+        } else {
+          setError("Invalid email or password");
+        }
       }
     }
     setLoading(false);
@@ -215,7 +225,9 @@ const Auth = () => {
                     type="text"
                     id="login-username"
                     required
-                    className={`ls-login-input-field ${loginEmailFocus || loginEmail ? "active" : ""}`}
+                    className={`ls-login-input-field ${
+                      loginEmailFocus || loginEmail ? "active" : ""
+                    }`}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     aria-invalid={validLoginEmail ? "false" : "true"}
                     aria-describedby="uidnote"
@@ -229,7 +241,9 @@ const Auth = () => {
                     type="password"
                     id="login-pwd"
                     required
-                    className={`ls-login-input-field ${loginPwdFocus || loginPwd ? "active" : ""}`}
+                    className={`ls-login-input-field ${
+                      loginPwdFocus || loginPwd ? "active" : ""
+                    }`}
                     onChange={(e) => setLoginPwd(e.target.value)}
                     aria-invalid={validLoginPwd ? "false" : "true"}
                     aria-describedby="uidnote"
@@ -238,11 +252,12 @@ const Auth = () => {
                   />
                   <label>Password</label>
                 </div>
-                <Link to="/forgot-password" className="ls-subtext-link" >Forgot Password?</Link>
+                <Link to="/forgot-password" className="ls-subtext-link">
+                  Forgot Password?
+                </Link>
                 <button onClick={handleLoginSubmit} className="ls-sign-btn">
                   Sign In
                 </button>
-
               </div>
             </form>
 
@@ -280,7 +295,9 @@ const Auth = () => {
                     type="text"
                     id="email"
                     required
-                    className={`ls-regis-input-field ${regisEmailFocus || regisEmail ? "active" : ""}`}
+                    className={`ls-regis-input-field ${
+                      regisEmailFocus || regisEmail ? "active" : ""
+                    }`}
                     onChange={(e) => setRegisEmail(e.target.value)}
                     aria-invalid={validRegisEmail ? "false" : "true"}
                     aria-describedby="uidnote"
@@ -295,7 +312,9 @@ const Auth = () => {
                       type="text"
                       id="firstname"
                       required
-                      className={`ls-regis-fullname-input-field ${regisFirstnameFocus || regisFirstname ? "active" : ""}`}
+                      className={`ls-regis-fullname-input-field ${
+                        regisFirstnameFocus || regisFirstname ? "active" : ""
+                      }`}
                       onChange={(e) => setRegisFirstname(e.target.value)}
                       aria-invalid={validRegisFirstname ? "false" : "true"}
                       aria-describedby="uidnote"
@@ -309,7 +328,9 @@ const Auth = () => {
                       type="text"
                       id="lastname"
                       required
-                      className={`ls-regis-fullname-input-field ${regisLastnameFocus || regisLastname ? "active" : ""}`}
+                      className={`ls-regis-fullname-input-field ${
+                        regisLastnameFocus || regisLastname ? "active" : ""
+                      }`}
                       onChange={(e) => setRegisLastname(e.target.value)}
                       aria-invalid={validRegisLastname ? "false" : "true"}
                       aria-describedby="uidnote"
@@ -325,7 +346,9 @@ const Auth = () => {
                     type="password"
                     id="pwd"
                     required
-                    className={`ls-regis-input-field ${regisPwdFocus || regisPwd ? "active" : ""}`}
+                    className={`ls-regis-input-field ${
+                      regisPwdFocus || regisPwd ? "active" : ""
+                    }`}
                     onChange={(e) => setRegisPwd(e.target.value)}
                     aria-invalid={validRegisPwd ? "false" : "true"}
                     aria-describedby="uidnote"
@@ -340,7 +363,9 @@ const Auth = () => {
                     type="password"
                     id="confirmPwd"
                     required
-                    className={`ls-regis-input-field ${regisConfirmPwdFocus || regisConfirmPwd ? "active" : ""}`}
+                    className={`ls-regis-input-field ${
+                      regisConfirmPwdFocus || regisConfirmPwd ? "active" : ""
+                    }`}
                     onChange={(e) => setRegisConfirmPwd(e.target.value)}
                     aria-invalid={validRegisConfirmPwd ? "false" : "true"}
                     aria-describedby="uidnote"
@@ -349,7 +374,7 @@ const Auth = () => {
                   />
                   <label>Confirm Password</label>
                 </div>
-                <div className="" >
+                <div className="">
                   <select
                     id="role"
                     required
@@ -369,7 +394,6 @@ const Auth = () => {
                 >
                   Create Account
                 </button>
-
               </div>
             </form>
           </div>
@@ -377,17 +401,23 @@ const Auth = () => {
             <div className="ls-images-wrapper">
               <img
                 src="../../public/assets/ls-img1.png"
-                className={`ls-img ls-img1 ${activeBulletIndex === 0 ? "ls-show" : ""}`}
+                className={`ls-img ls-img1 ${
+                  activeBulletIndex === 0 ? "ls-show" : ""
+                }`}
                 alt="Customer"
               />
               <img
                 src="../../public/assets/ls-img3.png"
-                className={`ls-img ls-img2 ${activeBulletIndex === 1 ? "ls-show" : ""}`}
+                className={`ls-img ls-img2 ${
+                  activeBulletIndex === 1 ? "ls-show" : ""
+                }`}
                 alt="Seller"
               />
               <img
                 src="../../public/assets/ls-img2.png"
-                className={`ls-img ls-img3 ${activeBulletIndex === 2 ? "ls-show" : ""}`}
+                className={`ls-img ls-img3 ${
+                  activeBulletIndex === 2 ? "ls-show" : ""
+                }`}
                 alt="Courier"
               />
             </div>
