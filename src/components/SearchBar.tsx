@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import React, { useState } from "react";
 import { authentication } from "../firebase/Config";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../auth/UserContext";
 import * as Avatar from "@radix-ui/react-avatar";
 import logo from "../assets/logo.png";
+import ProfilePic from "../helpers/ProfilePic";
 
 const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
-  const [profileIcon, setProfileIcon] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { userData } = useUserContext();
+  const name = authentication.currentUser?.displayName;
+  const [firstName, surname] = name.split(" ");
+  const initials =
+    firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
+  const image = ProfilePic();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -24,31 +28,6 @@ const SearchBar: React.FC = () => {
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
   };
-
-  const { userData } = useUserContext();
-  const storage = getStorage();
-  const userID = authentication.currentUser.uid;
-  const name = authentication.currentUser?.displayName;
-  const [firstName, surname] = name.split(" ");
-  const initials =
-    firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      setIsLoading(true);
-      try {
-        const imageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
-        const url = await getDownloadURL(imageRef);
-        setProfileIcon(url);
-      } catch (error) {
-        /* empty */
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchImage();
-  }, []); // Empty dependency array: runs only on mount
 
   return (
     <nav className="sticky bg-white-950 border-gray-200 p-4 mb-10">
@@ -115,7 +94,7 @@ const SearchBar: React.FC = () => {
               <Link to={`/${userData.type}/profile`}>
                 <Avatar.AvatarImage
                   className="h-full w-full rounded-[inherit] object-cover"
-                  src={profileIcon}
+                  src={image}
                   alt="Profile"
                 />
                 <Avatar.Fallback

@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import DataFetch from '../components/data/Fetch';
+import DataFetch from '../helpers/Fetch';
 import FirebaseController from '../firebase/FirebaseController';
 const firebaseController = new FirebaseController();
 const currentUser = firebaseController.getCurrentUser();

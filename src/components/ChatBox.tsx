@@ -1,14 +1,23 @@
 import Groq from "groq-sdk";
 import ReactMarkdown from "react-markdown";
-import { useState, useEffect } from "react";
-
-const groq = new Groq({ apiKey: import.meta.env.VITE_APP_GROQ_API_KEY, dangerouslyAllowBrowser: true }); // Initialize Groq client
+import { useState } from "react";
+import ProfilePic from "../helpers/ProfilePic";
+import * as Avatar from "@radix-ui/react-avatar";
+import { authentication } from "../firebase/Config";
+const groq = new Groq({
+  apiKey: import.meta.env.VITE_APP_GROQ_API_KEY,
+  dangerouslyAllowBrowser: true,
+}); // Initialize Groq client
 
 export default function ChatBox({ isOpen, onClose }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const userImage = ProfilePic();
+  const name = authentication.currentUser?.displayName;
+  const [firstName, surname] = name.split(" ");
+  const initials =
+    firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
   const handleInputChange = (e) => {
     setInput(e.target.value);
   };
@@ -73,38 +82,55 @@ export default function ChatBox({ isOpen, onClose }) {
         }}
       >
         <div className="flex flex-col space-y-1.5 pb-6">
-          <h2 className="font-semibold text-lg tracking-tight">Chatbot</h2>
+          <h2 className="font-semibold text-lg tracking-tight">Campus Chatbot</h2>
           <p className="text-sm text-[#6b7280] leading-3">
-            You're my sunshine.
+            Powered by Groq & Llama3 
           </p>
         </div>
-        <div className="min-h-[460px] max-h-[460px] overflow-y-auto pr-1 mb-4">
+        <div className="h-[460px] overflow-y-auto pr-1 mb-4">
           {messages.map((m) => (
             <div
               key={m.id}
-              className={`flex gap-3 my-4 text-gray-600  rounded-lg p-4  text-sm flex-1 ${
+              className={`flex gap-3 my-4 text-gray-600 rounded-lg p-4 text-sm flex-1 ${
                 m.role === "user" ? "justify-end" : ""
               }`}
             >
               <span className="relative flex shrink-0 overflow-hidden rounded-full w-8 h-8">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                  />
-                </svg>
+                {m.role === "user" ? (
+                  <Avatar.Root className="inline-flex h-[35px] w-[35px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
+                    <Avatar.AvatarImage
+                      className="h-full w-full rounded-[inherit] object-cover"
+                      src={userImage}
+                      alt="Profile"
+                    />
+                    <Avatar.Fallback
+                      className="text-red-950 leading-1 flex h-[45px] w-[45px] items-center justify-center bg-brown-950 rounded-full text-[15px] font-medium"
+                      delayMs={600}
+                    >
+                      {initials}
+                    </Avatar.Fallback>
+                  </Avatar.Root>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
+                    />
+                  </svg>
+                )}
               </span>
+
               <p className="leading-relaxed">
                 <span className="block font-bold text-gray-700">
-                  {m.role === "user" ? "You" : "AI"}
+                  {m.role === "user" ? "You" : "Campus AI"}
                 </span>
                 <ReactMarkdown>{m.content}</ReactMarkdown>
               </p>

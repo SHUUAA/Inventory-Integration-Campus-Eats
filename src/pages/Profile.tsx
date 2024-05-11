@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   getStorage,
   ref,
   uploadBytesResumable,
-  getDownloadURL,
 } from "firebase/storage";
 import FirebaseController from "../firebase/FirebaseController";
 import toast, { Toaster } from "react-hot-toast";
@@ -23,14 +22,12 @@ const userEmail = user?.email;
 const userRef = collection(database, "users");
 const q = query(userRef, where("email", "==", userEmail));
 import { useUserContext } from "../auth/UserContext";
-import Loader from "../assets/loader.gif";
+import ProfilePic from "../helpers/ProfilePic";
 
 const Profile = () => {
   const userContext = useUserContext();
   const { userData } = userContext ?? { userData: {} };
   const [file, setFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
-  const [loading, setLoading] = useState(true);
   const userID = user?.uid;
   const userName = user?.displayName;
   const storage = getStorage();
@@ -39,21 +36,7 @@ const Profile = () => {
   const [firstName, surname] = userName!.split(" ");
   const initials =
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const imageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
-        const url = await getDownloadURL(imageRef);
-        setImageUrl(url);
-        setLoading(false); // Set loading to false when image is fetched
-      } catch (error) {
-        console.error("Error fetching image:", error);
-        setLoading(false); // Set loading to false on error
-      }
-    };
-    fetchImage();
-  }, [storage, userID]);
+  const userImage = ProfilePic();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -110,13 +93,10 @@ const Profile = () => {
             console.error(error);
           },
           () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              setImageUrl(downloadURL);
-              toast("🎉 Profile updated successfully!");
-              setTimeout(function () {
-                location.reload();
-              }, 1000);
-            });
+            toast("🎉 Profile updated successfully!");
+            setTimeout(function () {
+              location.reload();
+            }, 2000);
           }
         );
       })
@@ -124,14 +104,6 @@ const Profile = () => {
         console.error("Error querying documents:", error);
       });
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center">
-        <img src={Loader} alt="Loading..." />
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -229,13 +201,11 @@ const Profile = () => {
               </div>
               <div className="w-full flex justify-center">
                 <Avatar.Root className="relative">
-                  {imageUrl && (
-                    <Avatar.AvatarImage
-                      src={imageUrl}
-                      alt="Profile Picture"
-                      className="bg-blackA1 inline-flex h-[150px] w-[150px] select-none items-center justify-center overflow-hidden rounded-full align-middle"
-                    />
-                  )}
+                  <Avatar.AvatarImage
+                    src={userImage}
+                    alt="Profile Picture"
+                    className="bg-blackA1 inline-flex h-[150px] w-[150px] select-none items-center justify-center overflow-hidden rounded-full align-middle"
+                  />
                   <Avatar.AvatarFallback className="text-red-950 leading-1 flex h-[150px] w-[150px] items-center justify-center bg-brown-950 rounded-full text-[45px] font-medium">
                     {initials}
                   </Avatar.AvatarFallback>
