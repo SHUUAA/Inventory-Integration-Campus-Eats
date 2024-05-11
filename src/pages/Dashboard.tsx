@@ -1,7 +1,10 @@
 import '../css/Dashboard.css';
-import lays from '/assets/temporary/lays.png';
-import tata from '/assets/temporary/tata.png'; // Changed the import name here
-
+import lays from '../assets/temporary/lays.png';
+import tata from '../assets/temporary/tata.png'; // Changed the import name here
+import cashoutline from '../assets/cash-outline.svg';
+import bagcheckoutline from '../assets/bag-check-outline.svg';
+import cubeoutline from '../assets/cube-outline.svg';
+import peopleoutline from '../assets/people-outline.svg'
 
 const Dashboard = () => {
 
@@ -17,7 +20,7 @@ const Dashboard = () => {
             <div className='salesNumber'>₱832</div>
             <div className='name'>Sales</div>
           </div>
-          <img src="/assets/cash-outline.svg" alt="cash" className='icon1' />
+          <img src={cashoutline} alt="cash" className='icon1' />
         </div>
 
         {/* Quantity in Hand */}
@@ -26,7 +29,7 @@ const Dashboard = () => {
             <div className='salesNumber'>310</div>
             <div className='name'>Quantity in Hand</div>
           </div>
-          <img src="/assets/cube-outline.svg" alt="cash" className='icon1' />
+          <img src={cubeoutline} alt="cash" className='icon1' />
 
         </div>
 
@@ -37,7 +40,7 @@ const Dashboard = () => {
             <div className='name'>Purchase</div>
           </div>
 
-          <img src="/assets/bag-check-outline.svg" alt="cash" className='icon1' />
+          <img src={bagcheckoutline} alt="cash" className='icon1' />
 
         </div>
 
@@ -48,7 +51,7 @@ const Dashboard = () => {
             <div className='name'>Number of Suppliers</div>
           </div>
 
-          <img src="/assets/people-outline.svg" alt="cash" className='icon1' />
+          <img src={peopleoutline} alt="cash" className='icon1' />
 
         </div>
 

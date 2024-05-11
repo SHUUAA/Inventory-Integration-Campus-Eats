@@ -1,4 +1,4 @@
-import Loading from "../../public/assets/loader.gif";
+import Loading from "../assets/loader.gif";
 const Loader = () => {
   return (
     <div className="flex h-screen items-center justify-center bg-brown-950">

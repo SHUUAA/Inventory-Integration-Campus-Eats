@@ -1,5 +1,6 @@
 import "../css/Error.css";
-
+import loginimg from "../assets/loginimg.png"
+import logo from "../assets/logo.png"
 const Error = () => {
   return (
     <main className="login-main-bg">
@@ -7,13 +8,13 @@ const Error = () => {
         <div className="login-img">
           <img
             className="img-login"
-            src="../public/assets/loginimg.png"
+            src={loginimg}
             alt="left img"
           />
         </div>
         <div className="login-form">
           <div className="logo-title">
-            <img src="../public/assets/logo.png" alt="logo" />
+            <img src={logo} alt="logo" />
             <span className="logo-title-campus">Campus</span>&nbsp;
             <span className="logo-title-eats">Eats</span>
           </div>

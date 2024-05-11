@@ -23,7 +23,7 @@ const userEmail = user?.email;
 const userRef = collection(database, "users");
 const q = query(userRef, where("email", "==", userEmail));
 import { useUserContext } from "../auth/UserContext";
-import Loader from "../../public/assets/loader.gif";
+import Loader from "../assets/loader.gif";
 
 const Profile = () => {
   const userContext = useUserContext();

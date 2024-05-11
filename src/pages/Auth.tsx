@@ -1,5 +1,9 @@
 import { useState, useEffect, SetStateAction } from "react";
 import "../css/Auth.css";
+import lsimg3 from "../assets/ls-img3.png";
+import lsimg2 from "../assets/ls-img2.png";
+import lsimg1 from "../assets/ls-img1.png";
+import logo from "../assets/logo.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import signup from "../auth/Signup";
 import login from "../auth/Login";
@@ -193,7 +197,7 @@ const Auth = () => {
           <div className="ls-forms-wrap">
             <form autoComplete="off" className="ls-form ls-sign-in-form">
               <div className="ls-logo">
-                <img src="../../public/assets/logo.png" alt="Campus Eats" />
+                <img src={logo} alt="Campus Eats" />
                 <span className="ls-logo-title-campus">Campus</span>&nbsp;
                 <span className="ls-logo-title-eats">Eats</span>
               </div>
@@ -263,7 +267,7 @@ const Auth = () => {
 
             <form autoComplete="off" className="ls-form ls-sign-up-form">
               <div className="ls-logo">
-                <img src="../../public/assets/logo.png" alt="Campus Eats" />
+                <img src={logo} alt="Campus Eats" />
                 <span className="ls-logo-title-campus">Campus</span>&nbsp;
                 <span className="ls-logo-title-eats">Eats</span>
               </div>
@@ -400,21 +404,21 @@ const Auth = () => {
           <div className="ls-carousel">
             <div className="ls-images-wrapper">
               <img
-                src="../../public/assets/ls-img1.png"
+                src={lsimg1}
                 className={`ls-img ls-img1 ${
                   activeBulletIndex === 0 ? "ls-show" : ""
                 }`}
                 alt="Customer"
               />
               <img
-                src="../../public/assets/ls-img3.png"
+                src={lsimg2}
                 className={`ls-img ls-img2 ${
                   activeBulletIndex === 1 ? "ls-show" : ""
                 }`}
                 alt="Seller"
               />
               <img
-                src="../../public/assets/ls-img2.png"
+                src={lsimg3}
                 className={`ls-img ls-img3 ${
                   activeBulletIndex === 2 ? "ls-show" : ""
                 }`}

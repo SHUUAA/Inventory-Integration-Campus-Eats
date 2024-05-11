@@ -4,7 +4,7 @@ import { authentication } from "../firebase/Config";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../auth/UserContext";
 import * as Avatar from "@radix-ui/react-avatar";
-import logo from "../../public/assets/logo.png";
+import logo from "../assets/logo.png";
 
 const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
