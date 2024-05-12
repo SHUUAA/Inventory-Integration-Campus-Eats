@@ -17,6 +17,7 @@ interface Product {
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Product; direction: 'ascending' | 'descending' } | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -32,23 +33,39 @@ const ProductList: React.FC = () => {
     setProducts(products.filter(product => product.id !== id));
   };
 
+  const sortProducts = (key: keyof Product) => {
+    let direction = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    } else {
+      direction = 'ascending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIndicator = (key: keyof Product): string => {
+    if (sortConfig && sortConfig.key === key) {
+      return sortConfig.direction === 'ascending' ? ' ↓' : ' ↑';
+    }
+    return '';
+  };
+
   return (
     <div className="inv-inventory-container">
       <div className="header-and-buttons">
         <h1 className="inv-inventory-header">Products</h1>
         <div className="button-row">
           <button className="add-product-button" onClick={() => setShowModal(true)}>Add Product</button>
-          <button className="other-button">Filters</button>
           <button className="other-button">Download all</button>
         </div>
       </div>
       <div className="inv-header-row">
-        <div className="inv-column">Product</div>
-        <div className="inv-column">Buying Price</div>
-        <div className="inv-column">Quantity</div>
-        <div className="inv-column">Threshold Value</div>
-        <div className="inv-column">Expiry Date</div>
-        <div className="inv-column">Availability</div>
+        <button className="inv-column" onClick={() => sortProducts('name')}>Product{getSortIndicator('name')}</button>
+        <button className="inv-column" onClick={() => sortProducts('buyingPrice')}>Buying Price{getSortIndicator('buyingPrice')}</button>
+        <button className="inv-column" onClick={() => sortProducts('quantity')}>Quantity{getSortIndicator('quantity')}</button>
+        <button className="inv-column" onClick={() => sortProducts('threshold')}>Threshold Value{getSortIndicator('threshold')}</button>
+        <button className="inv-column" onClick={() => sortProducts('expiryDate')}>Expiry Date{getSortIndicator('expiryDate')}</button>
+        <button className="inv-column" onClick={() => sortProducts('availability')}>Availability{getSortIndicator('availability')}</button>
       </div>
       {products.map(product => (
         <div className="inv-header-row inv-data-row" key={product.id}>
@@ -58,7 +75,7 @@ const ProductList: React.FC = () => {
           <div className="inv-column">{product.threshold}</div>
           <div className="inv-column">{product.expiryDate}</div>
           <div className="inv-column">{product.availability}</div>
-          <button onClick={() => deleteProduct(product.id)}>Delete</button>
+          <button className="inv-delete-btn" onClick={() => deleteProduct(product.id)}>×</button>
         </div>
       ))}
       {showModal && (

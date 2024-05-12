@@ -1,37 +1,42 @@
 .inv-inventory-container {
-    background-color: #fffaf1; 
+    background-color: #fffaf1;
     border-radius: 8px;
     padding: 4px;
     display: flex;
     flex-direction: column;
-    align-items: stretch; 
+    align-items: stretch;
 }
 
-.inv-header-row {
+.inv-header-row, .inv-data-row {
     display: flex;
-    border-bottom: 2px solid #ece3d6;
+    align-items: center;
+    text-align: center;
     width: 100%;
 }
 
-.inv-data-row .inv-column {
-    color: #6a6f79;
+.inv-header-row {
+    border-bottom: 2px solid #ece3d6;
 }
 
 .inv-column {
     flex: 1;
-    color: #2f7fef;
     padding: 10px;
+    color: #000000;
+    font-weight: bold;
     text-align: center;
 }
-  
-  .inv-inventory-header {
+
+.inv-data-row .inv-column {
+    color: #6a6f79;
+    font-size: 0.9em;
+    font-weight: normal;
+    text-align: center;
+}
+
+.inv-inventory-header {
     margin-top: 4px;
     margin-left: 4px;
     font-size: 1.5em;
-  }
-
-.container-rounded {
-    margin-bottom: 20px;
 }
 
 .header-and-buttons {
@@ -70,4 +75,14 @@
 
 .other-button:hover {
     background-color: #f1f1f1;
+}
+
+.inv-data-row:hover {
+    background-color: #b84b4e;
+    cursor: pointer;
+    color: white;
+}
+
+.inv-data-row:hover .inv-column {
+    color: inherit;
 }
