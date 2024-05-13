@@ -10,24 +10,31 @@
 .inv-header-row {
     border-bottom: 2px solid #ece3d6;
     display: flex;
+    padding: 10px;
+    text-align: left;
+    flex: 1;
      }
     
 .inv-data-row .inv-column {
     color: #6a6f79;
     text-align: left;
     width: 100%;
+    left: 20%;
 }
 
 .inv-column {
     flex: 1;
     padding: 10px;
     color: #000000;
+    font-size: 0.9em;
     font-weight: bold;
     text-align: left;
 
 }
 
 .inv-data-row .inv-column {
+    flex: 1;
+    padding: 10px;
     color: #6a6f79;
     font-size: 0.9em;
     font-weight: normal;
