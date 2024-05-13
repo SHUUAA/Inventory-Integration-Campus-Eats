@@ -21,7 +21,7 @@
     flex: 1;
     color: #2f7fef;
     padding: 10px;
-    text-align: center;
+    text-align: left;
     position: relative; /* Added for positioning the additional text */
 }
 
@@ -81,13 +81,13 @@
     background-color: #f1f1f1;
 }
 
-.column-text {
+.column-text  {
     font-size: 1em;
     color: #6a6f79;
     display: block;
     position: absolute;
     bottom: -50px; /* Adjust this value according to your preference */
-    left: 50%;
+    left: 5%;
     transform: translateX(-50%);
 }
 
@@ -97,7 +97,18 @@
     display: block;
     position: absolute;
     bottom: -100px;
-    left: 50%;
+    left: 15%;
+    transform: translateX(-50%);
+    opacity: 50%;
+}
+
+.column-subtext1{
+    font-size: 1em;
+    color: #6a6f79;
+    display: block;
+    position: absolute;
+    bottom: -100px;
+    Right: 8%;
     transform: translateX(-50%);
     opacity: 50%;
 }

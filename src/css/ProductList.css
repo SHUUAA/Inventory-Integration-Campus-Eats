@@ -7,15 +7,15 @@
     align-items: stretch;
 }
 
-.inv-header-row, .inv-data-row {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-}
-
 .inv-header-row {
     border-bottom: 2px solid #ece3d6;
+    display: flex;
+     }
+    
+.inv-data-row .inv-column {
+    color: #6a6f79;
+    text-align: left;
+    width: 100%;
 }
 
 .inv-column {
@@ -23,14 +23,15 @@
     padding: 10px;
     color: #000000;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
+
 }
 
 .inv-data-row .inv-column {
     color: #6a6f79;
     font-size: 0.9em;
     font-weight: normal;
-    text-align: center;
+    text-align: left;
 }
 
 .inv-inventory-header {
@@ -42,7 +43,7 @@
 .header-and-buttons {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: left;
     width: 100%;
 }
 

@@ -45,16 +45,22 @@ const OverallInventory = () => {
           Total Products
           <span className="column-text">{totalProducts}</span>
           <span className="column-subtext">Last 7 Days</span>
+          <span className="column-subtext1">Revenue</span>
         </div>
         <div className="overall-column">
           Top Selling
           <span className="column-text">—</span> {/* kamo nalay butang ani sa topselling kay wa ko kabaw say butanga ari */}
           <span className="column-subtext">Last 7 Days</span>
+          <span className="column-subtext1">Cost</span>
+
+          
         </div>
         <div className="overall-column">
           Low Stocks
           <span className="column-text">{lowStocks}</span>
           <span className="column-subtext">Ordered</span>
+          <span className="column-subtext1">Not in stock</span>
+
         </div>
       </div>
     </div>
