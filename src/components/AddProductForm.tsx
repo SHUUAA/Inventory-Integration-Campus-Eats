@@ -10,18 +10,6 @@ interface Props {
   closeModal: () => void;
 }
 
-const foodCategories = [
-  "Prepared Foods",
-  "Frozen Foods",
-  "Canned/Jarred Foods",
-  "Boxed Foods",
-  "Fresh Foods",
-  "Baked Goods",
-  "Dairy Products",
-  "Snack Foods",
-  "Beverages",
-];
-
 const AddProductForm: React.FC<Props> = ({ closeModal }) => {
   const [name, setName] = useState("");
   const [productId, setProductId] = useState("");
@@ -32,6 +20,18 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
   const [expiryDate, setExpiryDate] = useState("");
   const [threshold, setThreshold] = useState(0);
   const [file, setFile] = useState(null);
+
+  const foodCategories = [
+    "Prepared Foods",
+    "Frozen Foods",
+    "Canned/Jarred Foods",
+    "Boxed Foods",
+    "Fresh Foods",
+    "Baked Goods",
+    "Dairy Products",
+    "Snack Foods",
+    "Beverages",
+  ];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -51,7 +51,7 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
 
     let imageUrl = "";
     if (file) {
-      const imageRef = ref(storage, `ProductImages/${userID}/${productId}`);
+      const imageRef = ref(storage, `ProductImages/${userID}/${productId}-${file.name}`);
       await uploadBytes(imageRef, file);
       imageUrl = await getDownloadURL(imageRef);
     }

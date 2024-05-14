@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { database } from "../firebase/Config";
-import { collection, getDocs, deleteDoc, doc, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import AddProductForm from "./AddProductForm";
 import ProductSummary from "./ProductSummary";
 import "../css/ProductList.css";
@@ -52,10 +52,6 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-  const deleteProduct = async (id: string) => {
-    await deleteDoc(doc(database, "products", id));
-    setProducts(products.filter((product) => product.id !== id));
-  };
 
   const sortProducts = (key: keyof Product) => {
     let direction = "ascending";
@@ -78,7 +74,7 @@ const ProductList: React.FC = () => {
     return "";
   };
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = (product: Product) => { //Need to implement. Redirect to product's page
     setSelectedProduct(product);
     setShowModal(true);
   };
