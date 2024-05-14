@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { database } from '../firebase/Config';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import AddProductForm from './AddProductForm';
+import ProductSummary from './ProductSummary';
 import '../css/ProductList.css';
 
 interface Product {
@@ -12,11 +13,18 @@ interface Product {
   threshold: number;
   expiryDate: string;
   availability: string;
+  category: string;
+  supplierName: string;
+  contactNumber: string;
+  storeNames: string[];
+  stockInHand: number[];
+  imageUrl?: string;
 }
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Product; direction: 'ascending' | 'descending' } | null>(null);
 
   useEffect(() => {
@@ -50,6 +58,11 @@ const ProductList: React.FC = () => {
     return '';
   };
 
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    setShowModal(true);
+  };
+
   return (
     <div className="inv-inventory-container">
       <div className="header-and-buttons">
@@ -68,7 +81,7 @@ const ProductList: React.FC = () => {
         <button className="inv-column" onClick={() => sortProducts('availability')}>Availability{getSortIndicator('availability')}</button>
       </div>
       {products.map(product => (
-        <div className="inv-header-row inv-data-row" key={product.id}>
+        <div className="inv-header-row inv-data-row" key={product.id} onClick={() => handleProductClick(product)}>
           <div className="inv-column">{product.name}</div>
           <div className="inv-column">{product.buyingPrice}</div>
           <div className="inv-column">{product.quantity}</div>
@@ -82,6 +95,25 @@ const ProductList: React.FC = () => {
         <div className="modal-backdrop">
           <div className="modal-content">
             <AddProductForm closeModal={() => setShowModal(false)} />
+          </div>
+        </div>
+      )}
+      {showModal && (
+        <div className="custom-modal-backdrop">
+          <div className="custom-modal">
+            <ProductSummary closeModal={() => setShowModal(false)} product={{
+              id: '',
+              name: '',
+              buyingPrice: '',
+              category: '',
+              expiryDate: '',
+              threshold: 0,
+              supplierName: '',
+              contactNumber: '',
+              storeNames: [],
+              stockInHand: [],
+              imageUrl: undefined
+            }} />
           </div>
         </div>
       )}
