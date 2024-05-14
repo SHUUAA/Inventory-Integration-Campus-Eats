@@ -41,7 +41,7 @@ const ProductList: React.FC = () => {
         return;
       }
       const userProductsQuery = query(
-        collection(database, "products", userID, "userProducts"),
+        collection(database, "products", userID, "userProducts")
       );
       const querySnapshot = await getDocs(userProductsQuery);
       const productList = querySnapshot.docs.map(
@@ -81,6 +81,16 @@ const ProductList: React.FC = () => {
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setShowModal(true);
+  };
+
+  const getAvailabilityStatus = (quantity: number) => {
+    if (quantity <= 0) {
+      return { text: "Out of Stock", color: "red" };
+    } else if (quantity <= 10) {
+      return { text: "Low Stock", color: "#FFBA18" };
+    } else {
+      return { text: "In Stock", color: "green" };
+    }
   };
 
   return (
@@ -135,26 +145,19 @@ const ProductList: React.FC = () => {
           Availability{getSortIndicator("availability")}
         </button>
       </div>
-      {products.map((product) => (
-        <div
-          className="inv-header-row inv-data-row"
-          key={product.id}
-          onClick={() => handleProductClick(product)}
-        >
+      {products.map((product) => {
+        const { text, color } = getAvailabilityStatus(product.quantity);
+        return (
+        <div className="inv-header-row inv-data-row" key={product.id}>
           <div className="inv-column">{product.name}</div>
           <div className="inv-column">{product.buyingPrice}</div>
           <div className="inv-column">{product.quantity}</div>
           <div className="inv-column">{product.threshold}</div>
           <div className="inv-column">{product.expiryDate}</div>
-          <div className="inv-column">{product.availability}</div>
-          <button
-            className="inv-delete-btn bg-white-950"
-            onClick={() => deleteProduct(product.id)}
-          >
-            ×
-          </button>
+          <div className="inv-column" style={{ color }}>{text}{product.availability}</div>
         </div>
-      ))}
+        );
+      })}
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-content">

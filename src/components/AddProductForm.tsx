@@ -10,6 +10,18 @@ interface Props {
   closeModal: () => void;
 }
 
+const foodCategories = [
+  "Prepared Foods",
+  "Frozen Foods",
+  "Canned/Jarred Foods",
+  "Boxed Foods",
+  "Fresh Foods",
+  "Baked Goods",
+  "Dairy Products",
+  "Snack Foods",
+  "Beverages",
+];
+
 const AddProductForm: React.FC<Props> = ({ closeModal }) => {
   const [name, setName] = useState("");
   const [productId, setProductId] = useState("");
@@ -39,7 +51,7 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
 
     let imageUrl = "";
     if (file) {
-      const imageRef = ref(storage, `ProductImages/${Date.now()}_${file.name}`);
+      const imageRef = ref(storage, `ProductImages/${userID}/${productId}`);
       await uploadBytes(imageRef, file);
       imageUrl = await getDownloadURL(imageRef);
     }
@@ -99,13 +111,19 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         </div>
         <div className="form-row">
           <label>Category:</label>
-          <input
-            type="text"
+          <select
+            id="category"
+            required
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            placeholder="Select product category"
-            required
-          />
+          >
+            <option value="">Select Category</option>
+            {foodCategories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="form-row">
           <label>Buying Price:</label>
@@ -140,7 +158,7 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         <div className="form-row">
           <label>Expiry Date:</label>
           <input
-            type="text"
+            type="date"
             value={expiryDate}
             onChange={(e) => setExpiryDate(e.target.value)}
             placeholder="Enter expiry date"
