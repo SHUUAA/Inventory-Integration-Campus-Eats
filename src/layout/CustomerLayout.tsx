@@ -16,7 +16,7 @@ const CustomerLayout = () => {
       <div className="large-screen">
         <SideBar></SideBar>
       </div>
-      <div className="flex-1 relative flex h-full w-full flex-col overflow-y-auto overflow-x-hidden bg-brown-950">
+      <div className="flex-1 relative flex h-full w-full flex-col overflow-y-auto overflow-x-hidden bg-neutral-950">
         <SearchBar />
         <main>
           <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">

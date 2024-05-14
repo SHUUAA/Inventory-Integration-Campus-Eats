@@ -73,12 +73,12 @@ const ProductList: React.FC = () => {
         </div>
       </div>
       <div className="inv-header-row">
-        <button className="inv-column" onClick={() => sortProducts('name')}>Product{getSortIndicator('name')}</button>
-        <button className="inv-column" onClick={() => sortProducts('buyingPrice')}>Buying Price{getSortIndicator('buyingPrice')}</button>
-        <button className="inv-column" onClick={() => sortProducts('quantity')}>Quantity{getSortIndicator('quantity')}</button>
-        <button className="inv-column" onClick={() => sortProducts('threshold')}>Threshold Value{getSortIndicator('threshold')}</button>
-        <button className="inv-column" onClick={() => sortProducts('expiryDate')}>Expiry Date{getSortIndicator('expiryDate')}</button>
-        <button className="inv-column" onClick={() => sortProducts('availability')}>Availability{getSortIndicator('availability')}</button>
+        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('name')}>Product{getSortIndicator('name')}</button>
+        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('buyingPrice')}>Buying Price{getSortIndicator('buyingPrice')}</button>
+        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('quantity')}>Quantity{getSortIndicator('quantity')}</button>
+        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('threshold')}>Threshold Value{getSortIndicator('threshold')}</button>
+        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('expiryDate')}>Expiry Date{getSortIndicator('expiryDate')}</button>
+        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('availability')}>Availability{getSortIndicator('availability')}</button>
       </div>
       {products.map(product => (
         <div className="inv-header-row inv-data-row" key={product.id} onClick={() => handleProductClick(product)}>
@@ -88,7 +88,7 @@ const ProductList: React.FC = () => {
           <div className="inv-column">{product.threshold}</div>
           <div className="inv-column">{product.expiryDate}</div>
           <div className="inv-column">{product.availability}</div>
-          <button className="inv-delete-btn" onClick={() => deleteProduct(product.id)}>×</button>
+          <button className="inv-delete-btn bg-brown-1000" onClick={() => deleteProduct(product.id)}>×</button>
         </div>
       ))}
       {showModal && (

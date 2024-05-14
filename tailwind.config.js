@@ -12,12 +12,19 @@ export default {
         },
         red: {
           950: "#C04C4C",
+          1000: "#B84B4E",
+          1050: "#A93D41",
+          1100: "#EF9A97",
+          1150: "#E8B3B1",
         },
         white: {
           950: "#FFFAF1",
         },
         brown: {
-          950: "#DFD5C5",
+          950: "#B6AFA3",
+          1000: "#CBC5BB",
+          1050: "#C1BAAE",
+          1100: "#B6AFA3",
         },
       },
       keyframes: {

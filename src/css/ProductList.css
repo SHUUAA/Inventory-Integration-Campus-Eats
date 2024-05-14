@@ -2,13 +2,14 @@
     background-color: #fffaf1;
     border-radius: 8px;
     padding: 4px;
+    margin: 10px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
 }
 
 .inv-header-row {
-    border-bottom: 2px solid #ece3d6;
+    border-bottom: 1px solid #ece3d6;
     display: flex;
     padding: 10px;
     text-align: left;
@@ -25,7 +26,7 @@
 .inv-column {
     flex: 1;
     padding: 10px;
-    color: #000000;
+    color: white;
     font-size: 0.9em;
     font-weight: bold;
     text-align: left;
@@ -66,13 +67,13 @@
 }
 
 .add-product-button {
-    background-color: #2f7fef;
+    background-color: #C04C4C;
     color: white;
     border: none;
 }
 
 .add-product-button:hover {
-    background-color: #1e5fbb;
+    background-color: #B84B4E;
 }
 
 .other-button {
@@ -86,9 +87,8 @@
 }
 
 .inv-data-row:hover {
-    background-color: #b84b4e;
+    background-color: #C04C4C;
     cursor: pointer;
-    color: white;
 }
 
 .inv-data-row:hover .inv-column {

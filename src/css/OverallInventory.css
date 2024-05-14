@@ -2,6 +2,7 @@
     background-color: #fffaf1;
     border-radius: 8px;
     padding: 4px;
+    margin: 10px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -19,7 +20,7 @@
 
 .overall-column {
     flex: 1;
-    color: #2f7fef;
+    color: #B84B4E;
     padding: 10px;
     text-align: left;
     position: relative; /* Added for positioning the additional text */
@@ -82,13 +83,12 @@
 }
 
 .column-text  {
-    font-size: 1em;
-    color: #6a6f79;
+    font-size: 2em;
+    color: black;
     display: block;
     position: absolute;
     bottom: -50px; /* Adjust this value according to your preference */
     left: 5%;
-    transform: translateX(-50%);
 }
 
 .column-subtext {
