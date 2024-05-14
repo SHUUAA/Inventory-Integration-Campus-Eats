@@ -99,8 +99,6 @@ const ProductList: React.FC = () => {
         </div>
       )}
       {showModal && (
-        <div className="custom-modal-backdrop">
-          <div className="custom-modal">
             <ProductSummary closeModal={() => setShowModal(false)} product={{
               id: '',
               name: '',
@@ -114,8 +112,6 @@ const ProductList: React.FC = () => {
               stockInHand: [],
               imageUrl: undefined
             }} />
-          </div>
-        </div>
       )}
     </div>
   );

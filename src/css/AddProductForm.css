@@ -66,7 +66,7 @@
 }
 
 .add-product-form .buttons .add-product-button {
-    background-color: #2f7fef;
+    background-color: #B84B4E;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -76,7 +76,7 @@
 }
 
 .add-product-form .buttons .add-product-button:hover {
-    background-color: #1e5fbb;
+    background-color: #A93D41;
 }
 
 .add-product-form .buttons .other-button {
