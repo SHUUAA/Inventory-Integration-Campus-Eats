@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { database } from '../firebase/Config';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import AddProductForm from './AddProductForm';
-import ProductSummary from './ProductSummary';
-import '../css/ProductList.css';
+import React, { useEffect, useState } from "react";
+import { database } from "../firebase/Config";
+import { collection, getDocs, deleteDoc, doc, query } from "firebase/firestore";
+import AddProductForm from "./AddProductForm";
+import ProductSummary from "./ProductSummary";
+import "../css/ProductList.css";
+import FirebaseController from "../firebase/FirebaseController";
+const firebaseController = new FirebaseController();
+const user = await firebaseController.getCurrentUser();
 
 interface Product {
   id: string;
@@ -25,37 +28,54 @@ const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [sortConfig, setSortConfig] = useState<{ key: keyof Product; direction: 'ascending' | 'descending' } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof Product;
+    direction: "ascending" | "descending";
+  } | null>(null);
+  const userID = user?.uid;
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const querySnapshot = await getDocs(collection(database, 'products'));
-      const productList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+      if (!user || !userID) {
+        console.error("User not authenticated or missing UID!");
+        return;
+      }
+      const userProductsQuery = query(
+        collection(database, "products", userID, "userProducts"),
+      );
+      const querySnapshot = await getDocs(userProductsQuery);
+      const productList = querySnapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() } as Product)
+      );
       setProducts(productList);
     };
     fetchProducts();
   }, []);
 
   const deleteProduct = async (id: string) => {
-    await deleteDoc(doc(database, 'products', id));
-    setProducts(products.filter(product => product.id !== id));
+    await deleteDoc(doc(database, "products", id));
+    setProducts(products.filter((product) => product.id !== id));
   };
 
   const sortProducts = (key: keyof Product) => {
-    let direction = 'ascending';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
+    let direction = "ascending";
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "ascending"
+    ) {
+      direction = "descending";
     } else {
-      direction = 'ascending';
+      direction = "ascending";
     }
     setSortConfig({ key, direction });
   };
 
   const getSortIndicator = (key: keyof Product): string => {
     if (sortConfig && sortConfig.key === key) {
-      return sortConfig.direction === 'ascending' ? ' ↓' : ' ↑';
+      return sortConfig.direction === "ascending" ? " ↓" : " ↑";
     }
-    return '';
+    return "";
   };
 
   const handleProductClick = (product: Product) => {
@@ -68,27 +88,71 @@ const ProductList: React.FC = () => {
       <div className="header-and-buttons">
         <h1 className="inv-inventory-header">Products</h1>
         <div className="button-row">
-          <button className="add-product-button" onClick={() => setShowModal(true)}>Add Product</button>
+          <button
+            className="add-product-button"
+            onClick={() => setShowModal(true)}
+          >
+            Add Product
+          </button>
           <button className="other-button">Download all</button>
         </div>
       </div>
       <div className="inv-header-row">
-        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('name')}>Product{getSortIndicator('name')}</button>
-        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('buyingPrice')}>Buying Price{getSortIndicator('buyingPrice')}</button>
-        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('quantity')}>Quantity{getSortIndicator('quantity')}</button>
-        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('threshold')}>Threshold Value{getSortIndicator('threshold')}</button>
-        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('expiryDate')}>Expiry Date{getSortIndicator('expiryDate')}</button>
-        <button className="inv-column bg-brown-1000" onClick={() => sortProducts('availability')}>Availability{getSortIndicator('availability')}</button>
+        <button
+          className="inv-column bg-brown-1000"
+          onClick={() => sortProducts("name")}
+        >
+          Product{getSortIndicator("name")}
+        </button>
+        <button
+          className="inv-column bg-brown-1000"
+          onClick={() => sortProducts("buyingPrice")}
+        >
+          Buying Price{getSortIndicator("buyingPrice")}
+        </button>
+        <button
+          className="inv-column bg-brown-1000"
+          onClick={() => sortProducts("quantity")}
+        >
+          Quantity{getSortIndicator("quantity")}
+        </button>
+        <button
+          className="inv-column bg-brown-1000"
+          onClick={() => sortProducts("threshold")}
+        >
+          Threshold Value{getSortIndicator("threshold")}
+        </button>
+        <button
+          className="inv-column bg-brown-1000"
+          onClick={() => sortProducts("expiryDate")}
+        >
+          Expiry Date{getSortIndicator("expiryDate")}
+        </button>
+        <button
+          className="inv-column bg-brown-1000"
+          onClick={() => sortProducts("availability")}
+        >
+          Availability{getSortIndicator("availability")}
+        </button>
       </div>
-      {products.map(product => (
-        <div className="inv-header-row inv-data-row" key={product.id} onClick={() => handleProductClick(product)}>
+      {products.map((product) => (
+        <div
+          className="inv-header-row inv-data-row"
+          key={product.id}
+          onClick={() => handleProductClick(product)}
+        >
           <div className="inv-column">{product.name}</div>
           <div className="inv-column">{product.buyingPrice}</div>
           <div className="inv-column">{product.quantity}</div>
           <div className="inv-column">{product.threshold}</div>
           <div className="inv-column">{product.expiryDate}</div>
           <div className="inv-column">{product.availability}</div>
-          <button className="inv-delete-btn bg-brown-1000" onClick={() => deleteProduct(product.id)}>×</button>
+          <button
+            className="inv-delete-btn bg-brown-1000"
+            onClick={() => deleteProduct(product.id)}
+          >
+            ×
+          </button>
         </div>
       ))}
       {showModal && (
@@ -99,19 +163,22 @@ const ProductList: React.FC = () => {
         </div>
       )}
       {showModal && (
-            <ProductSummary closeModal={() => setShowModal(false)} product={{
-              id: '',
-              name: '',
-              buyingPrice: '',
-              category: '',
-              expiryDate: '',
-              threshold: 0,
-              supplierName: '',
-              contactNumber: '',
-              storeNames: [],
-              stockInHand: [],
-              imageUrl: undefined
-            }} />
+        <ProductSummary
+          closeModal={() => setShowModal(false)}
+          product={{
+            id: "",
+            name: "",
+            buyingPrice: "",
+            category: "",
+            expiryDate: "",
+            threshold: 0,
+            supplierName: "",
+            contactNumber: "",
+            storeNames: [],
+            stockInHand: [],
+            imageUrl: undefined,
+          }}
+        />
       )}
     </div>
   );

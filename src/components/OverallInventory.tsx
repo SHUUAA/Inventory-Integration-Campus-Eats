@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { database } from '../firebase/Config';
-import { collection, getDocs } from 'firebase/firestore';
-import '../css/OverallInventory.css';
+import React, { useEffect, useState } from "react";
+import { database } from "../firebase/Config";
+import { collection, getDocs, query } from "firebase/firestore";
+import "../css/OverallInventory.css";
+import FirebaseController from "../firebase/FirebaseController";
+const firebaseController = new FirebaseController();
+const user = await firebaseController.getCurrentUser();
 
 interface Product {
   id: string;
@@ -15,17 +18,27 @@ const OverallInventory = () => {
   const [lowStocks, setLowStocks] = useState<number>(0);
   const [categoriesCount, setCategoriesCount] = useState<number>(0);
 
+  const userID = user?.uid;
   useEffect(() => {
     const fetchProducts = async () => {
-      const querySnapshot = await getDocs(collection(database, 'products'));
-      const products = querySnapshot.docs.map(doc => doc.data() as Product);
+      if (!user || !userID) {
+        console.error("User not authenticated or missing UID!");
+        return;
+      }
+      const userProductsQuery = query(
+        collection(database, "products", userID, "userProducts")
+      );
+      const querySnapshot = await getDocs(userProductsQuery);
+      const products = querySnapshot.docs.map((doc) => doc.data() as Product);
 
       setTotalProducts(products.length);
 
-      const lowStockCount = products.filter(product => product.quantity < 10).length;
+      const lowStockCount = products.filter(
+        (product) => product.quantity < 10
+      ).length;
       setLowStocks(lowStockCount);
 
-      const categorySet = new Set(products.map(product => product.category));
+      const categorySet = new Set(products.map((product) => product.category));
       setCategoriesCount(categorySet.size);
     };
 
@@ -49,18 +62,16 @@ const OverallInventory = () => {
         </div>
         <div className="overall-column">
           Top Selling
-          <span className="column-text">—</span> {/* kamo nalay butang ani sa topselling kay wa ko kabaw say butanga ari */}
+          <span className="column-text">—</span>{" "}
+          {/* kamo nalay butang ani sa topselling kay wa ko kabaw say butanga ari */}
           <span className="column-subtext">Last 7 Days</span>
           <span className="column-subtext1">Cost</span>
-
-          
         </div>
         <div className="overall-column">
           Low Stocks
           <span className="column-text">{lowStocks}</span>
           <span className="column-subtext">Ordered</span>
           <span className="column-subtext1">Not in stock</span>
-
         </div>
       </div>
     </div>

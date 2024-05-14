@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
-import { database, storage } from '../firebase/Config';
-import { collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import '../css/AddProductForm.css';
-
+import React, { useState } from "react";
+import { database, storage } from "../firebase/Config";
+import { collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import "../css/AddProductForm.css";
+import FirebaseController from "../firebase/FirebaseController";
+const firebaseController = new FirebaseController();
+const user = await firebaseController.getCurrentUser();
 interface Props {
   closeModal: () => void;
 }
 
 const AddProductForm: React.FC<Props> = ({ closeModal }) => {
-  const [name, setName] = useState('');
-  const [productId, setProductId] = useState('');
-  const [category, setCategory] = useState('');
-  const [buyingPrice, setBuyingPrice] = useState('');
+  const [name, setName] = useState("");
+  const [productId, setProductId] = useState("");
+  const [category, setCategory] = useState("");
+  const [buyingPrice, setBuyingPrice] = useState("");
   const [quantity, setQuantity] = useState(0);
-  const [unit, setUnit] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
+  const [unit, setUnit] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
   const [threshold, setThreshold] = useState(0);
   const [file, setFile] = useState(null);
 
@@ -26,9 +28,16 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
     }
   };
 
+  const userID = user?.uid;
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let imageUrl = '';
+
+    if (!user || !userID) {
+      console.error("User not authenticated or missing UID!");
+      return;
+    }
+
+    let imageUrl = "";
     if (file) {
       const imageRef = ref(storage, `ProductImages/${Date.now()}_${file.name}`);
       await uploadBytes(imageRef, file);
@@ -36,7 +45,13 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
     }
 
     try {
-      await addDoc(collection(database, 'products'), {
+      const userProductsCollection = collection(
+        database,
+        "products",
+        userID,
+        "userProducts"
+      );
+      await addDoc(userProductsCollection, {
         name,
         productId,
         category,
@@ -45,12 +60,12 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         unit,
         expiryDate,
         threshold,
-        imageUrl
+        imageUrl,
       });
-      console.log('Product added successfully');
+      console.log("Product added successfully");
       closeModal();
     } catch (error) {
-      console.error('Error adding product: ', error);
+      console.error("Error adding product: ", error);
     }
   };
 
@@ -64,39 +79,91 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         </div>
         <div className="form-row">
           <label>Product Name:</label>
-          <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Enter product name" required />
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter product name"
+            required
+          />
         </div>
         <div className="form-row">
           <label>Product ID:</label>
-          <input type="text" value={productId} onChange={e => setProductId(e.target.value)} placeholder="Enter product ID" required />
+          <input
+            type="text"
+            value={productId}
+            onChange={(e) => setProductId(e.target.value)}
+            placeholder="Enter product ID"
+            required
+          />
         </div>
         <div className="form-row">
           <label>Category:</label>
-          <input type="text" value={category} onChange={e => setCategory(e.target.value)} placeholder="Select product category" required />
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="Select product category"
+            required
+          />
         </div>
         <div className="form-row">
           <label>Buying Price:</label>
-          <input type="text" value={buyingPrice} onChange={e => setBuyingPrice(e.target.value)} placeholder="Enter buying price" required />
+          <input
+            type="text"
+            value={buyingPrice}
+            onChange={(e) => setBuyingPrice(e.target.value)}
+            placeholder="Enter buying price"
+            required
+          />
         </div>
         <div className="form-row">
           <label>Quantity:</label>
-          <input type="number" value={quantity} onChange={e => setQuantity(parseInt(e.target.value, 10))} placeholder="Enter product quantity" required />
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+            placeholder="Enter product quantity"
+            required
+          />
         </div>
         <div className="form-row">
           <label>Unit:</label>
-          <input type="text" value={unit} onChange={e => setUnit(e.target.value)} placeholder="Enter product unit" required />
+          <input
+            type="text"
+            value={unit}
+            onChange={(e) => setUnit(e.target.value)}
+            placeholder="Enter product unit"
+            required
+          />
         </div>
         <div className="form-row">
           <label>Expiry Date:</label>
-          <input type="text" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} placeholder="Enter expiry date" required />
+          <input
+            type="text"
+            value={expiryDate}
+            onChange={(e) => setExpiryDate(e.target.value)}
+            placeholder="Enter expiry date"
+            required
+          />
         </div>
         <div className="form-row">
           <label>Threshold Value:</label>
-          <input type="number" value={threshold} onChange={e => setThreshold(parseInt(e.target.value, 10))} placeholder="Enter threshold value" required />
+          <input
+            type="number"
+            value={threshold}
+            onChange={(e) => setThreshold(parseInt(e.target.value, 10))}
+            placeholder="Enter threshold value"
+            required
+          />
         </div>
         <div className="buttons">
-          <button className="other-button" type="button" onClick={closeModal}>Discard</button>
-          <button className="add-product-button" type="submit">Add Product</button>
+          <button className="other-button" type="button" onClick={closeModal}>
+            Discard
+          </button>
+          <button className="add-product-button" type="submit">
+            Add Product
+          </button>
         </div>
       </form>
     </div>
