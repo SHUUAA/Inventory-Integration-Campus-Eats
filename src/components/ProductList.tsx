@@ -99,37 +99,37 @@ const ProductList: React.FC = () => {
       </div>
       <div className="inv-header-row">
         <button
-          className="inv-column bg-brown-1000"
+          className="inv-column bg-white-950"
           onClick={() => sortProducts("name")}
         >
           Product{getSortIndicator("name")}
         </button>
         <button
-          className="inv-column bg-brown-1000"
+          className="inv-column bg-white-950"
           onClick={() => sortProducts("buyingPrice")}
         >
           Buying Price{getSortIndicator("buyingPrice")}
         </button>
         <button
-          className="inv-column bg-brown-1000"
+          className="inv-column bg-white-950"
           onClick={() => sortProducts("quantity")}
         >
           Quantity{getSortIndicator("quantity")}
         </button>
         <button
-          className="inv-column bg-brown-1000"
+          className="inv-column bg-white-950"
           onClick={() => sortProducts("threshold")}
         >
           Threshold Value{getSortIndicator("threshold")}
         </button>
         <button
-          className="inv-column bg-brown-1000"
+          className="inv-column bg-white-950"
           onClick={() => sortProducts("expiryDate")}
         >
           Expiry Date{getSortIndicator("expiryDate")}
         </button>
         <button
-          className="inv-column bg-brown-1000"
+          className="inv-column bg-white-950"
           onClick={() => sortProducts("availability")}
         >
           Availability{getSortIndicator("availability")}
@@ -148,7 +148,7 @@ const ProductList: React.FC = () => {
           <div className="inv-column">{product.expiryDate}</div>
           <div className="inv-column">{product.availability}</div>
           <button
-            className="inv-delete-btn bg-brown-1000"
+            className="inv-delete-btn bg-white-950"
             onClick={() => deleteProduct(product.id)}
           >
             ×
