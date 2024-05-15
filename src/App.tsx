@@ -15,6 +15,7 @@ import AdminLayout from "./layout/AdminLayout";
 import SellerLayout from "./layout/SellerLayout";
 import { UserProvider } from "./auth/UserContext";
 import CustomerLayout from "./layout/CustomerLayout";
+import Products from "./pages/Products";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -50,33 +51,49 @@ function App() {
                   <Route
                     path="/seller/dashboard"
                     element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/seller/profile"
                     element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/seller/inventory"
                     element={
-                      <ProtectedRoute>
-                        <Inventory />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Inventory />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/seller/settings"
                     element={
-                      <ProtectedRoute>
-                        <Settings />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Settings />
+                        </ProtectedRoute>
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="/products/*"
+                    element={
+                      <Suspense fallback={<Loader></Loader>}>
+                        <Products />
+                      </Suspense>
                     }
                   />
                 </Route>
@@ -94,33 +111,41 @@ function App() {
                   <Route
                     path="/customer/dashboard"
                     element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/customer/profile"
                     element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/customer/inventory"
                     element={
-                      <ProtectedRoute>
-                        <Inventory />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Inventory />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/customer/settings"
                     element={
-                      <ProtectedRoute>
-                        <Settings />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Settings />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                 </Route>
@@ -138,33 +163,41 @@ function App() {
                   <Route
                     path="/admin/dashboard"
                     element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/admin/profile"
                     element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/admin/inventory"
                     element={
-                      <ProtectedRoute>
-                        <Inventory />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Inventory />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                   <Route
                     path="/admin/settings"
                     element={
-                      <ProtectedRoute>
-                        <Settings />
-                      </ProtectedRoute>
+                      <Suspense fallback={<Loader></Loader>}>
+                        <ProtectedRoute>
+                          <Settings />
+                        </ProtectedRoute>
+                      </Suspense>
                     }
                   />
                 </Route>

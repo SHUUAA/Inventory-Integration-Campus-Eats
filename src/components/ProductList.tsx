@@ -5,10 +5,11 @@ import AddProductForm from "./AddProductForm";
 import ProductSummary from "./ProductSummary";
 import "../css/ProductList.css";
 import FirebaseController from "../firebase/FirebaseController";
+import { useNavigate } from "react-router-dom";
 const firebaseController = new FirebaseController();
 const user = await firebaseController.getCurrentUser();
 
-interface Product {
+export interface Product {
   id: string;
   name: string;
   buyingPrice: string;
@@ -52,7 +53,6 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-
   const sortProducts = (key: keyof Product) => {
     let direction = "ascending";
     if (
@@ -74,9 +74,15 @@ const ProductList: React.FC = () => {
     return "";
   };
 
-  const handleProductClick = (product: Product) => { //Need to implement. Redirect to product's page
+  const handleProductClick = (product: Product) => {
+    //Need to implement. Redirect to product's page
     setSelectedProduct(product);
     setShowModal(true);
+  };
+
+  const navigate = useNavigate();
+  const handleProductList = (product: Product) => {
+    navigate(`/products/${product.id}`);
   };
 
   const getAvailabilityStatus = (quantity: number) => {
@@ -144,14 +150,21 @@ const ProductList: React.FC = () => {
       {products.map((product) => {
         const { text, color } = getAvailabilityStatus(product.quantity);
         return (
-        <div className="inv-header-row inv-data-row" key={product.id}>
-          <div className="inv-column">{product.name}</div>
-          <div className="inv-column">{product.buyingPrice}</div>
-          <div className="inv-column">{product.quantity}</div>
-          <div className="inv-column">{product.threshold}</div>
-          <div className="inv-column">{product.expiryDate}</div>
-          <div className="inv-column" style={{ color }}>{text}{product.availability}</div>
-        </div>
+          <div
+            className="inv-header-row inv-data-row"
+            key={product.id}
+            onClick={() => handleProductList(product)}
+          >
+            <div className="inv-column">{product.name}</div>
+            <div className="inv-column">{product.buyingPrice}</div>
+            <div className="inv-column">{product.quantity}</div>
+            <div className="inv-column">{product.threshold}</div>
+            <div className="inv-column">{product.expiryDate}</div>
+            <div className="inv-column" style={{ color }}>
+              {text}
+              {product.availability}
+            </div>
+          </div>
         );
       })}
       {showModal && (

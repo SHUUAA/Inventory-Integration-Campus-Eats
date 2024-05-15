@@ -75,6 +75,7 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         imageUrl,
       });
       console.log("Product added successfully");
+      window.location.reload();
       closeModal();
     } catch (error) {
       console.error("Error adding product: ", error);
@@ -102,7 +103,7 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         <div className="form-row">
           <label>Product ID:</label>
           <input
-            type="text"
+            type="number"
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
             placeholder="Enter product ID"
@@ -128,7 +129,7 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         <div className="form-row">
           <label>Buying Price:</label>
           <input
-            type="text"
+            type="number"
             value={buyingPrice}
             onChange={(e) => setBuyingPrice(e.target.value)}
             placeholder="Enter buying price"
