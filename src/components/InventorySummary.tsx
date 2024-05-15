@@ -9,6 +9,7 @@ import QuantityIcon from '../assets/cube-outline.svg';
 import PurchaseIcon from '../assets/bag-check-outline.svg';
 import SuppliersIcon from '../assets/people-outline.svg';
 
+
 const InventorySummary  = () => {
   const [productList, setProductList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
