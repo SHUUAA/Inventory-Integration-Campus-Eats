@@ -177,10 +177,10 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
           />
         </div>
         <div className="buttons">
-          <button className="other-button" type="button" onClick={closeModal}>
+          <button className="other-button shadow-md" type="button" onClick={closeModal}>
             Discard
           </button>
-          <button className="add-product-button" type="submit">
+          <button className="add-product-button shadow-md" type="submit">
             Add Product
           </button>
         </div>

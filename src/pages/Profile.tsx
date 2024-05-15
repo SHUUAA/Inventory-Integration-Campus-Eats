@@ -127,7 +127,7 @@ const Profile = () => {
               <div className="flex flex-row-reverse">
                 <Dialog.Trigger asChild>
                   <button
-                    className="p-3 text-white rounded-lg bg-red-950 hover:bg-red-800 focus:relative"
+                    className="p-3 text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative"
                     title="Edit Quiz"
                   >
                     <div>Edit Profile</div>

@@ -52,7 +52,7 @@ const Products = () => {
 
   return (
     <div>
-      <button onClick={handleNaviButton} className="bg-white-950 flex rounded-lg">
+      <button onClick={handleNaviButton} className="bg-white-950 flex rounded-lg shadow-lg">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -78,10 +78,10 @@ const Products = () => {
             <div className="h-16 rounded-lg flex justify-end absolute required right-4">
               <div className="m-6 space-x-4">
                 {" "}
-                <button className="bg-red-950 px-4 py-2 rounded text-white">
+                <button className="bg-red-950 px-4 py-2 rounded text-white shadow-md">
                   Edit
                 </button>
-                <button className="bg-white-950 border border-black px-4 py-2 rounded">
+                <button className="bg-white-950 border border-black px-4 py-2 rounded shadow-md">
                   Download
                 </button>
               </div>
@@ -172,7 +172,7 @@ const Products = () => {
             </Tabs.Root>
           </div>
           <div className="col-span-1 ml-6 p-24">
-            <img className="rounded-xl w-[200px]" src={product.imageUrl}></img>
+            <img className="rounded-xl w-[200px] shadow-lg" src={product.imageUrl}></img>
           </div>
         </div>
       </div>

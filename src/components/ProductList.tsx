@@ -101,12 +101,12 @@ const ProductList: React.FC = () => {
         <h1 className="inv-inventory-header">Products</h1>
         <div className="button-row">
           <button
-            className="add-product-button"
+            className="add-product-button shadow-md"
             onClick={() => setShowModal(true)}
           >
             Add Product
           </button>
-          <button className="other-button">Download all</button>
+          <button className="other-button shadow-md">Download all</button>
         </div>
       </div>
       <div className="inv-header-row">
