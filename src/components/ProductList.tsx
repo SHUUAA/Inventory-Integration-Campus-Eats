@@ -147,6 +147,7 @@ const ProductList: React.FC = () => {
           Availability{getSortIndicator("availability")}
         </button>
       </div>
+      <div className="product-list-container overflow-y-auto"> {/* Scrollable container */}
       {products.map((product) => {
         const { text, color } = getAvailabilityStatus(product.quantity);
         return (
@@ -167,6 +168,7 @@ const ProductList: React.FC = () => {
           </div>
         );
       })}
+      </div>
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-content">

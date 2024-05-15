@@ -93,3 +93,7 @@
 .inv-data-row:hover .inv-column {
     color: inherit;
 }
+
+.product-list-container {
+  max-height: 350px; /* Adjust as needed */
+}
