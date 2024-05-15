@@ -94,7 +94,6 @@ const Products = () => {
       console.log("Product updated successfully!");
     } catch (error) {
       console.error("Error updating product:", error);
-      // Handle the error appropriately (e.g., show an error message)
     }
   };
 
@@ -102,7 +101,7 @@ const Products = () => {
     e.preventDefault();
 
     const updatedProduct: Product = {
-      id: product.id, // If editing, otherwise leave empty
+      id: product.id, 
       name: name,
       category: category,
       buyingPrice: buyingPrice,

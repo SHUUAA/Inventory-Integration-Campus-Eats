@@ -74,12 +74,6 @@ const ProductList: React.FC = () => {
     return "";
   };
 
-  const handleProductClick = (product: Product) => {
-    //Need to implement. Redirect to product's page
-    setSelectedProduct(product);
-    setShowModal(true);
-  };
-
   const navigate = useNavigate();
   const handleProductList = (product: Product) => {
     navigate(`/products/${product.id}`);
