@@ -141,7 +141,7 @@ const ProductList: React.FC = () => {
           Availability{getSortIndicator("availability")}
         </button>
       </div>
-      <div className="product-list-container overflow-y-auto"> {/* Scrollable container */}
+      <div className="max-h-[350px] overflow-y-auto"> 
       {products.map((product) => {
         const { text, color } = getAvailabilityStatus(product.quantity);
         return (

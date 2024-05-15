@@ -1,99 +1,95 @@
 .inv-inventory-container {
-    background-color: #fffaf1;
-    border-radius: 8px;
-    padding: 4px;
-    margin: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+  background-color: #fffaf1;
+  border-radius: 8px;
+  padding: 4px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .inv-header-row {
-    border-bottom: 1px solid #ece3d6;
-    display: flex;
-    padding: 10px;
-    text-align: left;
-    flex: 1;
-     }
-    
+  border-bottom: 1px solid #ece3d6;
+  display: flex;
+  padding: 10px;
+  text-align: left;
+  flex: 1;
+}
+
 .inv-data-row .inv-column {
-    color: #6a6f79;
-    text-align: left;
-    width: 100%;
-    left: 20%;
+  color: #6a6f79;
+  text-align: left;
+  width: 100%;
+  left: 20%;
 }
 
 .inv-column {
-    flex: 1;
-    padding: 10px;
-    font-size: 0.9em;
-    font-weight: bold;
-    text-align: left;
-
+  flex: 1;
+  padding: 10px;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-align: left;
 }
 
 .inv-data-row .inv-column {
-    flex: 1;
-    padding: 10px;
-    color: #6a6f79;
-    font-size: 0.9em;
-    font-weight: normal;
-    text-align: left;
+  flex: 1;
+  padding: 10px;
+  color: #6a6f79;
+  font-size: 0.9em;
+  font-weight: normal;
+  text-align: left;
 }
 
 .inv-inventory-header {
-    margin-top: 4px;
-    margin-left: 4px;
-    font-size: 1.5em;
+  margin-top: 4px;
+  margin-left: 4px;
+  font-size: 1.5em;
 }
 
 .header-and-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: left;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: left;
+  width: 100%;
 }
 
 .button-row {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
-.add-product-button, .other-button {
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
+.add-product-button,
+.other-button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .add-product-button {
-    background-color: #C04C4C;
-    color: white;
-    border: none;
+  background-color: #c04c4c;
+  color: white;
+  border: none;
 }
 
 .add-product-button:hover {
-    background-color: #B84B4E;
+  background-color: #b84b4e;
 }
 
 .other-button {
-    background-color: transparent;
-    color: #8b909b;
-    border: 1px solid #8b909b;
+  background-color: transparent;
+  color: #8b909b;
+  border: 1px solid #8b909b;
 }
 
 .other-button:hover {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 .inv-data-row:hover {
-    background-color: #C04C4C;
-    cursor: pointer;
+  background-color: #c04c4c;
+  cursor: pointer;
 }
 
 .inv-data-row:hover .inv-column {
-    color: inherit;
-}
-
-.product-list-container {
-  max-height: 350px; /* Adjust as needed */
+  color: inherit;
 }
