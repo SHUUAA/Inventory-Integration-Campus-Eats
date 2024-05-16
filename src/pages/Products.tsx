@@ -8,6 +8,7 @@ import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
+const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 import Loader from "../components/Loader";
 import { useUserContext } from "../auth/UserContext";
 const Products = () => {
@@ -22,8 +23,12 @@ const Products = () => {
   const productID = location.pathname.split("/").pop();
   const navigate = useNavigate();
   const { userData } = useUserContext();
+  const [open, setOpen] = useState(false);
+  const [productUpdated, setProductUpdated] = useState(false); // Option 2: Flag for re-fetch
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchProduct = async () => {
       const user = await firebaseController.getCurrentUser();
       const userID = user?.uid;
@@ -39,7 +44,9 @@ const Products = () => {
       try {
         const docSnap = await getDoc(productRef);
         if (docSnap.exists()) {
-          setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
+          if (isMounted) {
+            setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
+          }
         } else {
           console.log("No such document!");
         }
@@ -49,7 +56,11 @@ const Products = () => {
     };
 
     fetchProduct();
-  }, [productID]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [productID, productUpdated]); // Dependency array
 
   if (!product) {
     return <Loader></Loader>;
@@ -92,13 +103,14 @@ const Products = () => {
         threshold: updatedProduct.threshold,
       });
 
-      console.log("Product updated successfully!");
+      setProduct(updatedProduct);
+      setProductUpdated(true);
     } catch (error) {
       console.error("Error updating product:", error);
     }
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const updatedProduct: Product = {
@@ -110,7 +122,7 @@ const Products = () => {
       expiryDate: expiryDate,
       threshold: threshold,
     };
-
+    setOpen(false);
     await handleUpdateProduct(updatedProduct);
   };
 
@@ -170,7 +182,7 @@ const Products = () => {
             {" "}
             <div className="h-16 rounded-lg flex justify-end absolute required right-4">
               <div className="m-6 space-x-4">
-                <Dialog.Root>
+                <Dialog.Root open={open} onOpenChange={setOpen}>
                   <Dialog.Trigger asChild>
                     <button className="text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
                       Edit
@@ -286,12 +298,14 @@ const Products = () => {
                       </fieldset>
                       <div className="mt-[25px] flex justify-end">
                         <Dialog.Close asChild>
-                          <button
-                            onClick={handleSubmit}
-                            className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
-                          >
-                            Save changes
-                          </button>
+                          <form onClick={handleSubmit}>
+                            <button
+                              type="submit"
+                              className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
+                            >
+                              Save changes
+                            </button>
+                          </form>
                         </Dialog.Close>
                       </div>
                       <Dialog.Close asChild>

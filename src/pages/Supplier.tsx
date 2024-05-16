@@ -10,6 +10,7 @@ import {
   doc,
   getDocs,
   query,
+  updateDoc,
 } from "firebase/firestore";
 import "../css/ProductList.css";
 import FirebaseController from "../firebase/FirebaseController";
@@ -100,6 +101,49 @@ const Supplier = () => {
     } catch (error) {
       console.error("Error adding supplier: ", error);
     }
+  };
+
+  const handleUpdateSupplier = async (updatedSupplier: Supplier) => {
+    try {
+      const user = await firebaseController.getCurrentUser();
+      const userID = user?.uid;
+      const supplierRef = doc(
+        database,
+        "supplier",
+        userID,
+        "userSupplier",
+        updatedSupplier.id
+      );
+
+      await updateDoc(supplierRef, {
+        name: updatedSupplier.name,
+        email: updatedSupplier.email,
+        contactNumber: updatedSupplier.contactNumber,
+        product: updatedSupplier.product,
+        category: updatedSupplier.category,
+        buyingPrice: updatedSupplier.buyingPrice,
+      });
+
+      console.log("Supplier updated successfully!");
+    } catch (error) {
+      console.error("Error updating Supplier:", error);
+    }
+  };
+
+    const handleSubmitSupplier = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    const updatedProduct: Supplier = {
+        id: suppliers.id,
+        name: name,
+        email: email,
+        contactNumber: contactNumber,
+        product: product,
+        category: category,
+        buyingPrice: buyingPrice,
+    };
+
+    await handleUpdateSupplier(updatedProduct);
   };
 
   const foodCategories = [
@@ -329,6 +373,139 @@ const Supplier = () => {
               <div className="inv-column">{suppliers.product}</div>
               <div className="inv-column">{suppliers.category}</div>
               <div className="inv-column">₱{suppliers.buyingPrice}</div>
+              <Dialog.Root>
+                <Dialog.Trigger asChild>
+                  <button className="text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
+                    Edit
+                  </button>
+                </Dialog.Trigger>
+                <Dialog.Portal>
+                  <Dialog.Overlay className="bg-black-A6 data-[state=open]:animate-overlayShow fixed inset-0" />
+                  <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white-950 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                    <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
+                      Edit Product
+                    </Dialog.Title>
+                    <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">
+                      Make changes to your product here. Click save when you're
+                      done.
+                    </Dialog.Description>
+                    <fieldset className="mb-[15px] flex items-center gap-5">
+                      <label
+                        className="text-violet11 w-[90px] text-right text-[15px]"
+                        htmlFor="name"
+                      >
+                        Supplier Name
+                      </label>
+                      <input
+                        className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                        id="name"
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </fieldset>
+
+                    <fieldset className="mb-[15px] flex items-center gap-5">
+                      <label
+                        className="text-violet11 w-[90px] text-right text-[15px]"
+                        htmlFor="email"
+                      >
+                        Email
+                      </label>
+                      <input
+                        className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                        id="email"
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </fieldset>
+
+                    <fieldset className="mb-[15px] flex items-center gap-5">
+                      <label
+                        className="text-violet11 w-[90px] text-right text-[15px]"
+                        htmlFor="contactNumber"
+                      >
+                        Contact Number
+                      </label>
+                      <input
+                        className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                        id="contactNumber"
+                        onChange={(e) =>
+                          setContactNumber(e.target.valueAsNumber)
+                        }
+                      />
+                    </fieldset>
+
+                    <fieldset className="mb-[15px] flex items-center gap-5">
+                      <label
+                        className="text-violet11 w-[90px] text-right text-[15px]"
+                        htmlFor="product"
+                      >
+                        Product
+                      </label>
+                      <input
+                        className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                        id="product"
+                        onChange={(e) => setProduct(e.target.value)}
+                      />
+                    </fieldset>
+
+                    <fieldset className="mb-[15px] flex items-center gap-5">
+                      <label
+                        className="text-violet11 w-[90px] text-right text-[15px]"
+                        htmlFor="category"
+                      >
+                        Category
+                      </label>
+
+                      <select
+                        className="bg-neutral-950 text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                        id="category"
+                        required
+                        onChange={(e) => setCategory(e.target.value)}
+                      >
+                        <option value="">Select Category</option>
+                        {foodCategories.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                    </fieldset>
+
+                    <fieldset className="mb-[15px] flex items-center gap-5">
+                      <label
+                        className="text-violet11 w-[90px] text-right text-[15px]"
+                        htmlFor="price"
+                      >
+                        Buying Price
+                      </label>
+                      <input
+                        className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                        id="price"
+                        type="number"
+                        onChange={(e) => setBuyingPrice(e.target.valueAsNumber)}
+                      />
+                    </fieldset>
+
+                    <div className="mt-[25px] flex justify-end">
+                      <Dialog.Close asChild>
+                        <button
+                          onClick={() => handleUpdateSupplier(suppliers)}
+                          className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
+                        >
+                          Save changes
+                        </button>
+                      </Dialog.Close>
+                    </div>
+                    <Dialog.Close asChild>
+                      <button
+                        className=" bg-white-950 text-red-950 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center "
+                        aria-label="Close"
+                      >
+                        Close
+                      </button>
+                    </Dialog.Close>
+                  </Dialog.Content>
+                </Dialog.Portal>
+              </Dialog.Root>
               <AlertDialog.Root>
                 <AlertDialog.Trigger asChild>
                   <button className="bg-white-950">
