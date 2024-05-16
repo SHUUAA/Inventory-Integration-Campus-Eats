@@ -4,9 +4,10 @@ import { database } from "../firebase/Config";
 import { Product } from "../components/ProductList";
 const firebaseController = new FirebaseController();
 import { useLocation, useNavigate } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Dialog from "@radix-ui/react-dialog";
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Loader from "../components/Loader";
 import { useUserContext } from "../auth/UserContext";
 const Products = () => {
@@ -101,7 +102,7 @@ const Products = () => {
     e.preventDefault();
 
     const updatedProduct: Product = {
-      id: product.id, 
+      id: product.id,
       name: name,
       category: category,
       buyingPrice: buyingPrice,
@@ -111,6 +112,32 @@ const Products = () => {
     };
 
     await handleUpdateProduct(updatedProduct);
+  };
+
+  const handleDeleteProduct = async (productID: number) => {
+    try {
+      const user = await firebaseController.getCurrentUser();
+      const userID = user?.uid;
+
+      if (!userID) {
+        console.error("User not authenticated or missing UID!");
+        return;
+      }
+
+      const productRef = doc(
+        database,
+        "products",
+        userID,
+        "userProducts",
+        productID
+      );
+      await deleteDoc(productRef);
+      navigate(`/${userData.type}/inventory`);
+
+      console.log("Product deleted successfully");
+    } catch (error) {
+      console.error("Error deleting product: ", error);
+    }
   };
 
   return (
@@ -145,8 +172,8 @@ const Products = () => {
               <div className="m-6 space-x-4">
                 <Dialog.Root>
                   <Dialog.Trigger asChild>
-                    <button className="p-3 text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
-                      Edit Product
+                    <button className="text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
+                      Edit
                     </button>
                   </Dialog.Trigger>
                   <Dialog.Portal>
@@ -278,9 +305,41 @@ const Products = () => {
                     </Dialog.Content>
                   </Dialog.Portal>
                 </Dialog.Root>
-                <button className="bg-white-950 border border-black px-4 py-2 rounded shadow-md">
-                  Download
-                </button>
+                <AlertDialog.Root>
+                  <AlertDialog.Trigger asChild>
+                    <button className="text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
+                      Delete
+                    </button>
+                  </AlertDialog.Trigger>
+                  <AlertDialog.Portal>
+                    <AlertDialog.Overlay className="bg-black-A6 data-[state=open]:animate-overlayShow fixed inset-0" />
+                    <AlertDialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white-950 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                      <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
+                        Are you absolutely sure?
+                      </AlertDialog.Title>
+                      <AlertDialog.Description className="text-mauve11 mt-4 mb-5 text-[15px] leading-normal">
+                        This action cannot be undone. This will permanently
+                        delete your product and remove your data from our
+                        servers.
+                      </AlertDialog.Description>
+                      <div className="flex justify-end gap-[25px]">
+                        <AlertDialog.Cancel asChild>
+                          <button className="text-mauve11 bg-neutral-950 focus:shadow-mauve7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none outline-none focus:shadow-[0_0_0_2px]">
+                            Cancel
+                          </button>
+                        </AlertDialog.Cancel>
+                        <AlertDialog.Action asChild>
+                          <button
+                            onClick={() => handleDeleteProduct(product.id)}
+                            className="text-red11 bg-red-950 hover:bg-red-1000 focus:shadow-red7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none outline-none focus:shadow-[0_0_0_2px]"
+                          >
+                            Yes, delete product
+                          </button>
+                        </AlertDialog.Action>
+                      </div>
+                    </AlertDialog.Content>
+                  </AlertDialog.Portal>
+                </AlertDialog.Root>
               </div>
             </div>
           </div>

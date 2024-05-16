@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { database } from "../firebase/Config";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, doc, getDocs, query } from "firebase/firestore";
 import AddProductForm from "./AddProductForm";
 import ProductSummary from "./ProductSummary";
 import "../css/ProductList.css";
@@ -8,9 +8,8 @@ import FirebaseController from "../firebase/FirebaseController";
 import { useNavigate } from "react-router-dom";
 const firebaseController = new FirebaseController();
 const user = await firebaseController.getCurrentUser();
-
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   buyingPrice: string;
   quantity: number;
@@ -89,6 +88,8 @@ const ProductList: React.FC = () => {
     }
   };
 
+
+
   return (
     <div className="inv-inventory-container">
       <div className="header-and-buttons">
@@ -100,7 +101,6 @@ const ProductList: React.FC = () => {
           >
             Add Product
           </button>
-          <button className="other-button shadow-md">Download all</button>
         </div>
       </div>
       <div className="inv-header-row">
@@ -141,27 +141,28 @@ const ProductList: React.FC = () => {
           Availability{getSortIndicator("availability")}
         </button>
       </div>
-      <div className="max-h-[350px] overflow-y-auto"> 
-      {products.map((product) => {
-        const { text, color } = getAvailabilityStatus(product.quantity);
-        return (
-          <div
-            className="inv-header-row inv-data-row"
-            key={product.id}
-            onClick={() => handleProductList(product)}
-          >
-            <div className="inv-column">{product.name}</div>
-            <div className="inv-column">{product.buyingPrice}</div>
-            <div className="inv-column">{product.quantity}</div>
-            <div className="inv-column">{product.threshold}</div>
-            <div className="inv-column">{product.expiryDate}</div>
-            <div className="inv-column" style={{ color }}>
-              {text}
-              {product.availability}
+      <div className="max-h-[350px] overflow-y-auto">
+        {products.map((product) => {
+          const { text, color } = getAvailabilityStatus(product.quantity);
+          return (
+            <div
+              className="inv-header-row inv-data-row"
+              key={product.id}
+              onClick={() => handleProductList(product)}
+            >
+              <div className="inv-column">{product.name}</div>
+              <div className="inv-column">{product.buyingPrice}</div>
+              <div className="inv-column">{product.quantity}</div>
+              <div className="inv-column">{product.threshold}</div>
+              <div className="inv-column">{product.expiryDate}</div>
+              <div className="inv-column" style={{ color }}>
+                {text}
+                {product.availability}
+              </div>
+
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
       </div>
       {showModal && (
         <div className="modal-backdrop">

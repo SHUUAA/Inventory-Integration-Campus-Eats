@@ -1,13 +1,22 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Avatar from "@radix-ui/react-avatar";
-import { useEffect, useMemo, useReducer, useState } from "react";
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { database, storage } from "../firebase/Config";
-import { addDoc, collection, getDocs, query } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+} from "firebase/firestore";
 import "../css/ProductList.css";
 import FirebaseController from "../firebase/FirebaseController";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 const firebaseController = new FirebaseController();
 interface Supplier {
+  id: number;
   name: string;
   email: string;
   product: string;
@@ -105,7 +114,7 @@ const Supplier = () => {
     "Beverages",
   ];
 
-  const handleDeleteSupplier = async (supplierId: string) => {
+  const handleDeleteSupplier = async (supplierId: number) => {
     try {
       const user = await firebaseController.getCurrentUser();
       const userID = user?.uid;
@@ -170,6 +179,7 @@ const Supplier = () => {
                       </label>
                       <input type="file" onChange={handleFileChange} />
                     </fieldset>
+
                     <fieldset className="mb-[15px] flex items-center gap-5">
                       <label
                         className="text-violet11 w-[90px] text-right text-[15px]"
@@ -183,7 +193,6 @@ const Supplier = () => {
                         onChange={(e) => setName(e.target.value)}
                       />
                     </fieldset>
-
                     <fieldset className="mb-[15px] flex items-center gap-5">
                       <label
                         className="text-violet11 w-[90px] text-right text-[15px]"
@@ -198,7 +207,6 @@ const Supplier = () => {
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     </fieldset>
-
                     <fieldset className="mb-[15px] flex items-center gap-5">
                       <label
                         className="text-violet11 w-[90px] text-right text-[15px]"
@@ -215,7 +223,6 @@ const Supplier = () => {
                         }
                       />
                     </fieldset>
-
                     <fieldset className="mb-[15px] flex items-center gap-5">
                       <label
                         className="text-violet11 w-[90px] text-right text-[15px]"
@@ -230,7 +237,6 @@ const Supplier = () => {
                         onChange={(e) => setProduct(e.target.value)}
                       />
                     </fieldset>
-
                     <fieldset className="mb-[15px] flex items-center gap-5">
                       <label
                         className="text-violet11 w-[90px] text-right text-[15px]"
@@ -252,7 +258,6 @@ const Supplier = () => {
                         ))}
                       </select>
                     </fieldset>
-
                     <fieldset className="mb-[15px] flex items-center gap-5">
                       <label
                         className="text-violet11 w-[90px] text-right text-[15px]"
@@ -267,7 +272,6 @@ const Supplier = () => {
                         onChange={(e) => setBuyingPrice(e.target.valueAsNumber)}
                       />
                     </fieldset>
-
                     <div className="mt-[25px] flex justify-end">
                       <Dialog.Close asChild>
                         <button
@@ -303,14 +307,12 @@ const Supplier = () => {
         <button className="inv-column bg-white-950">Product</button>
         <button className="inv-column bg-white-950">Category</button>
         <button className="inv-column bg-white-950">Buying Price</button>
+        <button className="bg-white-950"></button>
       </div>
       <div className="h-[600px] overflow-y-auto">
         {suppliers.map((suppliers) => {
           return (
-            <div
-              className="inv-header-row inv-data-row"
-              key={suppliers.product}
-            >
+            <div className="inv-header-row inv-data-row" key={suppliers.id}>
               <div className="inv-column">
                 <Avatar.Root className="relative">
                   <Avatar.AvatarImage
@@ -327,6 +329,53 @@ const Supplier = () => {
               <div className="inv-column">{suppliers.product}</div>
               <div className="inv-column">{suppliers.category}</div>
               <div className="inv-column">₱{suppliers.buyingPrice}</div>
+              <AlertDialog.Root>
+                <AlertDialog.Trigger asChild>
+                  <button className="bg-white-950">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
+                    </svg>
+                  </button>
+                </AlertDialog.Trigger>
+                <AlertDialog.Portal>
+                  <AlertDialog.Overlay className="bg-black-A6 data-[state=open]:animate-overlayShow fixed inset-0" />
+                  <AlertDialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white-950 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                    <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
+                      Are you absolutely sure?
+                    </AlertDialog.Title>
+                    <AlertDialog.Description className="text-mauve11 mt-4 mb-5 text-[15px] leading-normal">
+                      This action cannot be undone. This will permanently delete
+                      your supplier and remove your data from our servers.
+                    </AlertDialog.Description>
+                    <div className="flex justify-end gap-[25px]">
+                      <AlertDialog.Cancel asChild>
+                        <button className="text-mauve11 bg-neutral-950 focus:shadow-mauve7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none outline-none focus:shadow-[0_0_0_2px]">
+                          Cancel
+                        </button>
+                      </AlertDialog.Cancel>
+                      <AlertDialog.Action asChild>
+                        <button
+                          onClick={() => handleDeleteSupplier(suppliers.id)}
+                          className="text-red11 bg-red-950 hover:bg-red-1000 focus:shadow-red7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none outline-none focus:shadow-[0_0_0_2px]"
+                        >
+                          Yes, delete supplier
+                        </button>
+                      </AlertDialog.Action>
+                    </div>
+                  </AlertDialog.Content>
+                </AlertDialog.Portal>
+              </AlertDialog.Root>
             </div>
           );
         })}

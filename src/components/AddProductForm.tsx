@@ -12,7 +12,6 @@ interface Props {
 
 const AddProductForm: React.FC<Props> = ({ closeModal }) => {
   const [name, setName] = useState("");
-  const [productId, setProductId] = useState("");
   const [category, setCategory] = useState("");
   const [buyingPrice, setBuyingPrice] = useState("");
   const [quantity, setQuantity] = useState(0);
@@ -51,7 +50,7 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
 
     let imageUrl = "";
     if (file) {
-      const imageRef = ref(storage, `ProductImages/${userID}/${productId}-${file.name}`);
+      const imageRef = ref(storage, `ProductImages/${userID}/${file.name}`);
       await uploadBytes(imageRef, file);
       imageUrl = await getDownloadURL(imageRef);
     }
@@ -65,7 +64,6 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
       );
       await addDoc(userProductsCollection, {
         name,
-        productId,
         category,
         buyingPrice,
         quantity,
@@ -97,16 +95,6 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter product name"
-            required
-          />
-        </div>
-        <div className="form-row">
-          <label>Product ID:</label>
-          <input
-            type="number"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-            placeholder="Enter product ID"
             required
           />
         </div>
