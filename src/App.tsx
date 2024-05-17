@@ -16,6 +16,7 @@ import SellerLayout from "./layout/SellerLayout";
 import { UserProvider } from "./auth/UserContext";
 import CustomerLayout from "./layout/CustomerLayout";
 import Products from "./pages/Products";
+import Supplier from "./pages/Supplier";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -88,7 +89,7 @@ function App() {
                       </Suspense>
                     }
                   />
-                  {/* <Route
+                  <Route
                     path="/seller/supplier"
                     element={
                       <Suspense fallback={<Loader></Loader>}>
@@ -98,16 +99,6 @@ function App() {
                       </Suspense>
                     }
                   />
-                  <Route
-                    path="/seller/orders"
-                    element={
-                      <Suspense fallback={<Loader></Loader>}>
-                        <ProtectedRoute>
-                          <Orders />
-                        </ProtectedRoute>
-                      </Suspense>
-                    }
-                  /> */}
                   <Route
                     path="/products/*"
                     element={
