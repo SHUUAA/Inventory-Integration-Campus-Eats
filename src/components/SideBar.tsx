@@ -53,7 +53,7 @@ const SideBar = () => {
             </Link>
           </li>
 
-          <li>
+          {/* <li>
             <Link
               to={`/${userData.type}/supplier`}
               className="flex items-center rounded-lg px-4 py-4 text-sm font-medium text-white-950 hover:bg-gray-100 hover:text-gray-700"
@@ -97,7 +97,7 @@ const SideBar = () => {
               </svg>
               Orders
             </Link>
-          </li>
+          </li> */}
 
           <li>
             <Link
