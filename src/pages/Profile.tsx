@@ -23,6 +23,7 @@ const userRef = collection(database, "users");
 const q = query(userRef, where("email", "==", userEmail));
 import { useUserContext } from "../auth/UserContext";
 import ProfilePic from "../helpers/ProfilePic";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const Profile = () => {
   const userContext = useUserContext();
@@ -37,6 +38,7 @@ const Profile = () => {
   const initials =
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
   const userImage = ProfilePic();
+  const [parent, enableAnimations] = useAutoAnimate();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -186,8 +188,8 @@ const Profile = () => {
                   </Dialog.Content>
                 </Dialog.Portal>
               </div>
-              <div className="w-full flex justify-center">
-                <Avatar.Root className="relative">
+              <div className="w-full flex justify-center" >
+                <Avatar.Root className="relative" ref={parent}>
                   <Avatar.AvatarImage
                     src={userImage}
                     alt="Profile Picture"

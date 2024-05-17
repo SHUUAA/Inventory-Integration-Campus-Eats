@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Avatar from "@radix-ui/react-avatar";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { database, storage } from "../firebase/Config";
 import {
@@ -44,6 +45,7 @@ const Supplier = () => {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [formResetKey, setFormResetKey] = useState(0);
   const [open, setOpen] = useState(false);
+  const [parent, enableAnimations] = useAutoAnimate();
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -390,7 +392,7 @@ const Supplier = () => {
         <button className="w-[80px] bg-white-950"></button>
         <button className="bg-white-950"></button>
       </div>
-      <div className="h-[600px] overflow-y-auto">
+      <div className="h-[600px] overflow-y-auto" ref={parent}>
         {suppliers.map((suppliers) => {
           return (
             <div className="inv-header-row inv-data-row" key={suppliers.id}>

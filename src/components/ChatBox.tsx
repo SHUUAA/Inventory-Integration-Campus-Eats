@@ -4,6 +4,7 @@ import { useState } from "react";
 import ProfilePic from "../helpers/ProfilePic";
 import * as Avatar from "@radix-ui/react-avatar";
 import { authentication } from "../firebase/Config";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 const groq = new Groq({
   apiKey: import.meta.env.VITE_APP_GROQ_API_KEY,
   dangerouslyAllowBrowser: true,
@@ -18,6 +19,7 @@ export default function ChatBox({ isOpen, onClose }) {
   const [firstName, surname] = name.split(" ");
   const initials =
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
+    const [parent, enableAnimations] = useAutoAnimate();
   const handleInputChange = (e) => {
     setInput(e.target.value);
   };
@@ -65,7 +67,7 @@ export default function ChatBox({ isOpen, onClose }) {
   };
 
   return (
-    <div className={`fixed bottom-0 right-0 ${isOpen ? "block" : "hidden"}`}>
+    <div className={`fixed bottom-0 right-0 ${isOpen ? "block" : "hidden"}`} >
       <div
         style={{
           boxShadow: "0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
@@ -87,7 +89,7 @@ export default function ChatBox({ isOpen, onClose }) {
             Powered by Groq & Llama3 
           </p>
         </div>
-        <div className="h-[460px] overflow-y-auto pr-1 mb-4">
+        <div className="h-[460px] overflow-y-auto pr-1 mb-4" ref={parent}>
           {messages.map((m) => (
             <div
               key={m.id}

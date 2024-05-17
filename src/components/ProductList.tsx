@@ -8,6 +8,7 @@ import FirebaseController from "../firebase/FirebaseController";
 import { useNavigate } from "react-router-dom";
 const firebaseController = new FirebaseController();
 const user = await firebaseController.getCurrentUser();
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 export interface Product {
   id: number;
   name: string;
@@ -28,6 +29,7 @@ const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [parent, enableAnimations] = useAutoAnimate();
   const [sortConfig, setSortConfig] = useState<{
     key: keyof Product;
     direction: "ascending" | "descending";
@@ -141,7 +143,7 @@ const ProductList: React.FC = () => {
           Availability{getSortIndicator("availability")}
         </button>
       </div>
-      <div className="max-h-[350px] overflow-y-auto">
+      <div className="h-[350px] overflow-y-auto" ref={parent}>
         {products.map((product) => {
           const { text, color } = getAvailabilityStatus(product.quantity);
           return (

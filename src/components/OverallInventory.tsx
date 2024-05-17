@@ -5,7 +5,7 @@ import "../css/OverallInventory.css";
 import FirebaseController from "../firebase/FirebaseController";
 const firebaseController = new FirebaseController();
 const user = await firebaseController.getCurrentUser();
-
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 interface Product {
   id: string;
   name: string;
@@ -17,7 +17,7 @@ const OverallInventory = () => {
   const [totalProducts, setTotalProducts] = useState<number>(0);
   const [lowStocks, setLowStocks] = useState<number>(0);
   const [categoriesCount, setCategoriesCount] = useState<number>(0);
-
+  const [parent, enableAnimations] = useAutoAnimate();
   const userID = user?.uid;
   useEffect(() => {
     const fetchProducts = async () => {
@@ -48,7 +48,7 @@ const OverallInventory = () => {
   return (
     <div className="overall-inventory-container container-rounded">
       <h1 className="overall-inventory-header">Overall Inventory</h1>
-      <div className="overall-header-row">
+      <div className="overall-header-row" ref={parent}>
         <div className="overall-column">
           Categories
           <span className="column-text">{categoriesCount}</span>

@@ -8,6 +8,7 @@ import SalesIcon from '../assets/cash-outline.svg';
 import QuantityIcon from '../assets/cube-outline.svg';
 import PurchaseIcon from '../assets/bag-check-outline.svg';
 import SuppliersIcon from '../assets/people-outline.svg';
+import Loader from "./Loader";
 
 
 const InventorySummary  = () => {
@@ -46,9 +47,6 @@ const InventorySummary  = () => {
   // Filter products with quantity less than or equal to the threshold
   const lowStockProducts = productList.filter(product => product.quantity <= product.threshold);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className='main-content'>

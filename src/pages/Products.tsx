@@ -8,7 +8,6 @@ import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 import Loader from "../components/Loader";
 import { useUserContext } from "../auth/UserContext";
 import { deleteObject, ref } from "firebase/storage";
