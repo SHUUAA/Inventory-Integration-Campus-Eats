@@ -67,7 +67,7 @@ const Products = () => {
     return () => {
       isMounted = false;
     };
-  }, [productID, productUpdated]); // Dependency array
+  }, [productID, productUpdated, open]); // Dependency array
 
   if (!product) {
     return <Loader></Loader>;
