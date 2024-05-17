@@ -19,7 +19,6 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
   const [expiryDate, setExpiryDate] = useState("");
   const [threshold, setThreshold] = useState(0);
   const [file, setFile] = useState(null);
-
   const foodCategories = [
     "Prepared Foods",
     "Frozen Foods",
@@ -48,9 +47,10 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
       return;
     }
 
+    const random = crypto.randomUUID();
     let imageUrl = "";
     if (file) {
-      const imageRef = ref(storage, `ProductImages/${userID}/${file.name}`);
+      const imageRef = ref(storage, `ProductImages/${userID}/${random}-${file.name}`);
       await uploadBytes(imageRef, file);
       imageUrl = await getDownloadURL(imageRef);
     }
@@ -73,7 +73,6 @@ const AddProductForm: React.FC<Props> = ({ closeModal }) => {
         imageUrl,
       });
       console.log("Product added successfully");
-      window.location.reload();
       closeModal();
     } catch (error) {
       console.error("Error adding product: ", error);

@@ -1,6 +1,6 @@
 import FirebaseController from "../firebase/FirebaseController";
 import { useEffect, useState } from "react";
-import { database } from "../firebase/Config";
+import { database, storage } from "../firebase/Config";
 import { Product } from "../components/ProductList";
 const firebaseController = new FirebaseController();
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import * as AlertDialog from "@radix-ui/react-alert-dialog";
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 import Loader from "../components/Loader";
 import { useUserContext } from "../auth/UserContext";
+import { deleteObject, ref } from "firebase/storage";
 const Products = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -136,16 +137,32 @@ const Products = () => {
         return;
       }
 
-      const productRef = doc(
+      const productDocRef = doc(
         database,
         "products",
         userID,
         "userProducts",
         productID
       );
-      await deleteDoc(productRef);
-      navigate(`/${userData.type}/inventory`);
+      const productDocSnap = await getDoc(productDocRef);
 
+      if (!productDocSnap.exists()) {
+        console.error("Product not found!");
+        return;
+      }
+
+      const productData = productDocSnap.data();
+      const imageUrl = productData.imageUrl;
+
+      await deleteDoc(productDocRef);
+
+      if (imageUrl) {
+        const imageRef = ref(storage, imageUrl);
+        await deleteObject(imageRef);
+        console.log("Image deleted successfully");
+      }
+
+      navigate(`/${userData.type}/inventory`);
       console.log("Product deleted successfully");
     } catch (error) {
       console.error("Error deleting product: ", error);

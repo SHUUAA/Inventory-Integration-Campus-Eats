@@ -8,13 +8,19 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
 } from "firebase/firestore";
 import "../css/ProductList.css";
 import FirebaseController from "../firebase/FirebaseController";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 const firebaseController = new FirebaseController();
 interface Supplier {
   id: number;
@@ -36,7 +42,8 @@ const Supplier = () => {
   const [buyingPrice, setBuyingPrice] = useState(0);
   const [file, setFile] = useState(null);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-
+  const [formResetKey, setFormResetKey] = useState(0);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const fetchSuppliers = async () => {
       const user = await firebaseController.getCurrentUser();
@@ -51,12 +58,12 @@ const Supplier = () => {
       );
       const querySnapshot = await getDocs(userSupplierQuery);
       const supplierList = querySnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as unknown as Supplier)
+        (doc) => ({ id: doc.id, ...doc.data() } as Supplier)
       );
       setSuppliers(supplierList);
     };
     fetchSuppliers();
-  }, []);
+  }, [formResetKey]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -73,9 +80,14 @@ const Supplier = () => {
       console.error("User not authenticated or missing UID!");
       return;
     }
+
+    const random = crypto.randomUUID();
     let imageUrl = "";
     if (file) {
-      const imageRef = ref(storage, `SupplierImages/${userID}/${file.name}`);
+      const imageRef = ref(
+        storage,
+        `SupplierImages/${userID}/${random}-${file.name}`
+      );
       await uploadBytes(imageRef, file);
       imageUrl = await getDownloadURL(imageRef);
     }
@@ -97,7 +109,9 @@ const Supplier = () => {
         imageUrl,
       });
       console.log("Supplier added successfully");
-      window.location.reload();
+
+      setOpen(false);
+      setFormResetKey(formResetKey + 1);
     } catch (error) {
       console.error("Error adding supplier: ", error);
     }
@@ -109,9 +123,9 @@ const Supplier = () => {
       const userID = user?.uid;
       const supplierRef = doc(
         database,
-        "supplier",
+        "suppliers",
         userID,
-        "userSupplier",
+        "userSuppliers",
         updatedSupplier.id
       );
 
@@ -130,20 +144,21 @@ const Supplier = () => {
     }
   };
 
-    const handleSubmitSupplier = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+  const handleSubmitSupplier = async (supplierId: number) => {
 
     const updatedProduct: Supplier = {
-        id: suppliers.id,
-        name: name,
-        email: email,
-        contactNumber: contactNumber,
-        product: product,
-        category: category,
-        buyingPrice: buyingPrice,
+      id: supplierId,
+      name: name,
+      email: email,
+      contactNumber: contactNumber,
+      product: product,
+      category: category,
+      buyingPrice: buyingPrice,
     };
 
     await handleUpdateSupplier(updatedProduct);
+    setOpen(false);
+    setFormResetKey(formResetKey + 1);
   };
 
   const foodCategories = [
@@ -175,9 +190,23 @@ const Supplier = () => {
         "userSuppliers",
         supplierId
       );
+      const supplierDocSnap = await getDoc(supplierRef);
+
+      if (!supplierDocSnap.exists()) {
+        console.error("Supplier not found!");
+        return;
+      }
+      const supplierData = supplierDocSnap.data();
+      const imageUrl = supplierData.imageUrl;
+
       await deleteDoc(supplierRef);
 
-      // Update the local state to reflect the deletion
+      if (imageUrl) {
+        const imageRef = ref(storage, imageUrl);
+        await deleteObject(imageRef);
+        console.log("Image deleted successfully");
+      }
+
       setSuppliers((prevSuppliers) =>
         prevSuppliers.filter((supplier) => supplier.id !== supplierId)
       );
@@ -188,6 +217,12 @@ const Supplier = () => {
     }
   };
 
+  const handleContactNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Parse the value as a number, handling empty inputs
+    setContactNumber(value === "" ? 0 : parseFloat(value)); 
+  };
+  
   return (
     <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
       <div className="grid grid-cols-3 gap-8 ">
@@ -199,7 +234,7 @@ const Supplier = () => {
           {" "}
           <div className="h-16 rounded-lg flex justify-end absolute required right-4">
             <div className="m-6 space-x-4">
-              <Dialog.Root>
+              <Dialog.Root open={open} onOpenChange={setOpen}>
                 <Dialog.Trigger asChild>
                   <button className="p-3 text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
                     Add Supplier
@@ -318,12 +353,14 @@ const Supplier = () => {
                     </fieldset>
                     <div className="mt-[25px] flex justify-end">
                       <Dialog.Close asChild>
-                        <button
-                          onClick={handleSubmit}
-                          className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
-                        >
-                          Save changes
-                        </button>
+                        <form onClick={handleSubmit} key={formResetKey}>
+                          <button
+                            type="submit"
+                            className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
+                          >
+                            Save changes
+                          </button>
+                        </form>
                       </Dialog.Close>
                     </div>
                     <Dialog.Close asChild>
@@ -337,9 +374,6 @@ const Supplier = () => {
                   </Dialog.Content>
                 </Dialog.Portal>
               </Dialog.Root>
-              <button className="bg-white-950 border border-black px-4 py-2 rounded shadow-md">
-                Download
-              </button>
             </div>
           </div>
         </div>
@@ -351,6 +385,7 @@ const Supplier = () => {
         <button className="inv-column bg-white-950">Product</button>
         <button className="inv-column bg-white-950">Category</button>
         <button className="inv-column bg-white-950">Buying Price</button>
+        <button className="w-[80px] bg-white-950"></button>
         <button className="bg-white-950"></button>
       </div>
       <div className="h-[600px] overflow-y-auto">
@@ -375,8 +410,21 @@ const Supplier = () => {
               <div className="inv-column">₱{suppliers.buyingPrice}</div>
               <Dialog.Root>
                 <Dialog.Trigger asChild>
-                  <button className="text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
-                    Edit
+                  <button className="text-white bg-white-950 focus:relative">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                      />
+                    </svg>
                   </button>
                 </Dialog.Trigger>
                 <Dialog.Portal>
@@ -427,9 +475,8 @@ const Supplier = () => {
                       <input
                         className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                         id="contactNumber"
-                        onChange={(e) =>
-                          setContactNumber(e.target.valueAsNumber)
-                        }
+                        value={contactNumber === 0 ? "" : contactNumber} 
+                        onChange={handleContactNumberChange}
                       />
                     </fieldset>
 
@@ -487,12 +534,12 @@ const Supplier = () => {
 
                     <div className="mt-[25px] flex justify-end">
                       <Dialog.Close asChild>
-                        <button
-                          onClick={() => handleUpdateSupplier(suppliers)}
-                          className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
-                        >
-                          Save changes
-                        </button>
+                          <button
+                            onClick={() =>{handleSubmitSupplier(suppliers.id)}}
+                            className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
+                          >
+                            Save changes
+                          </button>
                       </Dialog.Close>
                     </div>
                     <Dialog.Close asChild>
