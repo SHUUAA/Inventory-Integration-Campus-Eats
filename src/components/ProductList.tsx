@@ -11,7 +11,7 @@ const user = await firebaseController.getCurrentUser();
 export interface Product {
   id: number;
   name: string;
-  buyingPrice: string;
+  buyingPrice: number;
   quantity: number;
   threshold: number;
   expiryDate: string;

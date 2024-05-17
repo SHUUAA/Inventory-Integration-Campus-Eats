@@ -47,6 +47,12 @@ const Products = () => {
         if (docSnap.exists()) {
           if (isMounted) {
             setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
+            setName(product.name);
+            setCategory(product.category);
+            setBuyingPrice(product.buyingPrice);
+            setQuantity(product.quantity);
+            setExpiryDate(product.expiryDate);
+            setThreshold(product.threshold);
           }
         } else {
           console.log("No such document!");
@@ -238,6 +244,7 @@ const Products = () => {
                         <input
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="name"
+                          value={name}
                           onChange={(e) => setName(e.target.value)}
                         />
                       </fieldset>
@@ -254,6 +261,7 @@ const Products = () => {
                           className="bg-neutral-950 text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="category"
                           required
+                          value={category}
                           onChange={(e) => setCategory(e.target.value)}
                         >
                           <option value="">Select Category</option>
@@ -276,6 +284,7 @@ const Products = () => {
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="price"
                           type="number"
+                          value={buyingPrice}
                           onChange={(e) =>
                             setBuyingPrice(e.target.valueAsNumber)
                           }
@@ -293,6 +302,7 @@ const Products = () => {
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="quantity"
                           type="number"
+                          value={quantity}
                           onChange={(e) => setQuantity(e.target.valueAsNumber)}
                         />
                       </fieldset>
@@ -308,6 +318,7 @@ const Products = () => {
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="expiry"
                           type="date"
+                          value={expiryDate}
                           onChange={(e) => setExpiryDate(e.target.value)}
                         />
                       </fieldset>
@@ -323,6 +334,7 @@ const Products = () => {
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="value"
                           type="number"
+                          value={threshold}
                           onChange={(e) => setThreshold(e.target.valueAsNumber)}
                         />
                       </fieldset>
