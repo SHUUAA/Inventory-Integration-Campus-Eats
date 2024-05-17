@@ -44,6 +44,7 @@ const Supplier = () => {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [formResetKey, setFormResetKey] = useState(0);
   const [open, setOpen] = useState(false);
+
   useEffect(() => {
     const fetchSuppliers = async () => {
       const user = await firebaseController.getCurrentUser();
@@ -63,7 +64,7 @@ const Supplier = () => {
       setSuppliers(supplierList);
     };
     fetchSuppliers();
-  }, [formResetKey]);
+  }, [formResetKey, open]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -145,7 +146,6 @@ const Supplier = () => {
   };
 
   const handleSubmitSupplier = async (supplierId: number) => {
-
     const updatedProduct: Supplier = {
       id: supplierId,
       name: name,
@@ -217,12 +217,14 @@ const Supplier = () => {
     }
   };
 
-  const handleContactNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleContactNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = e.target.value;
     // Parse the value as a number, handling empty inputs
-    setContactNumber(value === "" ? 0 : parseFloat(value)); 
+    setContactNumber(value === "" ? 0 : parseFloat(value));
   };
-  
+
   return (
     <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
       <div className="grid grid-cols-3 gap-8 ">
@@ -447,6 +449,7 @@ const Supplier = () => {
                       <input
                         className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                         id="name"
+                        value={name}
                         onChange={(e) => setName(e.target.value)}
                       />
                     </fieldset>
@@ -461,6 +464,7 @@ const Supplier = () => {
                       <input
                         className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                         id="email"
+                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     </fieldset>
@@ -475,7 +479,7 @@ const Supplier = () => {
                       <input
                         className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                         id="contactNumber"
-                        value={contactNumber === 0 ? "" : contactNumber} 
+                        value={contactNumber === 0 ? "" : contactNumber}
                         onChange={handleContactNumberChange}
                       />
                     </fieldset>
@@ -534,12 +538,14 @@ const Supplier = () => {
 
                     <div className="mt-[25px] flex justify-end">
                       <Dialog.Close asChild>
-                          <button
-                            onClick={() =>{handleSubmitSupplier(suppliers.id)}}
-                            className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
-                          >
-                            Save changes
-                          </button>
+                        <button
+                          onClick={() => {
+                            handleSubmitSupplier(suppliers.id);
+                          }}
+                          className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
+                        >
+                          Save changes
+                        </button>
                       </Dialog.Close>
                     </div>
                     <Dialog.Close asChild>
