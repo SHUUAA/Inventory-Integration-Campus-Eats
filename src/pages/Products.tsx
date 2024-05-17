@@ -12,6 +12,7 @@ const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 import Loader from "../components/Loader";
 import { useUserContext } from "../auth/UserContext";
 import { deleteObject, ref } from "firebase/storage";
+import toast, { Toaster } from "react-hot-toast";
 const Products = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -23,7 +24,8 @@ const Products = () => {
   const location = useLocation();
   const productID = location.pathname.split("/").pop();
   const navigate = useNavigate();
-  const { userData } = useUserContext();
+  const userContext = useUserContext();
+  const { userData } = userContext ?? { userData: {} };
   const [open, setOpen] = useState(false);
   const [productUpdated, setProductUpdated] = useState(false); // Option 2: Flag for re-fetch
 
@@ -46,7 +48,12 @@ const Products = () => {
         const docSnap = await getDoc(productRef);
         if (docSnap.exists()) {
           if (isMounted) {
-            setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
+            setProduct({
+              id: docSnap.id,
+              ...docSnap.data(),
+            } as unknown as Product);
+          }
+          if (product) {
             setName(product.name);
             setCategory(product.category);
             setBuyingPrice(product.buyingPrice);
@@ -112,6 +119,7 @@ const Products = () => {
 
       setProduct(updatedProduct);
       setProductUpdated(true);
+      toast("Successfully updated product!");
     } catch (error) {
       console.error("Error updating product:", error);
     }
@@ -177,6 +185,19 @@ const Products = () => {
 
   return (
     <div>
+      <Toaster
+        position="bottom-center"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#FFFAF1",
+          },
+        }}
+      />
       <button
         onClick={handleNaviButton}
         className="bg-white-950 flex rounded-lg shadow-lg"
