@@ -88,7 +88,7 @@
   .table-container {
     background-color: transparent;
     border-radius: 10px;
-    padding: 20px;
+    padding-bottom: 10px;
   }
   
   .product-table {

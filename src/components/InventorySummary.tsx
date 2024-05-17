@@ -46,9 +46,6 @@ const InventorySummary  = () => {
   // Filter products with quantity less than or equal to the threshold
   const lowStockProducts = productList.filter(product => product.quantity <= product.threshold);
 
-  // Sort products based on sales for the top selling products
-  const topSellingProducts = productList.sort((a, b) => b.sales - a.sales);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -58,7 +55,7 @@ const InventorySummary  = () => {
       <div className="summary-containers">
         <div className="summary-container">
           <div>
-            <h3>₱{productList.reduce((sum, product) => sum + parseFloat(product.sales || 0), 0).toFixed(2)}</h3>
+            <h3>₱ --</h3>
             <span>Sales</span>
           </div>
           <img src={SalesIcon} alt="Sales Icon" className="svg-icon" />
@@ -99,12 +96,12 @@ const InventorySummary  = () => {
                 </tr>
               </thead>
               <tbody>
-                {topSellingProducts.length === 0 ? (
+                {productList.length === 0 ? (
                   <tr>
                     <td colSpan="4">No products available</td>
                   </tr>
                 ) : (
-                  topSellingProducts.map((product) => (
+                  productList.map((product) => (
                     <tr key={product.id}>
                       <td>{product.name}</td>
                       <td>--</td>
@@ -119,44 +116,41 @@ const InventorySummary  = () => {
           <div className="see-all">See All</div>
         </div>
         <div className="low-stock-container">
-  <h1>Low Quantity Stock</h1>
-  <div className="table-container">
-    <table className="product-table">
-      <tbody>
-        {lowStockProducts.length === 0 ? (
-          <tr>
-            <td colSpan="3">No low stock products</td>
-          </tr>
-        ) : (
-          lowStockProducts.map((product) => (
-            <tr key={product.id}>
-              <td>
-                <img
-                  src={product.imageUrl || "/path-to-default-image.png"}
-                  alt={product.name}
-                  className="product-image"
-                  onError={(e) => {
-                    e.target.src = "/path-to-default-image.png";
-                  }}
-                />
-              </td>
-              <td>
-                <div>
-                  <span>{product.name}</span>
-                  <span>Remaining Quantity: {product.quantity}</span>
-                </div>
-              </td>
-              <td>
-                  low
-              </td>
-            </tr>
-          ))
-        )}
-      </tbody>
-    </table>
-  </div>
-  <div className="see-all">See All</div>
-</div>
+          <h1>Low Quantity Stock</h1>
+          <div className="table-container">
+            <table className="product-table">
+              <tbody>
+                {lowStockProducts.length === 0 ? (
+                  <tr>
+                    <td colSpan="3">No low stock products</td>
+                  </tr>
+                ) : (
+                  lowStockProducts.map((product) => (
+                    <tr key={product.id}>
+                      <td>
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className="product-image"
+                        />
+                      </td>
+                      <td>
+                        <div>
+                          <span>{product.name}</span>
+                          <span>Remaining Quantity: {product.quantity}</span>
+                        </div>
+                      </td>
+                      <td>
+                          low
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="see-all">See All</div>
+        </div>
       </div>
     </div>
   );
