@@ -30,7 +30,7 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <nav className="sticky bg-white-950 border-gray-200 p-4 mb-10">
+    <nav className="sticky top-0 z-10 bg-white-950 border-gray-200 p-4 mb-10">
       <div className="container mx-auto flex flex-wrap items-center justify-between">
         <a href="#" className="flex">
           <img className="h-8 mr-2" src={logo} />
