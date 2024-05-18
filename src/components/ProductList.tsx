@@ -366,7 +366,7 @@ const ProductList: React.FC = () => {
                 className="text-violet11 w-[90px] text-right text-[15px]"
                 htmlFor="quantity"
               >
-                Quantity 
+                Quantity
               </label>
               <input
                 className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
@@ -420,10 +420,23 @@ const ProductList: React.FC = () => {
             </div>
             <Dialog.Close asChild>
               <button
-                className=" bg-white-950 text-red-950 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center "
+                className="bg-white-950 text-red-950 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center "
                 aria-label="Close"
               >
-                Close
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18 18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
             </Dialog.Close>
           </Dialog.Content>

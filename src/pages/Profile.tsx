@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import FirebaseController from "../firebase/FirebaseController";
 import toast, { Toaster } from "react-hot-toast";
 import * as Avatar from "@radix-ui/react-avatar";
@@ -182,13 +178,26 @@ const Profile = () => {
                         className="text-red-950 bg-white-950 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center "
                         aria-label="Close"
                       >
-                        Close
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18 18 6M6 6l12 12"
+                          />
+                        </svg>
                       </button>
                     </Dialog.Close>
                   </Dialog.Content>
                 </Dialog.Portal>
               </div>
-              <div className="w-full flex justify-center" >
+              <div className="w-full flex justify-center">
                 <Avatar.Root className="relative" ref={parent}>
                   <Avatar.AvatarImage
                     src={userImage}

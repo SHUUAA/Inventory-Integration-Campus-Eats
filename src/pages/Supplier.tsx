@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Avatar from "@radix-ui/react-avatar";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { database, storage } from "../firebase/Config";
 import {
@@ -369,10 +369,23 @@ const Supplier = () => {
                     </div>
                     <Dialog.Close asChild>
                       <button
-                        className=" bg-white-950 text-red-950 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center "
+                        className="bg-white-950 text-red-950 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center "
                         aria-label="Close"
                       >
-                        Close
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18 18 6M6 6l12 12"
+                          />
+                        </svg>
                       </button>
                     </Dialog.Close>
                   </Dialog.Content>
@@ -414,7 +427,7 @@ const Supplier = () => {
               <div className="inv-column">₱{suppliers.buyingPrice}</div>
               <Dialog.Root>
                 <Dialog.Trigger asChild>
-                  <button className="text-white bg-white-950 focus:relative">
+                  <button className="p-3 rounded-lg text-white bg-white-950 focus:relative mr-3">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -555,7 +568,20 @@ const Supplier = () => {
                         className=" bg-white-950 text-red-950 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center "
                         aria-label="Close"
                       >
-                        Close
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18 18 6M6 6l12 12"
+                          />
+                        </svg>
                       </button>
                     </Dialog.Close>
                   </Dialog.Content>
@@ -563,7 +589,7 @@ const Supplier = () => {
               </Dialog.Root>
               <AlertDialog.Root>
                 <AlertDialog.Trigger asChild>
-                  <button className="bg-white-950">
+                  <button className="p-3 rounded-lg bg-white-950">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
