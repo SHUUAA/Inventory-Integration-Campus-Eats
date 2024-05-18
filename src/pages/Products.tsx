@@ -199,7 +199,7 @@ const Products = () => {
       />
       <button
         onClick={handleNaviButton}
-        className="bg-white-950 flex rounded-lg shadow-lg"
+        className="p-3 bg-white-950 flex rounded-lg shadow-lg"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +227,7 @@ const Products = () => {
               <div className="m-6 space-x-4">
                 <Dialog.Root open={open} onOpenChange={setOpen}>
                   <Dialog.Trigger asChild>
-                    <button className="text-white rounded-lg shadow-md bg-neutral-950 focus:relative">
+                    <button className="p-3 text-white rounded-lg shadow-md bg-neutral-950 focus:relative">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -383,7 +383,7 @@ const Products = () => {
                 </Dialog.Root>
                 <AlertDialog.Root>
                   <AlertDialog.Trigger asChild>
-                    <button className="text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
+                    <button className="p-3 text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
