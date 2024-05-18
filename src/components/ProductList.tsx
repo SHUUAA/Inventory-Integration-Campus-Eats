@@ -281,7 +281,7 @@ const ProductList: React.FC = () => {
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-2 py-1 bg-brown-950 rounded-l"
+            className="px-2 py-1 bg-brown-950 rounded-l shadow-md"
           >
             Previous
           </button>
@@ -292,7 +292,7 @@ const ProductList: React.FC = () => {
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-2 py-1 bg-brown-950 rounded-r"
+            className="px-2 py-1 bg-brown-950 rounded-r shadow-md"
           >
             Next
           </button>
