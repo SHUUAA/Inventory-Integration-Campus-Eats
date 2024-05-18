@@ -281,6 +281,14 @@ const Supplier = () => {
     },
     onGlobalFilterChange: setGlobalFilter,
   });
+  
+  const handleContactNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    // Parse the value as a number, handling empty inputs
+    setContactNumber(value === "" ? 0 : parseFloat(value));
+  };
 
   return (
     <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
@@ -563,6 +571,7 @@ const Supplier = () => {
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="contactNumber"
                           value={contactNumber === 0 ? "" : contactNumber}
+                          onChange={(e) => setContactNumber(e.target.value)}
                         />
                       </fieldset>
 
