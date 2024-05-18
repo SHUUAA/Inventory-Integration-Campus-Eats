@@ -18,6 +18,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import toast, { Toaster } from "react-hot-toast";
 export interface Product {
   id: number;
   name: string;
@@ -105,7 +106,7 @@ const ProductList: React.FC = () => {
         threshold,
         imageUrl,
       });
-      console.log("Product added successfully");
+      toast("Product added successfully");
       setOpen(false);
       setFormResetKey(formResetKey + 1);
     } catch (error) {
@@ -208,6 +209,19 @@ const ProductList: React.FC = () => {
 
   return (
     <div className="inv-inventory-container">
+      <Toaster
+        position="bottom-right"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#FFFAF1",
+          },
+        }}
+      />
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <div className="header-and-buttons mb-4">
           <h1 className="inv-inventory-header">Products</h1>
@@ -296,7 +310,7 @@ const ProductList: React.FC = () => {
           >
             Next
           </button>
-        </div> 
+        </div>
 
         <Dialog.Portal>
           <Dialog.Overlay className="bg-black-A6 data-[state=open]:animate-overlayShow fixed inset-0" />

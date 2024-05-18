@@ -107,7 +107,7 @@ const Profile = () => {
     <div>
       <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
         <Toaster
-          position="bottom-center"
+          position="bottom-right"
           reverseOrder={false}
           gutter={8}
           containerClassName=""
