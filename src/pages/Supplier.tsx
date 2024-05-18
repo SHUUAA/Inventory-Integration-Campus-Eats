@@ -76,7 +76,7 @@ const Supplier = () => {
       setSuppliers(supplierList);
     };
     fetchSuppliers();
-  }, [formResetKey, open]);
+  }, [formResetKey]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -230,6 +230,19 @@ const Supplier = () => {
   };
 
   const columns: ColumnDef<Supplier>[] = [
+        {
+      id: "avatar",
+      header: "",
+      cell: ({ row }) => (
+        <Avatar.Root className="">
+          <Avatar.AvatarImage
+            src={row.original.imageUrl}
+            alt="Profile Picture"
+            className="ml-3 h-[40px] w-[40px] rounded-full "
+          />
+        </Avatar.Root>
+      ),
+    },
     {
       accessorKey: "name",
       header: "Supplier",
@@ -254,6 +267,7 @@ const Supplier = () => {
       accessorKey: "buyingPrice",
       header: "Buying Price",
     },
+
   ];
 
   const table = useReactTable({
@@ -264,7 +278,7 @@ const Supplier = () => {
     getSortedRowModel: getSortedRowModel(),
     initialState: {
       pagination: {
-        pageSize: 9,
+        pageSize: 8,
       },
     },
     getFilteredRowModel: getFilteredRowModel(),
@@ -281,7 +295,7 @@ const Supplier = () => {
     },
     onGlobalFilterChange: setGlobalFilter,
   });
-  
+
   const handleContactNumberChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -466,7 +480,7 @@ const Supplier = () => {
         </div>
       </div>
 
-      <div className="h-[650px] overflow-hidden mt-16">
+      <div className="h-[630px] overflow-hidden mt-16">
         <table className="min-w-full divide-y divide-brown-950">
           <thead className="">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -495,7 +509,7 @@ const Supplier = () => {
           </thead>
           <tbody className="bg-white divide-y divide-brown-950" ref={parent}>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-red-950 cursor-pointer">
+              <tr key={row.id} className="">
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -721,7 +735,7 @@ const Supplier = () => {
         </table>
       </div>
 
-      <div className="pagination flex justify-center p-3 mt-4">
+      <div className="pagination flex justify-center p-3">
         <button
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
