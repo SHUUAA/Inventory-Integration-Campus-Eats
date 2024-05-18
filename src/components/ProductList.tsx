@@ -48,8 +48,6 @@ const ProductList: React.FC = () => {
   const [file, setFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [formResetKey, setFormResetKey] = useState(0);
-  const [pageCount, setPageCount] = useState(0);
-  const [pageIndex, setPageIndex] = useState(0);
   const userID = user?.uid;
 
   const foodCategories = [
@@ -231,7 +229,7 @@ const ProductList: React.FC = () => {
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="Search products..."
-              className="border p-2 bg-white rounded-lg shadow-md"
+              className="border p-2 bg-white rounded-lg shadow-sm"
             />
           </div>
           <div className="button-row">

@@ -8,7 +8,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 const groq = new Groq({
   apiKey: import.meta.env.VITE_APP_GROQ_API_KEY,
   dangerouslyAllowBrowser: true,
-}); // Initialize Groq client
+}); 
 
 export default function ChatBox({ isOpen, onClose }) {
   const [messages, setMessages] = useState([]);
@@ -30,10 +30,10 @@ export default function ChatBox({ isOpen, onClose }) {
 
     const newMessages = [
       ...messages,
-      ...(e ? [{ role: "user", content: input, name: "user" }] : []), // Add user message with name
+      ...(e ? [{ role: "user", content: input, name: "user" }] : []), 
     ];
     setMessages(newMessages);
-    setInput(""); // Clear input field
+    setInput(""); 
 
     try {
       const stream = await groq.chat.completions.create({
@@ -55,7 +55,7 @@ export default function ChatBox({ isOpen, onClose }) {
             return [
               ...prev,
               { role: "assistant", content: token, name: "assistant" },
-            ]; // Add assistant message with name
+            ]; 
           }
         });
       }
@@ -69,31 +69,28 @@ export default function ChatBox({ isOpen, onClose }) {
   return (
     <div className={`fixed bottom-0 right-0 ${isOpen ? "block" : "hidden"}`} >
       <div
+      className="bg-red-950 shadow-xl rounded-xl"
         style={{
-          boxShadow: "0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
           position: "fixed",
           bottom: "calc(4rem + 1.5rem)",
           right: 0,
           marginRight: "1rem",
-          backgroundColor: "#FFFAF1",
           padding: "1.5rem",
-          borderRadius: "0.5rem",
-          border: "1px solid #e5e7eb",
           width: "440px",
           height: "634px",
         }}
       >
         <div className="flex flex-col space-y-1.5 pb-6">
-          <h2 className="font-semibold text-lg tracking-tight">Campus Chatbot</h2>
-          <p className="text-sm text-[#6b7280] leading-3">
+          <h2 className="font-semibold text-lg text-white-950 tracking-tight">Campus Chatbot</h2>
+          <p className="text-sm text-white-950 leading-3">
             Powered by Groq & Llama3 
           </p>
         </div>
-        <div className="h-[460px] overflow-y-auto pr-1 mb-4" ref={parent}>
+        <div className="bg-white-950 rounded-md h-[460px] overflow-y-auto pr-1 mb-4" ref={parent}>
           {messages.map((m) => (
             <div
               key={m.id}
-              className={`flex gap-3 my-4 text-gray-600 rounded-lg p-4 text-sm flex-1 ${
+              className={`flex gap-3 my-4 text-black rounded-lg p-4 text-sm flex-1 ${
                 m.role === "user" ? "justify-end" : ""
               }`}
             >
@@ -131,7 +128,7 @@ export default function ChatBox({ isOpen, onClose }) {
               </span>
 
               <p className="leading-relaxed">
-                <span className="block font-bold text-gray-700">
+                <span className="block font-bold text-black">
                   {m.role === "user" ? "You" : "Campus AI"}
                 </span>
                 <ReactMarkdown>{m.content}</ReactMarkdown>
@@ -139,7 +136,7 @@ export default function ChatBox({ isOpen, onClose }) {
             </div>
           ))}
           {isLoading && (
-            <div className="flex gap-3 my-4 text-gray-600 text-sm flex-1">
+            <div className="flex gap-3 my-4 text-black text-sm flex-1">
               <p className="leading-relaxed">Typing...</p>
             </div>
           )}
@@ -157,7 +154,7 @@ export default function ChatBox({ isOpen, onClose }) {
             />
             <button
               type="submit"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium text-[black] disabled:pointer-events-none bg-red-950 hover:bg-red-950 h-10 px-4 py-2"
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium text-white-950 hover:text-black disabled:pointer-events-none h-10 px-4 py-2"
             >
               Send
             </button>
