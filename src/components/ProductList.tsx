@@ -47,6 +47,8 @@ const ProductList: React.FC = () => {
   const [file, setFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [formResetKey, setFormResetKey] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+  const [pageIndex, setPageIndex] = useState(0);
   const userID = user?.uid;
 
   const foodCategories = [
@@ -184,6 +186,11 @@ const ProductList: React.FC = () => {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      },
+    },
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: (row, columnId, value) => {
       const searchTerm = value.toLowerCase();
@@ -222,8 +229,8 @@ const ProductList: React.FC = () => {
           </div>
         </div>
 
-        <div className="h-[400px] overflow-y-auto overflow-x-auto">
-          <table className="sticky min-w-full divide-y divide-brown-950">
+        <div className="h-[350px] overflow-hidden">
+          <table className="min-w-full divide-y divide-brown-950">
             <thead className="">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -270,11 +277,11 @@ const ProductList: React.FC = () => {
           </table>
         </div>
 
-        {/* <div className="pagination flex justify-center mt-4">
+        <div className="pagination flex justify-center mt-4">
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-2 py-1 bg-gray-200 rounded-l"
+            className="px-2 py-1 bg-brown-950 rounded-l"
           >
             Previous
           </button>
@@ -285,11 +292,11 @@ const ProductList: React.FC = () => {
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-2 py-1 bg-gray-200 rounded-r"
+            className="px-2 py-1 bg-brown-950 rounded-r"
           >
             Next
           </button>
-        </div> */}
+        </div> 
 
         <Dialog.Portal>
           <Dialog.Overlay className="bg-black-A6 data-[state=open]:animate-overlayShow fixed inset-0" />
