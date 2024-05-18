@@ -264,7 +264,7 @@ const Supplier = () => {
     getSortedRowModel: getSortedRowModel(),
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 9,
       },
     },
     getFilteredRowModel: getFilteredRowModel(),
