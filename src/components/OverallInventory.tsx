@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { database } from "../firebase/Config";
 import { collection, getDocs, query } from "firebase/firestore";
 import "../css/OverallInventory.css";

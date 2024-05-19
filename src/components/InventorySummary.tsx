@@ -1,55 +1,62 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { database } from "../firebase/Config";
 import { collection, getDocs, query } from "firebase/firestore";
 import "../css/InventorySummary.css";
 import FirebaseController from "../firebase/FirebaseController";
-
-import SalesIcon from '../assets/cash-outline.svg';
-import QuantityIcon from '../assets/cube-outline.svg';
-import PurchaseIcon from '../assets/bag-check-outline.svg';
-import SuppliersIcon from '../assets/people-outline.svg';
+import SalesIcon from "../assets/cash-outline.svg";
+import QuantityIcon from "../assets/cube-outline.svg";
+import PurchaseIcon from "../assets/bag-check-outline.svg";
+import SuppliersIcon from "../assets/people-outline.svg";
 import Loader from "./Loader";
+import { atom, useAtom } from "jotai";
 
+const productListAtom = atom<Product[]>([]);
+const isLoadingAtom = atom(true);
+const errorAtom = atom<string | null>(null);
 
-const InventorySummary  = () => {
-  const [productList, setProductList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+const InventorySummary = () => {
+  const [productList, setProductList] = useAtom(productListAtom);
+  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
+  const [error, setError] = useAtom(errorAtom);
   const firebaseController = new FirebaseController();
 
-  useEffect(() => {
-    const getProductList = async () => {
-      try {
-        const user = await firebaseController.getCurrentUser();
-        if (!user) {
-          console.error("User not authenticated!");
-          return;
-        }
-        const userID = user.uid;
-        const userProductsQuery = query(
-          collection(database, "products", userID, "userProducts")
-        );
-        const data = await getDocs(userProductsQuery);
-        const products = data.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setProductList(products);
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-      } finally {
-        setIsLoading(false);
+  const getProductList = async () => {
+    try {
+      const user = await firebaseController.getCurrentUser();
+      if (!user) {
+        console.error("User not authenticated!");
+        return;
       }
-    };
 
+      const userID = user.uid;
+      const userProductsQuery = query(
+        collection(database, "products", userID, "userProducts")
+      );
+      const data = await getDocs(userProductsQuery);
+      const products = data.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setProductList(products);
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     getProductList();
   }, []);
 
-  // Filter products with quantity less than or equal to the threshold
-  const lowStockProducts = productList.filter(product => product.quantity <= product.threshold);
-
+  const lowStockProducts = productList.filter(
+    (product) => product.quantity <= product.threshold
+  );
 
   return (
-    <div className='main-content'>
+    <div className="main-content">
       <div className="summary-containers">
         <div className="summary-container">
           <div>
@@ -60,7 +67,12 @@ const InventorySummary  = () => {
         </div>
         <div className="summary-container">
           <div>
-            <h3>{productList.reduce((sum, product) => sum + parseInt(product.quantity || 0), 0)}</h3>
+            <h3>
+              {productList.reduce(
+                (sum, product) => sum + parseInt(product.quantity || 0),
+                0
+              )}
+            </h3>
             <span>Quantity in Hand</span>
           </div>
           <img src={QuantityIcon} alt="Quantity Icon" className="svg-icon" />
@@ -81,7 +93,7 @@ const InventorySummary  = () => {
         </div>
       </div>
       <div className="flex-container">
-        <div className="product-list-container">
+        <div className="product-list-container h-[500px] overflow-y-auto">
           <h1>Top Selling Stock</h1>
           <div className="table-container">
             <table className="product-table">
@@ -113,7 +125,7 @@ const InventorySummary  = () => {
           </div>
           <div className="see-all">See All</div>
         </div>
-        <div className="low-stock-container">
+        <div className="low-stock-container h-[500px] overflow-y-auto">
           <h1>Low Quantity Stock</h1>
           <div className="table-container">
             <table className="product-table">
@@ -138,9 +150,7 @@ const InventorySummary  = () => {
                           <span>Remaining Quantity: {product.quantity}</span>
                         </div>
                       </td>
-                      <td>
-                          low
-                      </td>
+                      <td>low</td>
                     </tr>
                   ))
                 )}
@@ -152,6 +162,6 @@ const InventorySummary  = () => {
       </div>
     </div>
   );
-}
+};
 
 export default InventorySummary;
