@@ -5,7 +5,9 @@ import "../css/OverallInventory.css";
 import FirebaseController from "../firebase/FirebaseController";
 const firebaseController = new FirebaseController();
 const user = await firebaseController.getCurrentUser();
-import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { atom, useAtom } from "jotai";
+import { productsUpdatedAtom } from "./ProductList";
 interface Product {
   id: string;
   name: string;
@@ -13,18 +15,25 @@ interface Product {
   quantity: number;
 }
 
+const totalProductsAtom = atom(0);
+const lowStocksAtom = atom(0);
+const categoriesCountAtom = atom(0);
+
 const OverallInventory = () => {
-  const [totalProducts, setTotalProducts] = useState<number>(0);
-  const [lowStocks, setLowStocks] = useState<number>(0);
-  const [categoriesCount, setCategoriesCount] = useState<number>(0);
+  const [totalProducts, setTotalProducts] = useAtom(totalProductsAtom);
+  const [productsUpdated] = useAtom(productsUpdatedAtom);
+  const [lowStocks, setLowStocks] = useAtom(lowStocksAtom);
+  const [categoriesCount, setCategoriesCount] = useAtom(categoriesCountAtom);
   const [parent, enableAnimations] = useAutoAnimate();
   const userID = user?.uid;
+
   useEffect(() => {
     const fetchProducts = async () => {
       if (!user || !userID) {
         console.error("User not authenticated or missing UID!");
         return;
       }
+
       const userProductsQuery = query(
         collection(database, "products", userID, "userProducts")
       );
@@ -32,18 +41,14 @@ const OverallInventory = () => {
       const products = querySnapshot.docs.map((doc) => doc.data() as Product);
 
       setTotalProducts(products.length);
-
-      const lowStockCount = products.filter(
-        (product) => product.quantity < 10
-      ).length;
-      setLowStocks(lowStockCount);
-
-      const categorySet = new Set(products.map((product) => product.category));
-      setCategoriesCount(categorySet.size);
+      setLowStocks(products.filter((product) => product.quantity < 10).length);
+      setCategoriesCount(
+        new Set(products.map((product) => product.category)).size
+      );
     };
 
     fetchProducts();
-  }, []);
+  }, [userID, productsUpdated]);
 
   return (
     <div className="overall-inventory-container container-rounded">

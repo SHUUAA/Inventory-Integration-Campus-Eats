@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { database, storage } from "../firebase/Config";
+import { authentication, database, storage } from "../firebase/Config";
 import * as Dialog from "@radix-ui/react-dialog";
 import { addDoc, collection, doc, getDocs, query } from "firebase/firestore";
 import "../css/ProductList.css";
@@ -19,6 +19,7 @@ import {
 } from "@tanstack/react-table";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast, { Toaster } from "react-hot-toast";
+import { atom, useAtom } from "jotai";
 export interface Product {
   id: number;
   name: string;
@@ -35,19 +36,54 @@ export interface Product {
   imageUrl?: string;
 }
 
+const productsAtom = atom<Product[]>([]);
+const globalFilterAtom = atom("");
+const isLoadingAtom = atom(false);
+const errorAtom = atom<string | null>(null);
+export const productsUpdatedAtom = atom(0);
+
+// Form State Atoms
+const nameAtom = atom("");
+const categoryAtom = atom("");
+const buyingPriceAtom = atom(0);
+const quantityAtom = atom(0);
+const expiryDateAtom = atom("");
+const imageUrlAtom = atom("");
+const thresholdAtom = atom(0);
+const fileAtom = atom<File | null>(null);
+const openAtom = atom(false);
+const formResetKeyAtom = atom(0);
+const shouldRefetchAtom = atom(false); // Atom to trigger refetching
+
+const supplierNameAtom = atom("");
+const contactNumberAtom = atom("");
+const storeNamesAtom = atom<string[]>([]);
+const stockInHandAtom = atom<number[]>([]);
+
 const ProductList: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [products, setProducts] = useAtom(productsAtom);
+  const [ , setProductsUpdated] = useAtom(productsUpdatedAtom);
+  const [globalFilter, setGlobalFilter] = useAtom(globalFilterAtom);
+  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
+  const [error, setError] = useAtom(errorAtom);
+
+  const [name, setName] = useAtom(nameAtom);
+  const [category, setCategory] = useAtom(categoryAtom);
+  const [buyingPrice, setBuyingPrice] = useAtom(buyingPriceAtom);
+  const [quantity, setQuantity] = useAtom(quantityAtom);
+  const [expiryDate, setExpiryDate] = useAtom(expiryDateAtom);
+  const [threshold, setThreshold] = useAtom(thresholdAtom);
+  const [file, setFile] = useAtom(fileAtom);
+  const [open, setOpen] = useAtom(openAtom);
+  const [imageUrl, setImageUrl] = useAtom(imageUrlAtom);
+  const [shouldRefetch, setShouldRefetch] = useAtom(shouldRefetchAtom);
+
+  const [supplierName, setSupplierName] = useAtom(supplierNameAtom);
+  const [contactNumber, setContactNumber] = useAtom(contactNumberAtom);
+  const [storeNames, setStoreNames] = useAtom(storeNamesAtom);
+  const [stockInHand, setStockInHand] = useAtom(stockInHandAtom);
+
   const [parent, enableAnimations] = useAutoAnimate();
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [buyingPrice, setBuyingPrice] = useState(0);
-  const [quantity, setQuantity] = useState(0);
-  const [expiryDate, setExpiryDate] = useState("");
-  const [threshold, setThreshold] = useState(0);
-  const [file, setFile] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [formResetKey, setFormResetKey] = useState(0);
   const userID = user?.uid;
 
   const foodCategories = [
@@ -72,20 +108,26 @@ const ProductList: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!user || !userID) {
+    const user = authentication.currentUser;
+    if (!user) {
       console.error("User not authenticated or missing UID!");
       return;
     }
 
-    const random = crypto.randomUUID();
+    const userID = user.uid;
+
+    setIsLoading(true);
+
     let imageUrl = "";
     if (file) {
+      const random = crypto.randomUUID();
       const imageRef = ref(
         storage,
         `ProductImages/${userID}/${random}-${file.name}`
       );
       await uploadBytes(imageRef, file);
       imageUrl = await getDownloadURL(imageRef);
+      setImageUrl(imageUrl);
     }
 
     try {
@@ -103,12 +145,17 @@ const ProductList: React.FC = () => {
         expiryDate,
         threshold,
         imageUrl,
+        // ... other fields (supplierName, contactNumber, storeNames, stockInHand)
       });
-      toast("Product added successfully");
+      setProductsUpdated((prev) => prev + 1);
+      setShouldRefetch(true);
       setOpen(false);
-      setFormResetKey(formResetKey + 1);
+      toast("Product added successfully");
     } catch (error) {
       console.error("Error adding product: ", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -118,17 +165,29 @@ const ProductList: React.FC = () => {
         console.error("User not authenticated or missing UID!");
         return;
       }
-      const userProductsQuery = query(
-        collection(database, "products", userID, "userProducts")
-      );
-      const querySnapshot = await getDocs(userProductsQuery);
-      const productList = querySnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as Product)
-      );
-      setProducts(productList);
+      setIsLoading(true);
+      try {
+        const userProductsQuery = query(
+          collection(database, "products", userID, "userProducts")
+        );
+        const querySnapshot = await getDocs(userProductsQuery);
+        const productList = querySnapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() } as Product)
+        );
+        setProducts(productList);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
+
+    if (shouldRefetch) {
+      fetchProducts();
+      setShouldRefetch(false);
+    }
     fetchProducts();
-  }, [formResetKey, open]);
+  }, [shouldRefetch]);
 
   const navigate = useNavigate();
   const handleProductList = (product: Product) => {
@@ -427,7 +486,7 @@ const ProductList: React.FC = () => {
 
             <div className="mt-[25px] flex justify-end">
               <Dialog.Close asChild>
-                <form onClick={handleSubmit} key={formResetKey}>
+                <form onClick={handleSubmit}>
                   <button
                     type="submit"
                     className="bg-red-950 hover:bg-red-1000 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
