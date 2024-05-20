@@ -202,7 +202,7 @@ const Profile = () => {
                   <Avatar.AvatarImage
                     src={userImage}
                     alt="Profile Picture"
-                    className="bg-blackA1 inline-flex h-[150px] w-[150px] select-none items-center justify-center overflow-hidden rounded-full align-middle"
+                    className="bg-blackA1 inline-flex h-[150px] w-[150px] object-cover select-none items-center justify-center overflow-hidden rounded-full align-middle"
                   />
                   <Avatar.AvatarFallback className="text-red-950 leading-1 flex h-[150px] w-[150px] items-center justify-center bg-brown-950 rounded-full text-[45px] font-medium">
                     {initials}

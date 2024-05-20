@@ -2,8 +2,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as Avatar from "@radix-ui/react-avatar";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import React, { useEffect, useMemo, useReducer, useState } from "react";
-import { database, storage } from "../firebase/Config";
+import React, { useEffect } from "react";
+import { authentication, database, storage } from "../firebase/Config";
 import {
   addDoc,
   collection,
@@ -31,6 +31,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { atom, useAtom } from "jotai";
 const firebaseController = new FirebaseController();
 interface Supplier {
   id: number;
@@ -43,38 +44,68 @@ interface Supplier {
   imageUrl?: string;
 }
 
+const suppliersAtom = atom<Supplier[]>([]);
+const globalFilterAtom = atom("");
+const isLoadingAtom = atom(true);
+const errorAtom = atom<string | null>(null);
+
+const nameAtom = atom("");
+const emailAtom = atom("");
+const productAtom = atom("");
+const contactNumberAtom = atom(0);
+const categoryAtom = atom("");
+const buyingPriceAtom = atom(0);
+const fileAtom = atom<File | null>(null);
+const openAtom = atom(false);
+const formResetKeyAtom = atom(0);
+
 const Supplier = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [product, setProduct] = useState("");
-  const [contactNumber, setContactNumber] = useState(0);
-  const [category, setCategory] = useState("");
-  const [buyingPrice, setBuyingPrice] = useState(0);
-  const [file, setFile] = useState(null);
-  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-  const [formResetKey, setFormResetKey] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [suppliers, setSuppliers] = useAtom(suppliersAtom);
+  const [globalFilter, setGlobalFilter] = useAtom(globalFilterAtom);
+  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
+  const [error, setError] = useAtom(errorAtom);
+
+  const [name, setName] = useAtom(nameAtom);
+  const [email, setEmail] = useAtom(emailAtom);
+  const [product, setProduct] = useAtom(productAtom);
+  const [contactNumber, setContactNumber] = useAtom(contactNumberAtom);
+  const [category, setCategory] = useAtom(categoryAtom);
+  const [buyingPrice, setBuyingPrice] = useAtom(buyingPriceAtom);
+  const [file, setFile] = useAtom(fileAtom);
+  const [open, setOpen] = useAtom(openAtom);
+  const [formResetKey, setFormResetKey] = useAtom(formResetKeyAtom);
+
   const [parent, enableAnimations] = useAutoAnimate();
-  const [globalFilter, setGlobalFilter] = useState("");
 
   useEffect(() => {
     const fetchSuppliers = async () => {
-      const user = await firebaseController.getCurrentUser();
-      const userID = user?.uid;
+      setIsLoading(true); // Start loading
 
-      if (!userID) {
-        console.error("User not authenticated or missing UID!");
-        return;
+      try {
+        const user = authentication.currentUser;
+        const userID = user?.uid;
+
+        if (!userID) {
+          throw new Error("User not authenticated or missing UID!");
+        }
+
+        const userSupplierQuery = query(
+          collection(database, "suppliers", userID, "userSuppliers")
+        );
+        const querySnapshot = await getDocs(userSupplierQuery);
+        const supplierList = querySnapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() } as Supplier)
+        );
+
+        setSuppliers(supplierList);
+      } catch (err) {
+        console.error("Failed to fetch suppliers:", err);
+        setError(err.message); // Set the error atom
+      } finally {
+        setIsLoading(false); // Finish loading
       }
-      const userSupplierQuery = query(
-        collection(database, "suppliers", userID, "userSuppliers")
-      );
-      const querySnapshot = await getDocs(userSupplierQuery);
-      const supplierList = querySnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as Supplier)
-      );
-      setSuppliers(supplierList);
     };
+
     fetchSuppliers();
   }, [formResetKey]);
 
@@ -185,9 +216,10 @@ const Supplier = () => {
     "Beverages",
   ];
 
-  const handleDeleteSupplier = async (supplierId: number) => {
+  const handleDeleteSupplier = async (supplierId: string) => {
+    // Update to string
     try {
-      const user = await firebaseController.getCurrentUser();
+      const user = authentication.currentUser;
       const userID = user?.uid;
 
       if (!userID) {
@@ -202,43 +234,40 @@ const Supplier = () => {
         "userSuppliers",
         supplierId
       );
-      const supplierDocSnap = await getDoc(supplierRef);
 
+      const supplierDocSnap = await getDoc(supplierRef);
       if (!supplierDocSnap.exists()) {
         console.error("Supplier not found!");
         return;
       }
       const supplierData = supplierDocSnap.data();
-      const imageUrl = supplierData.imageUrl;
+      const imageUrl = supplierData?.imageUrl; // Optional chaining for safety
 
       await deleteDoc(supplierRef);
 
       if (imageUrl) {
         const imageRef = ref(storage, imageUrl);
         await deleteObject(imageRef);
-        console.log("Image deleted successfully");
       }
 
       setSuppliers((prevSuppliers) =>
         prevSuppliers.filter((supplier) => supplier.id !== supplierId)
       );
-
-      console.log("Supplier deleted successfully");
     } catch (error) {
       console.error("Error deleting supplier: ", error);
     }
   };
 
   const columns: ColumnDef<Supplier>[] = [
-        {
+    {
       id: "avatar",
-      header: "",
+      header: "Photo",
       cell: ({ row }) => (
         <Avatar.Root className="">
           <Avatar.AvatarImage
             src={row.original.imageUrl}
             alt="Profile Picture"
-            className="ml-3 h-[40px] w-[40px] rounded-full "
+            className="ml-3 h-[40px] w-[40px] object-cover rounded-full"
           />
         </Avatar.Root>
       ),
@@ -267,7 +296,6 @@ const Supplier = () => {
       accessorKey: "buyingPrice",
       header: "Buying Price",
     },
-
   ];
 
   const table = useReactTable({
@@ -301,7 +329,7 @@ const Supplier = () => {
   ) => {
     const value = e.target.value;
     // Parse the value as a number, handling empty inputs
-    setContactNumber(value === "" ? 0 : parseFloat(value));
+    setContactNumber(value === "" ? 0 : parseInt(value, 10));
   };
 
   return (
@@ -480,8 +508,8 @@ const Supplier = () => {
         </div>
       </div>
 
-      <div className="h-[630px] overflow-hidden mt-16">
-        <table className="min-w-full divide-y divide-brown-950">
+      <div className="h-[630px] mt-16">
+        <table className="min-w-full divide-y divide-brown-950" style={{ tableLayout: "fixed", width: "100%"}} >
           <thead className="">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -511,7 +539,7 @@ const Supplier = () => {
             {table.getRowModel().rows.map((row) => (
               <tr key={row.id} className="">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                  <td key={cell.id} className="px-6 py-4">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}

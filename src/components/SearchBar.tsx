@@ -90,10 +90,10 @@ const SearchBar: React.FC = () => {
                 />
               </svg>
             </div> */}
-            <Avatar.Root className="inline-flex h-[45px] w-[45px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
+            <Avatar.Root className="select-none items-center justify-center overflow-hidden rounded-full align-middle">
               <Link to={`/${userData.type}/profile`}>
                 <Avatar.AvatarImage
-                  className="h-full w-full rounded-[inherit] object-cover"
+                  className="h-[40px] w-[40px] rounded-[inherit] object-cover"
                   src={image}
                   alt="Profile"
                 />

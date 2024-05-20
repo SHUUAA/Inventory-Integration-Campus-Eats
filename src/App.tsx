@@ -25,12 +25,9 @@ function App() {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
-  
-
   return loading ? (
     <Loader />
   ) : (
-    <>
       <Suspense fallback={<Loader></Loader>}>
         <UserProvider>
           <AuthProvider>
@@ -221,7 +218,6 @@ function App() {
           </AuthProvider>
         </UserProvider>
       </Suspense>
-    </>
   );
 }
 

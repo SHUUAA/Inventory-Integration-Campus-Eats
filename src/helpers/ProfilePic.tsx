@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { authentication, storage } from "../firebase/Config";
 import { getDownloadURL, ref } from "firebase/storage";
+import { atom, useAtom } from "jotai";
+
+const profileIconAtom = atom<string | null>(null); 
 
 const ProfilePic = () => {
-  const [profileIcon, setProfileIcon] = useState("");
-  const userID = authentication.currentUser.uid;
+  const [profileIcon, setProfileIcon] = useAtom(profileIconAtom);
+  const userID = authentication.currentUser?.uid;
+
   useEffect(() => {
     const fetchImage = async () => {
       try {
@@ -12,12 +16,16 @@ const ProfilePic = () => {
         const url = await getDownloadURL(imageRef);
         setProfileIcon(url);
       } catch (error) {
-        /* empty */
+        setProfileIcon(null); 
+        console.error("Error fetching profile picture:", error);
       }
     };
 
-    fetchImage();
-  }, []); // Empty dependency array: runs only on mount
+    if (userID) { 
+      fetchImage();
+    }
+  }, [userID]); 
+
   return profileIcon;
 };
 

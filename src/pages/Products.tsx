@@ -529,7 +529,7 @@ const Products = () => {
           </div>
           <div className="col-span-1 ml-6 p-24">
             <img
-              className="rounded-xl w-[200px] shadow-lg"
+              className="rounded-xl h-[200px] w-[200px] object-cover shadow-lg"
               src={product.imageUrl}
             ></img>
             <div className="relative bg-white pt-3">

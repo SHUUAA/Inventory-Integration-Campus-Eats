@@ -197,7 +197,7 @@ const ProductList: React.FC = () => {
   const getAvailabilityStatus = (quantity: number) => {
     if (quantity <= 0) {
       return { text: "Out of Stock", color: "red" };
-    } else if (quantity <= 10) {
+    } else if (quantity <= threshold) {
       return { text: "Low Stock", color: "#FFBA18" };
     } else {
       return { text: "In Stock", color: "green" };
@@ -301,7 +301,7 @@ const ProductList: React.FC = () => {
         </div>
 
         <div className="h-[350px] overflow-hidden">
-          <table className="min-w-full divide-y divide-brown-950">
+          <table className="min-w-full divide-y divide-brown-950" style={{ tableLayout: "fixed", width: "100%" }}>
             <thead className="">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -474,7 +474,7 @@ const ProductList: React.FC = () => {
                 className="text-violet11 w-[90px] text-right text-[15px]"
                 htmlFor="threshold"
               >
-                Buying Price
+                Threshold 
               </label>
               <input
                 className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
