@@ -1,4 +1,4 @@
-import { authentication, database } from "../firebase/Config";
+import { authentication } from "../firebase/Config";
 import { signInWithEmailAndPassword, } from "firebase/auth";
 import { logout } from "./Logout";
 
@@ -7,7 +7,6 @@ async function login(email: string, password: string) {
     const userCredential = await signInWithEmailAndPassword(authentication, email, password);
     const user = userCredential.user
 
-    // Check if the user's email is verified
      if (!user.emailVerified) {
       logout();
      throw new Error('Please verify your email before logging in.');
@@ -15,7 +14,7 @@ async function login(email: string, password: string) {
     return user;
   } catch (error) {
     console.error("Error logging in:", error);
-    throw error; // re-throw the error to propagate it to the caller
+    throw error; 
   }
 }
 

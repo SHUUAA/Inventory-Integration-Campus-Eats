@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { sendEmailVerification } from "firebase/auth";
 
 const actionCodeSettings = {

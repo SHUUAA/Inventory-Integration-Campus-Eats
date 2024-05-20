@@ -42,7 +42,6 @@ const isLoadingAtom = atom(false);
 const errorAtom = atom<string | null>(null);
 export const productsUpdatedAtom = atom(0);
 
-// Form State Atoms
 const nameAtom = atom("");
 const categoryAtom = atom("");
 const buyingPriceAtom = atom(0);
@@ -52,8 +51,7 @@ const imageUrlAtom = atom("");
 const thresholdAtom = atom(0);
 const fileAtom = atom<File | null>(null);
 const openAtom = atom(false);
-const formResetKeyAtom = atom(0);
-const shouldRefetchAtom = atom(false); // Atom to trigger refetching
+const shouldRefetchAtom = atom(false); 
 
 const supplierNameAtom = atom("");
 const contactNumberAtom = atom("");
@@ -62,7 +60,7 @@ const stockInHandAtom = atom<number[]>([]);
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useAtom(productsAtom);
-  const [ , setProductsUpdated] = useAtom(productsUpdatedAtom);
+  const [, setProductsUpdated] = useAtom(productsUpdatedAtom);
   const [globalFilter, setGlobalFilter] = useAtom(globalFilterAtom);
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
   const [error, setError] = useAtom(errorAtom);
@@ -83,7 +81,7 @@ const ProductList: React.FC = () => {
   const [storeNames, setStoreNames] = useAtom(storeNamesAtom);
   const [stockInHand, setStockInHand] = useAtom(stockInHandAtom);
 
-  const [parent, enableAnimations] = useAutoAnimate();
+  const [parent] = useAutoAnimate();
   const userID = user?.uid;
 
   const foodCategories = [
@@ -145,7 +143,6 @@ const ProductList: React.FC = () => {
         expiryDate,
         threshold,
         imageUrl,
-        // ... other fields (supplierName, contactNumber, storeNames, stockInHand)
       });
       setProductsUpdated((prev) => prev + 1);
       setShouldRefetch(true);
@@ -153,6 +150,7 @@ const ProductList: React.FC = () => {
       toast("Product added successfully");
     } catch (error) {
       console.error("Error adding product: ", error);
+      //@ts-ignore
       setError(error.message);
     } finally {
       setIsLoading(false);
@@ -172,10 +170,11 @@ const ProductList: React.FC = () => {
         );
         const querySnapshot = await getDocs(userProductsQuery);
         const productList = querySnapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as Product)
+          (doc) => ({ id: doc.id, ...doc.data() } as unknown as Product)
         );
         setProducts(productList);
       } catch (error) {
+        //@ts-ignore
         setError(error.message);
       } finally {
         setIsLoading(false);
@@ -252,11 +251,8 @@ const ProductList: React.FC = () => {
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: (row, columnId, value) => {
       const searchTerm = value.toLowerCase();
-      return row
-        .getValue(columnId)
-        ?.toString()
-        .toLowerCase()
-        .includes(searchTerm);
+      const cellValue = row.getValue(columnId)?.toString() ?? ""; // Convert to string (or empty if undefined)
+      return cellValue.toLowerCase().includes(searchTerm);
     },
     state: {
       globalFilter,
@@ -301,7 +297,10 @@ const ProductList: React.FC = () => {
         </div>
 
         <div className="h-[350px] overflow-hidden">
-          <table className="min-w-full divide-y divide-brown-950" style={{ tableLayout: "fixed", width: "100%" }}>
+          <table
+            className="min-w-full divide-y divide-brown-950"
+            style={{ tableLayout: "fixed", width: "100%" }}
+          >
             <thead className="">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -378,6 +377,7 @@ const ProductList: React.FC = () => {
             <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">
               Add Product here. Click save when you're done.
             </Dialog.Description>
+
             <fieldset className="mb-[15px] flex items-center gap-5">
               <label
                 className="text-black w-[90px] text-right text-[15px]"
@@ -474,7 +474,7 @@ const ProductList: React.FC = () => {
                 className="text-violet11 w-[90px] text-right text-[15px]"
                 htmlFor="threshold"
               >
-                Threshold 
+                Threshold
               </label>
               <input
                 className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"

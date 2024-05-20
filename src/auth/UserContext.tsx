@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { createContext, useContext } from 'react';
 import DataFetch from '../helpers/Fetch';
 import FirebaseController from '../firebase/FirebaseController';

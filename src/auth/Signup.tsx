@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { authentication } from "../firebase/Config";
 import { database } from "../firebase/Config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";

@@ -34,7 +34,7 @@ const Profile = () => {
   const initials =
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
   const userImage = ProfilePic();
-  const [parent, enableAnimations] = useAutoAnimate();
+  const [parent] = useAutoAnimate();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -48,6 +48,7 @@ const Profile = () => {
   }) => {
     setBio(event.target.value);
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
@@ -56,7 +57,7 @@ const Profile = () => {
     }
 
     const metadata = {
-      contentType: file.type, // Use the actual file type
+      contentType: file.type, 
     };
 
     let storageRef;
@@ -64,14 +65,11 @@ const Profile = () => {
       .then((querySnapshot) => {
         if (querySnapshot.empty) {
           console.log("No document found with email:", userEmail);
-          // If no document exists, create a new storage reference
           storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
         } else {
           const document = querySnapshot.docs[0];
           console.log(document.ref);
-          // If a document exists, update the storage reference accordingly
           storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
-          // Update the document
           updateDoc(document.ref, {
             bio: bio,
           })
@@ -148,7 +146,7 @@ const Profile = () => {
                       >
                         Upload Photo
                       </label>
-                      <input type="file" onChange={handleFileUpload} />
+                      <input className="" type="file" onChange={handleFileUpload} />
                     </fieldset>
                     <fieldset className="mb-[15px] flex items-center gap-5">
                       <label

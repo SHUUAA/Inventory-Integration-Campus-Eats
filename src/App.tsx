@@ -1,6 +1,12 @@
 import "./App.css";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Route, Routes, Navigate, BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./auth/AuthContext";
+import AdminLayout from "./layout/AdminLayout";
+import SellerLayout from "./layout/SellerLayout";
+import { UserProvider } from "./auth/UserContext";
+import CustomerLayout from "./layout/CustomerLayout";
+import ProtectedRoute from "./auth/ProtectedRoute";
 const Loader = lazy(() => import("./components/Loader"));
 const Error = lazy(() => import("./pages/Error"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -9,14 +15,8 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Inventory = lazy(() => import("./pages/Inventory"));
 const Settings = lazy(() => import("./components/Settings"));
 const Profile = lazy(() => import("./pages/Profile"));
-import ProtectedRoute from "./auth/ProtectedRoute";
-import { AuthProvider } from "./auth/AuthContext";
-import AdminLayout from "./layout/AdminLayout";
-import SellerLayout from "./layout/SellerLayout";
-import { UserProvider } from "./auth/UserContext";
-import CustomerLayout from "./layout/CustomerLayout";
-import Products from "./pages/Products";
-import Supplier from "./pages/Supplier";
+const Supplier = lazy(() => import("./pages/Supplier"));
+const Products = lazy(() => import("./pages/Products"));
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);

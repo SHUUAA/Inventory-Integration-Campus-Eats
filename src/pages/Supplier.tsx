@@ -32,6 +32,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { atom, useAtom } from "jotai";
+import toast, { Toaster } from "react-hot-toast";
 const firebaseController = new FirebaseController();
 interface Supplier {
   id: number;
@@ -62,8 +63,8 @@ const formResetKeyAtom = atom(0);
 const Supplier = () => {
   const [suppliers, setSuppliers] = useAtom(suppliersAtom);
   const [globalFilter, setGlobalFilter] = useAtom(globalFilterAtom);
-  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [error, setError] = useAtom(errorAtom);
+  const [, setIsLoading] = useAtom(isLoadingAtom);
+  const [, setError] = useAtom(errorAtom);
 
   const [name, setName] = useAtom(nameAtom);
   const [email, setEmail] = useAtom(emailAtom);
@@ -75,7 +76,7 @@ const Supplier = () => {
   const [open, setOpen] = useAtom(openAtom);
   const [formResetKey, setFormResetKey] = useAtom(formResetKeyAtom);
 
-  const [parent, enableAnimations] = useAutoAnimate();
+  const [parent] = useAutoAnimate();
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -94,15 +95,16 @@ const Supplier = () => {
         );
         const querySnapshot = await getDocs(userSupplierQuery);
         const supplierList = querySnapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as Supplier)
+          (doc) => ({ id: doc.id, ...doc.data() } as unknown as Supplier)
         );
 
         setSuppliers(supplierList);
       } catch (err) {
         console.error("Failed to fetch suppliers:", err);
-        setError(err.message); // Set the error atom
+        //@ts-ignore
+        setError(err.message);
       } finally {
-        setIsLoading(false); // Finish loading
+        setIsLoading(false);
       }
     };
 
@@ -152,7 +154,7 @@ const Supplier = () => {
         buyingPrice,
         imageUrl,
       });
-      console.log("Supplier added successfully");
+      toast("Supplier added successfully");
 
       setOpen(false);
       setFormResetKey(formResetKey + 1);
@@ -165,6 +167,7 @@ const Supplier = () => {
     try {
       const user = await firebaseController.getCurrentUser();
       const userID = user?.uid;
+      //@ts-ignore
       const supplierRef = doc(
         database,
         "suppliers",
@@ -216,8 +219,7 @@ const Supplier = () => {
     "Beverages",
   ];
 
-  const handleDeleteSupplier = async (supplierId: string) => {
-    // Update to string
+  const handleDeleteSupplier = async (supplierId: number) => {
     try {
       const user = authentication.currentUser;
       const userID = user?.uid;
@@ -226,7 +228,7 @@ const Supplier = () => {
         console.error("User not authenticated or missing UID!");
         return;
       }
-
+      //@ts-ignore
       const supplierRef = doc(
         database,
         "suppliers",
@@ -241,7 +243,7 @@ const Supplier = () => {
         return;
       }
       const supplierData = supplierDocSnap.data();
-      const imageUrl = supplierData?.imageUrl; // Optional chaining for safety
+      const imageUrl = supplierData?.imageUrl;
 
       await deleteDoc(supplierRef);
 
@@ -312,28 +314,31 @@ const Supplier = () => {
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: (row, columnId, value) => {
       const searchTerm = value.toLowerCase();
-      return row
-        .getValue(columnId)
-        ?.toString()
-        .toLowerCase()
-        .includes(searchTerm);
+      const cellValue = row.getValue(columnId)?.toString() ?? "";
+      return cellValue.toLowerCase().includes(searchTerm);
     },
+
     state: {
       globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
   });
 
-  const handleContactNumberChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = e.target.value;
-    // Parse the value as a number, handling empty inputs
-    setContactNumber(value === "" ? 0 : parseInt(value, 10));
-  };
-
   return (
     <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
+      <Toaster
+        position="bottom-right"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#FFFAF1",
+          },
+        }}
+      />
       <div className="grid grid-cols-3 gap-8 ">
         <div className="h-16 rounded-lg col-span-2">
           <div className="text-2xl mt-6 ml-6">Suppliers</div>
@@ -509,7 +514,10 @@ const Supplier = () => {
       </div>
 
       <div className="h-[630px] mt-16">
-        <table className="min-w-full divide-y divide-brown-950" style={{ tableLayout: "fixed", width: "100%"}} >
+        <table
+          className="min-w-full divide-y divide-brown-950"
+          style={{ tableLayout: "fixed", width: "100%" }}
+        >
           <thead className="">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>

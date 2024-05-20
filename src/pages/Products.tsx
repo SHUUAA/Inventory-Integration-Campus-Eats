@@ -1,6 +1,6 @@
 import FirebaseController from "../firebase/FirebaseController";
 import { useEffect, useState } from "react";
-import { database, storage } from "../firebase/Config";
+import { authentication, database, storage } from "../firebase/Config";
 import { Product } from "../components/ProductList";
 const firebaseController = new FirebaseController();
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,8 +10,11 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Loader from "../components/Loader";
 import { useUserContext } from "../auth/UserContext";
-import { deleteObject, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast, { Toaster } from "react-hot-toast";
+import { atom, useAtom } from "jotai";
+
+const fileAtom = atom<File | null>(null);
 const Products = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -20,6 +23,7 @@ const Products = () => {
   const [expiryDate, setExpiryDate] = useState("");
   const [threshold, setThreshold] = useState(0);
   const [product, setProduct] = useState<Product | null>(null);
+  const [file, setFile] = useAtom(fileAtom);
   const location = useLocation();
   const productID = location.pathname.split("/").pop();
   const navigate = useNavigate();
@@ -34,7 +38,7 @@ const Products = () => {
     const fetchProduct = async () => {
       const user = await firebaseController.getCurrentUser();
       const userID = user?.uid;
-
+      //@ts-ignore
       const productRef = doc(
         database,
         "products",
@@ -73,13 +77,14 @@ const Products = () => {
     return () => {
       isMounted = false;
     };
-  }, [productID, productUpdated, open]); // Dependency array
+  }, [productID, productUpdated, open]);
 
   if (!product) {
     return <Loader></Loader>;
   }
 
   const handleNaviButton = () => {
+    //@ts-ignore
     navigate(`/${userData.type}/inventory`);
   };
 
@@ -95,28 +100,50 @@ const Products = () => {
     "Beverages",
   ];
 
-  const handleUpdateProduct = async (updatedProduct: Product) => {
+  const handleUpdateProduct = async (
+    updatedProduct: Product,
+    newFile?: File
+  ) => {
     try {
-      const user = await firebaseController.getCurrentUser();
+      const user = authentication.currentUser;
       const userID = user?.uid;
+
+      //@ts-ignore
       const productRef = doc(
         database,
         "products",
-        userID,
+        userID!,
         "userProducts",
         updatedProduct.id
       );
 
-      await updateDoc(productRef, {
+      let updatedData: Partial<Product> = {
         name: updatedProduct.name,
         category: updatedProduct.category,
         buyingPrice: updatedProduct.buyingPrice,
         quantity: updatedProduct.quantity,
         expiryDate: updatedProduct.expiryDate,
         threshold: updatedProduct.threshold,
-      });
+      }; 
 
-      setProduct(updatedProduct);
+      if (newFile) {
+        const random = crypto.randomUUID();
+        const imageRef = ref(
+          storage,
+          `ProductImages/${userID}/${random}-${newFile.name}`
+        );
+        await uploadBytes(imageRef, newFile);
+        const newImageUrl = await getDownloadURL(imageRef);
+
+        if (updatedProduct.imageUrl) {
+          const oldImageRef = ref(storage, updatedProduct.imageUrl);
+          await deleteObject(oldImageRef);
+        }
+
+        updatedData.imageUrl = newImageUrl; 
+      }
+
+      await updateDoc(productRef, updatedData);
       setProductUpdated(true);
       toast("Successfully updated product!");
     } catch (error) {
@@ -126,18 +153,24 @@ const Products = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const updatedProduct: Product = {
       id: product.id,
-      name: name,
-      category: category,
-      buyingPrice: buyingPrice,
-      quantity: quantity,
-      expiryDate: expiryDate,
-      threshold: threshold,
+      name,
+      category,
+      buyingPrice,
+      quantity,
+      expiryDate,
+      threshold,
+      imageUrl: "",
+      availability: "",
+      supplierName: "",
+      contactNumber: "",
+      storeNames: [],
+      stockInHand: []
     };
+    //@ts-ignore
+    await handleUpdateProduct(updatedProduct, file); 
     setOpen(false);
-    await handleUpdateProduct(updatedProduct);
   };
 
   const handleDeleteProduct = async (productID: number) => {
@@ -149,7 +182,7 @@ const Products = () => {
         console.error("User not authenticated or missing UID!");
         return;
       }
-
+      //@ts-ignore
       const productDocRef = doc(
         database,
         "products",
@@ -174,11 +207,18 @@ const Products = () => {
         await deleteObject(imageRef);
         console.log("Image deleted successfully");
       }
-
+      //@ts-ignore
       navigate(`/${userData.type}/inventory`);
       console.log("Product deleted successfully");
     } catch (error) {
       console.error("Error deleting product: ", error);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const newFile = event.target.files[0];
+      setFile(newFile);
     }
   };
 
@@ -254,6 +294,17 @@ const Products = () => {
                         Make changes to your product here. Click save when
                         you're done.
                       </Dialog.Description>
+
+                      <fieldset className="mb-[15px] flex items-center gap-5">
+                        <label
+                          className="text-black w-[90px] text-right text-[15px]"
+                          htmlFor="name"
+                        >
+                          Upload Photo
+                        </label>
+                        <input type="file" onChange={handleFileChange} />
+                      </fieldset>
+
                       <fieldset className="mb-[15px] flex items-center gap-5">
                         <label
                           className="text-violet11 w-[90px] text-right text-[15px]"
@@ -265,6 +316,7 @@ const Products = () => {
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="name"
                           value={name}
+                          required
                           onChange={(e) => setName(e.target.value)}
                         />
                       </fieldset>
@@ -303,6 +355,7 @@ const Products = () => {
                         <input
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="price"
+                          required
                           type="number"
                           value={buyingPrice}
                           onChange={(e) =>
@@ -321,6 +374,7 @@ const Products = () => {
                         <input
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="quantity"
+                          required
                           type="number"
                           value={quantity}
                           onChange={(e) => setQuantity(e.target.valueAsNumber)}
@@ -337,6 +391,7 @@ const Products = () => {
                         <input
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="expiry"
+                          required
                           type="date"
                           value={expiryDate}
                           onChange={(e) => setExpiryDate(e.target.value)}
@@ -353,6 +408,7 @@ const Products = () => {
                         <input
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="value"
+                          required
                           type="number"
                           value={threshold}
                           onChange={(e) => setThreshold(e.target.valueAsNumber)}
