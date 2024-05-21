@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { authentication, database, storage } from "../firebase/Config";
 import * as Dialog from "@radix-ui/react-dialog";
-import { addDoc, collection, doc, getDocs, query } from "firebase/firestore";
+import { addDoc, collection, getDocs, query } from "firebase/firestore";
 import "../css/ProductList.css";
 import FirebaseController from "../firebase/FirebaseController";
 import { useNavigate } from "react-router-dom";

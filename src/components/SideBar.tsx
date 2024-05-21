@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { logout } from "../auth/Logout";
 import { useUserContext } from "../auth/UserContext";
 const SideBar = () => {
+  //@ts-ignore
   const { userData } = useUserContext();
   return (
     <div className="flex h-screen flex-col justify-between border-e  bg-red-950">

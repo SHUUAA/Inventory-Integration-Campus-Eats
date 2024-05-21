@@ -109,7 +109,7 @@ const InventorySummary = () => {
               <tbody>
                 {productList.length === 0 ? (
                   <tr>
-                    <td colSpan="4">No products available</td>
+                    <td colSpan={4}>No products available</td>
                   </tr>
                 ) : (
                   productList.map((product) => (
@@ -133,7 +133,7 @@ const InventorySummary = () => {
               <tbody>
                 {lowStockProducts.length === 0 ? (
                   <tr>
-                    <td colSpan="3">No low stock products</td>
+                    <td colSpan={3}>No low stock products</td>
                   </tr>
                 ) : (
                   lowStockProducts.map((product) => (
