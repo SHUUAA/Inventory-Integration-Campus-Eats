@@ -163,7 +163,10 @@ const Supplier = () => {
     }
   };
 
-  const handleUpdateSupplier = async (updatedSupplier: Supplier) => {
+  const handleUpdateSupplier = async (
+    updatedSupplier: Supplier,
+    newFile?: File | null
+  ) => {
     try {
       const user = await firebaseController.getCurrentUser();
       const userID = user?.uid;
@@ -176,23 +179,47 @@ const Supplier = () => {
         updatedSupplier.id
       );
 
-      await updateDoc(supplierRef, {
+      let updatedData: Partial<Supplier> = {
         name: updatedSupplier.name,
         email: updatedSupplier.email,
         contactNumber: updatedSupplier.contactNumber,
         product: updatedSupplier.product,
         category: updatedSupplier.category,
         buyingPrice: updatedSupplier.buyingPrice,
-      });
+      };
 
-      console.log("Supplier updated successfully!");
+      if (newFile) {
+        const random = crypto.randomUUID();
+        const imageRef = ref(
+          storage,
+          `SupplierImages/${userID}/${random}-${newFile.name}`
+        );
+        await uploadBytes(imageRef, newFile);
+        const newImageUrl = await getDownloadURL(imageRef);
+
+        // Delete the old image if it exists
+        if (updatedSupplier.imageUrl) {
+          const oldImageRef = ref(storage, updatedSupplier.imageUrl);
+          await deleteObject(oldImageRef);
+        }
+
+        updatedData.imageUrl = newImageUrl;
+      }
+
+      await updateDoc(supplierRef, updatedData);
+      toast("Supplier updated successfully!");
+      setSuppliers((prevSuppliers) =>
+        prevSuppliers.map((supplier) =>
+          supplier.id === updatedSupplier.id ? updatedSupplier : supplier
+        )
+      );
     } catch (error) {
       console.error("Error updating Supplier:", error);
     }
   };
 
   const handleSubmitSupplier = async (supplierId: number) => {
-    const updatedProduct: Supplier = {
+    const updatedSupplier: Supplier = {
       id: supplierId,
       name: name,
       email: email,
@@ -200,9 +227,10 @@ const Supplier = () => {
       product: product,
       category: category,
       buyingPrice: buyingPrice,
+      imageUrl: suppliers.find((s) => s.id === supplierId)?.imageUrl, // Preserve existing image if not changed
     };
 
-    await handleUpdateSupplier(updatedProduct);
+    await handleUpdateSupplier(updatedSupplier, file);
     setOpen(false);
     setFormResetKey(formResetKey + 1);
   };
@@ -327,7 +355,7 @@ const Supplier = () => {
   return (
     <div className="bg-white-950 w-full mb-6 shadow-lg rounded-xl mt-4">
       <Toaster
-        position="bottom-right"
+        position="bottom-center"
         reverseOrder={false}
         gutter={8}
         containerClassName=""
@@ -580,6 +608,17 @@ const Supplier = () => {
                         Make changes to your product here. Click save when
                         you're done.
                       </Dialog.Description>
+
+                      <fieldset className="mb-[15px] flex items-center gap-5">
+                        <label
+                          className="text-black w-[90px] text-right text-[15px]"
+                          htmlFor="name"
+                        >
+                          Upload Photo
+                        </label>
+                        <input type="file" onChange={handleFileChange} />
+                      </fieldset>
+
                       <fieldset className="mb-[15px] flex items-center gap-5">
                         <label
                           className="text-violet11 w-[90px] text-right text-[15px]"

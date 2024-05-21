@@ -263,7 +263,7 @@ const ProductList: React.FC = () => {
   return (
     <div className="inv-inventory-container">
       <Toaster
-        position="bottom-right"
+        position="bottom-center"
         reverseOrder={false}
         gutter={8}
         containerClassName=""

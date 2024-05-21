@@ -225,7 +225,7 @@ const Products = () => {
   return (
     <div>
       <Toaster
-        position="bottom-right"
+        position="bottom-center"
         reverseOrder={false}
         gutter={8}
         containerClassName=""
