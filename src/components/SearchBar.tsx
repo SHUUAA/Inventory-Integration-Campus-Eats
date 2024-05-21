@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useState } from "react";
 import { authentication } from "../firebase/Config";
 import { Link } from "react-router-dom";

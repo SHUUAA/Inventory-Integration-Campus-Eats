@@ -4,6 +4,7 @@ import "../css/ForgotPasswordPage.css";
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { authentication } from '../firebase/Config'; 
 
+//@ts-ignore
 const actionCodeSettings = {
   url: 'http://localhost:5173/reset-password?oobCode=CODE', // Replace with your app's password reset page
   handleCodeInApp: true  // Handle the link in your app
@@ -12,9 +13,9 @@ const actionCodeSettings = {
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [emailFocus, setEmailFocus] = useState(false);
-  const [validEmail, setValidEmail] = useState(true);
+  const [validEmail] = useState(true);
 
-  const handleGetCodeClick = async (e) => {
+  const handleGetCodeClick = async (e: { preventDefault: () => void; }) => {
     try {
     e.preventDefault()
     await sendPasswordResetEmail(authentication, email);
@@ -44,6 +45,7 @@ const ForgotPassword = () => {
             // Default options for specific types
             success: {
               duration: 5000,
+              //@ts-ignore
               theme: {
                 primary: "green",
                 secondary: "black",

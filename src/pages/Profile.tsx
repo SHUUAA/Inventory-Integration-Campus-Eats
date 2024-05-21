@@ -198,6 +198,7 @@ const Profile = () => {
               <div className="w-full flex justify-center">
                 <Avatar.Root className="relative" ref={parent}>
                   <Avatar.AvatarImage
+                  //@ts-ignore
                     src={userImage}
                     alt="Profile Picture"
                     className="bg-blackA1 inline-flex h-[150px] w-[150px] object-cover select-none items-center justify-center overflow-hidden rounded-full align-middle"

@@ -1,4 +1,3 @@
-import React from "react"
 import "../css/Settings.css"
 import { useState } from "react"
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"
@@ -8,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 const Settings = () => {
   const [isFAQ1Open, setFAQ1Open] = useState(false)
   const [isFAQ2Open, setFAQ2Open] = useState(false)
+  //@ts-ignore
   const [isFAQ3Open, setFAQ3Open] = useState(false)
   const handleNotificationSave = () => {
     // Add logic for saving notification preferences

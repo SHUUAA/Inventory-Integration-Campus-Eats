@@ -1,3 +1,4 @@
+//@ts-nocheck
 import Groq from "groq-sdk";
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";

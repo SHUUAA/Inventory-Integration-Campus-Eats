@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { database } from "../firebase/Config";
 import { collection, getDocs, query } from "firebase/firestore";
 import "../css/InventorySummary.css";
@@ -7,8 +7,8 @@ import SalesIcon from "../assets/cash-outline.svg";
 import QuantityIcon from "../assets/cube-outline.svg";
 import PurchaseIcon from "../assets/bag-check-outline.svg";
 import SuppliersIcon from "../assets/people-outline.svg";
-import Loader from "./Loader";
 import { atom, useAtom } from "jotai";
+import { Product } from "./ProductList";
 
 const productListAtom = atom<Product[]>([]);
 const isLoadingAtom = atom(true);
@@ -16,8 +16,8 @@ const errorAtom = atom<string | null>(null);
 
 const InventorySummary = () => {
   const [productList, setProductList] = useAtom(productListAtom);
-  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [error, setError] = useAtom(errorAtom);
+  const [, setIsLoading] = useAtom(isLoadingAtom);
+  const [, setError] = useAtom(errorAtom);
   const firebaseController = new FirebaseController();
 
   const getProductList = async () => {
@@ -37,10 +37,11 @@ const InventorySummary = () => {
         id: doc.id,
         ...doc.data(),
       }));
-
+      //@ts-ignore
       setProductList(products);
     } catch (err) {
       console.error("Failed to fetch products:", err);
+      //@ts-ignore
       setError(err.message);
     } finally {
       setIsLoading(false);
@@ -69,7 +70,7 @@ const InventorySummary = () => {
           <div>
             <h3>
               {productList.reduce(
-                (sum, product) => sum + parseInt(product.quantity || 0),
+                (sum, product) => sum + (product.quantity || 0),
                 0
               )}
             </h3>

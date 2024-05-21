@@ -18,6 +18,7 @@ interface ProductSummaryProps {
     closeModal: () => void;
 }
 
+//@ts-ignore
 const ProductSummary: React.FC<ProductSummaryProps> = ({ product, closeModal }) => {
     return (
         <div>

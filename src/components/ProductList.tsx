@@ -53,17 +53,13 @@ const fileAtom = atom<File | null>(null);
 const openAtom = atom(false);
 const shouldRefetchAtom = atom(false); 
 
-const supplierNameAtom = atom("");
-const contactNumberAtom = atom("");
-const storeNamesAtom = atom<string[]>([]);
-const stockInHandAtom = atom<number[]>([]);
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useAtom(productsAtom);
   const [, setProductsUpdated] = useAtom(productsUpdatedAtom);
   const [globalFilter, setGlobalFilter] = useAtom(globalFilterAtom);
-  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [error, setError] = useAtom(errorAtom);
+  const [, setIsLoading] = useAtom(isLoadingAtom);
+  const [, setError] = useAtom(errorAtom);
 
   const [name, setName] = useAtom(nameAtom);
   const [category, setCategory] = useAtom(categoryAtom);
@@ -73,13 +69,8 @@ const ProductList: React.FC = () => {
   const [threshold, setThreshold] = useAtom(thresholdAtom);
   const [file, setFile] = useAtom(fileAtom);
   const [open, setOpen] = useAtom(openAtom);
-  const [imageUrl, setImageUrl] = useAtom(imageUrlAtom);
+  const [, setImageUrl] = useAtom(imageUrlAtom);
   const [shouldRefetch, setShouldRefetch] = useAtom(shouldRefetchAtom);
-
-  const [supplierName, setSupplierName] = useAtom(supplierNameAtom);
-  const [contactNumber, setContactNumber] = useAtom(contactNumberAtom);
-  const [storeNames, setStoreNames] = useAtom(storeNamesAtom);
-  const [stockInHand, setStockInHand] = useAtom(stockInHandAtom);
 
   const [parent] = useAutoAnimate();
   const userID = user?.uid;

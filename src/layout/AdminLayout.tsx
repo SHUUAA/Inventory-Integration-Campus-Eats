@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import SearchBar from "../components/SearchBar";
 import ChatBox from "../components/ChatBox"; // Import the ChatBox component

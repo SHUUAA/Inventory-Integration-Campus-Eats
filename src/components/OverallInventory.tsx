@@ -24,7 +24,7 @@ const OverallInventory = () => {
   const [productsUpdated] = useAtom(productsUpdatedAtom);
   const [lowStocks, setLowStocks] = useAtom(lowStocksAtom);
   const [categoriesCount, setCategoriesCount] = useAtom(categoriesCountAtom);
-  const [parent, enableAnimations] = useAutoAnimate();
+  const [parent] = useAutoAnimate();
   const userID = user?.uid;
 
   useEffect(() => {
