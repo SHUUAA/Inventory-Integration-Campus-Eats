@@ -22,7 +22,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { atom, useAtom } from "jotai";
 import Supplier from "../pages/Supplier";
 export interface Product {
-  supplier: string;
+  supplier: {name: string, email: string, contactNumber: number, category: string, buyingPrice: number, imageUrl?: string};
   id: number;
   name: string;
   sellingPrice: number;

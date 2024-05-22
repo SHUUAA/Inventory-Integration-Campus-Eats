@@ -117,7 +117,7 @@ const InventorySummary = () => {
                       <td>{product.name}</td>
                       <td>--</td>
                       <td>{product.quantity}</td>
-                      <td>₱{product.buyingPrice}</td>
+                      <td>₱{product.sellingPrice}</td>
                     </tr>
                   ))
                 )}

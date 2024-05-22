@@ -10,15 +10,18 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Loader from "../components/Loader";
 import { useUserContext } from "../auth/UserContext";
-import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import toast, { Toaster } from "react-hot-toast";
 import { atom, useAtom } from "jotai";
-
+const sellingPriceAtom = atom(0);
 const fileAtom = atom<File | null>(null);
 const Products = () => {
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [buyingPrice, setBuyingPrice] = useState(0);
+  const [sellingPrice, setSellingPrice] = useAtom(sellingPriceAtom);
   const [quantity, setQuantity] = useState(0);
   const [expiryDate, setExpiryDate] = useState("");
   const [threshold, setThreshold] = useState(0);
@@ -30,7 +33,7 @@ const Products = () => {
   const userContext = useUserContext();
   const { userData } = userContext ?? { userData: {} };
   const [open, setOpen] = useState(false);
-  const [productUpdated, setProductUpdated] = useState(false); // Option 2: Flag for re-fetch
+  const [productUpdated, setProductUpdated] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -57,9 +60,7 @@ const Products = () => {
             } as unknown as Product);
           }
           if (product) {
-            setName(product.name);
-            setCategory(product.category);
-            setBuyingPrice(product.buyingPrice);
+            setSellingPrice(product.sellingPrice);
             setQuantity(product.quantity);
             setExpiryDate(product.expiryDate);
             setThreshold(product.threshold);
@@ -88,18 +89,6 @@ const Products = () => {
     navigate(`/${userData.type}/inventory`);
   };
 
-  const foodCategories = [
-    "Prepared Foods",
-    "Frozen Foods",
-    "Canned/Jarred Foods",
-    "Boxed Foods",
-    "Fresh Foods",
-    "Baked Goods",
-    "Dairy Products",
-    "Snack Foods",
-    "Beverages",
-  ];
-
   const handleUpdateProduct = async (
     updatedProduct: Product,
     newFile?: File
@@ -118,13 +107,11 @@ const Products = () => {
       );
 
       let updatedData: Partial<Product> = {
-        name: updatedProduct.name,
-        category: updatedProduct.category,
-        buyingPrice: updatedProduct.buyingPrice,
+        sellingPrice: updatedProduct.sellingPrice,
         quantity: updatedProduct.quantity,
         expiryDate: updatedProduct.expiryDate,
         threshold: updatedProduct.threshold,
-      }; 
+      };
 
       if (newFile) {
         const random = crypto.randomUUID();
@@ -140,7 +127,7 @@ const Products = () => {
           await deleteObject(oldImageRef);
         }
 
-        updatedData.imageUrl = newImageUrl; 
+        updatedData.imageUrl = newImageUrl;
       }
 
       await updateDoc(productRef, updatedData);
@@ -155,9 +142,7 @@ const Products = () => {
     e.preventDefault();
     const updatedProduct: Product = {
       id: product.id,
-      name,
-      category,
-      buyingPrice,
+      sellingPrice,
       quantity,
       expiryDate,
       threshold,
@@ -166,10 +151,19 @@ const Products = () => {
       supplierName: "",
       contactNumber: "",
       storeNames: [],
-      stockInHand: []
+      stockInHand: [],
+      supplier: {
+        name: "",
+        email: "",
+        contactNumber: 0,
+        category: "",
+        buyingPrice: 0
+      }, 
+      name: "",
+      category: "",
     };
     //@ts-ignore
-    await handleUpdateProduct(updatedProduct, file); 
+    await handleUpdateProduct(updatedProduct, file);
     setOpen(false);
   };
 
@@ -308,58 +302,18 @@ const Products = () => {
                       <fieldset className="mb-[15px] flex items-center gap-5">
                         <label
                           className="text-violet11 w-[90px] text-right text-[15px]"
-                          htmlFor="name"
+                          htmlFor="sellingPrice"
                         >
-                          Product Name
+                          Selling Price
                         </label>
                         <input
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-                          id="name"
-                          value={name}
-                          required
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </fieldset>
-
-                      <fieldset className="mb-[15px] flex items-center gap-5">
-                        <label
-                          className="text-violet11 w-[90px] text-right text-[15px]"
-                          htmlFor="category"
-                        >
-                          Product Category
-                        </label>
-
-                        <select
-                          className="bg-neutral-950 text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-                          id="category"
-                          required
-                          value={category}
-                          onChange={(e) => setCategory(e.target.value)}
-                        >
-                          <option value="">Select Category</option>
-                          {foodCategories.map((category) => (
-                            <option key={category} value={category}>
-                              {category}
-                            </option>
-                          ))}
-                        </select>
-                      </fieldset>
-
-                      <fieldset className="mb-[15px] flex items-center gap-5">
-                        <label
-                          className="text-violet11 w-[90px] text-right text-[15px]"
-                          htmlFor="price"
-                        >
-                          Buying Price
-                        </label>
-                        <input
-                          className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-                          id="price"
+                          id="sellingPrice"
                           required
                           type="number"
-                          value={buyingPrice}
+                          value={sellingPrice}
                           onChange={(e) =>
-                            setBuyingPrice(e.target.valueAsNumber)
+                            setSellingPrice(e.target.valueAsNumber)
                           }
                         />
                       </fieldset>
@@ -507,13 +461,19 @@ const Products = () => {
             <Tabs.Root className="flex flex-col w-full" defaultValue="tab1">
               <Tabs.List
                 className="shrink-0 flex border-b border-mauve6"
-                aria-label="Manage your account"
+                aria-label="Manage your Products"
               >
                 <Tabs.Trigger
                   className="bg-white-950 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none select-none first:rounded-tl-md last:rounded-tr-md hover:text-violet11 data-[state=active]:text-violet11 data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none cursor-default"
                   value="tab1"
                 >
                   Overview
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  className="bg-white-950 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none select-none first:rounded-tl-md last:rounded-tr-md hover:text-violet11 data-[state=active]:text-violet11 data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none cursor-default"
+                  value="tab2"
+                >
+                  Supplier
                 </Tabs.Trigger>
               </Tabs.List>
               <Tabs.Content
@@ -523,7 +483,7 @@ const Products = () => {
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8">
                   <div className="flow-root w-[800px] ">
                     <p className="mb-5 text-[24px] leading-normal">
-                      Primary Details
+                      Product Details
                     </p>
                     <dl className="text-md">
                       <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
@@ -546,10 +506,10 @@ const Products = () => {
 
                       <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
                         <dt className="font-large text-gray-900">
-                          Buying Price
+                          Selling Price
                         </dt>
                         <dd className="text-gray-700 sm:col-span-2">
-                          ₱{product.buyingPrice}
+                          ₱{product.sellingPrice}
                         </dd>
                       </div>
 
@@ -581,6 +541,68 @@ const Products = () => {
                   </div>
                 </div>
               </Tabs.Content>
+              <Tabs.Content
+                className="grow p-5 bg-white rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
+                value="tab2"
+              >
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8">
+                  <div className="flow-root w-[800px] ">
+                    <p className="mb-5 text-[24px] leading-normal">
+                      Supplier Details
+                    </p>
+
+                    <img
+                      className="rounded-xl h-[100px] w-[100px] object-cover shadow-md m-5"
+                      src={product.supplier.imageUrl}
+                    ></img>
+
+                    <dl className="text-md">
+                      <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-large text-gray-900">
+                          Supplier Name
+                        </dt>
+                        <dd className="text-gray-700 sm:col-span-2">
+                          {product.supplier.name}
+                        </dd>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-large text-gray-900">Email</dt>
+                        <dd className="text-gray-700 sm:col-span-2">
+                          {product.supplier.email}
+                        </dd>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-large text-gray-900">
+                          Contact Number
+                        </dt>
+                        <dd className="text-gray-700 sm:col-span-2">
+                          {product.supplier.contactNumber}
+                        </dd>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-large text-gray-900">
+                          Product Category
+                        </dt>
+                        <dd className="text-gray-700 sm:col-span-2">
+                          {product.supplier.category}
+                        </dd>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-large text-gray-900">
+                          Buying Price
+                        </dt>
+                        <dd className="text-gray-700 sm:col-span-2">
+                          ₱{product.supplier.buyingPrice}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                </div>
+              </Tabs.Content>
             </Tabs.Root>
           </div>
           <div className="col-span-1 ml-6 p-24">
@@ -594,7 +616,7 @@ const Products = () => {
               </h3>
 
               <p className="mt-1.5 tracking-wide text-gray-900">
-                ₱{product.buyingPrice}
+                ₱{product.sellingPrice}
               </p>
             </div>
           </div>
