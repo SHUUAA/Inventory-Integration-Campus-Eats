@@ -111,6 +111,45 @@ const Supplier = () => {
     fetchSuppliers();
   }, [formResetKey]);
 
+  const fetchSupplier = async (supplierId: number) => {
+    try {
+      const user = authentication.currentUser;
+      const userID = user?.uid;
+
+      if (!userID) {
+        throw new Error("User not authenticated or missing UID!");
+      }
+      //@ts-ignore
+      const supplierRef = doc(
+        database,
+        "suppliers",
+        userID,
+        "userSuppliers",
+        supplierId
+      );
+
+      const supplierDocSnap = await getDoc(supplierRef);
+
+      if (!supplierDocSnap.exists()) {
+        throw new Error("Supplier not found!");
+      }
+
+      const supplierData = supplierDocSnap.data() as Supplier;
+
+      setName(supplierData.name);
+      setEmail(supplierData.email);
+      setContactNumber(supplierData.contactNumber);
+      setProduct(supplierData.product);
+      setCategory(supplierData.category);
+      setBuyingPrice(supplierData.buyingPrice);
+      setFile(null);
+    } catch (err) {
+      console.error("Failed to fetch supplier:", err);
+      //@ts-ignore
+      setError(err.message);
+    }
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const newFile = event.target.files[0];
@@ -178,7 +217,6 @@ const Supplier = () => {
         "userSuppliers",
         updatedSupplier.id
       );
-
       let updatedData: Partial<Supplier> = {
         name: updatedSupplier.name,
         email: updatedSupplier.email,
@@ -197,7 +235,6 @@ const Supplier = () => {
         await uploadBytes(imageRef, newFile);
         const newImageUrl = await getDownloadURL(imageRef);
 
-        // Delete the old image if it exists
         if (updatedSupplier.imageUrl) {
           const oldImageRef = ref(storage, updatedSupplier.imageUrl);
           await deleteObject(oldImageRef);
@@ -227,7 +264,7 @@ const Supplier = () => {
       product: product,
       category: category,
       buyingPrice: buyingPrice,
-      imageUrl: suppliers.find((s) => s.id === supplierId)?.imageUrl, // Preserve existing image if not changed
+      imageUrl: suppliers.find((s) => s.id === supplierId)?.imageUrl, 
     };
 
     await handleUpdateSupplier(updatedSupplier, file);
@@ -581,7 +618,12 @@ const Supplier = () => {
                 ))}
                 <Dialog.Root>
                   <Dialog.Trigger asChild>
-                    <button className="focus:relative">
+                    <button
+                      onClick={() => {
+                        fetchSupplier(row.original.id);
+                      }}
+                      className="focus:relative"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -660,7 +702,9 @@ const Supplier = () => {
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="contactNumber"
                           value={contactNumber === 0 ? "" : contactNumber}
-                          onChange={(e) => setContactNumber(e.target.valueAsNumber)}
+                          onChange={(e) =>
+                            setContactNumber(e.target.valueAsNumber)
+                          }
                         />
                       </fieldset>
 
@@ -674,6 +718,7 @@ const Supplier = () => {
                         <input
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="product"
+                          value={product}
                           onChange={(e) => setProduct(e.target.value)}
                         />
                       </fieldset>
@@ -690,6 +735,7 @@ const Supplier = () => {
                           className="bg-neutral-950 text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="category"
                           required
+                          value={category}
                           onChange={(e) => setCategory(e.target.value)}
                         >
                           <option value="">Select Category</option>
@@ -712,6 +758,7 @@ const Supplier = () => {
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="price"
                           type="number"
+                          value={buyingPrice}
                           onChange={(e) =>
                             setBuyingPrice(e.target.valueAsNumber)
                           }
