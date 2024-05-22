@@ -232,15 +232,15 @@ const ProductList: React.FC = () => {
       header: "Availability",
       cell: ({ row }) => (
         <div
-          style={{ color: getAvailabilityStatus(row.original.quantity).color }}
+          style={{ color: getAvailabilityStatus(row.original.quantity, row.original.threshold).color }}
         >
-          {getAvailabilityStatus(row.original.quantity).text}
+          {getAvailabilityStatus(row.original.quantity, row.original.threshold).text}
         </div>
       ),
     },
   ];
 
-  const getAvailabilityStatus = (quantity: number) => {
+  const getAvailabilityStatus = (quantity: number, threshold: number) => {
     if (quantity <= 0) {
       return { text: "Out of Stock", color: "red" };
     } else if (quantity <= threshold) {
