@@ -9,13 +9,17 @@ import PurchaseIcon from "../assets/bag-check-outline.svg";
 import SuppliersIcon from "../assets/people-outline.svg";
 import { atom, useAtom } from "jotai";
 import { Product } from "./ProductList";
+import Supplier from "../pages/Supplier";
 
 const productListAtom = atom<Product[]>([]);
+const suppliersAtom = atom<Supplier[]>([]);
 const isLoadingAtom = atom(true);
 const errorAtom = atom<string | null>(null);
-
+const countSuppliersAtom = atom(0);
 const InventorySummary = () => {
   const [productList, setProductList] = useAtom(productListAtom);
+  const [suppliers, setSuppliers] = useAtom(suppliersAtom);
+  const [countSupplier, setCountSupplier] = useAtom(countSuppliersAtom);
   const [, setIsLoading] = useAtom(isLoadingAtom);
   const [, setError] = useAtom(errorAtom);
   const firebaseController = new FirebaseController();
@@ -48,8 +52,39 @@ const InventorySummary = () => {
     }
   };
 
+  const fetchSuppliers = async () => {
+    setIsLoading(true); // Start loading
+
+    try {
+      const user = await firebaseController.getCurrentUser();
+      const userID = user?.uid;
+
+      if (!userID) {
+        throw new Error("User not authenticated or missing UID!");
+      }
+
+      const userSupplierQuery = query(
+        collection(database, "suppliers", userID, "userSuppliers")
+      );
+      const querySnapshot = await getDocs(userSupplierQuery);
+      const supplierList = querySnapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() } as unknown as Supplier)
+      );
+
+      setSuppliers(supplierList);
+      setCountSupplier(supplierList.length);
+    } catch (err) {
+      console.error("Failed to fetch suppliers:", err);
+      //@ts-ignore
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     getProductList();
+    fetchSuppliers();
   }, []);
 
   const lowStockProducts = productList.filter(
@@ -87,7 +122,7 @@ const InventorySummary = () => {
         </div>
         <div className="summary-container">
           <div>
-            <h3>--</h3>
+            <h3>{countSupplier}</h3>
             <span>Number of Suppliers</span>
           </div>
           <img src={SuppliersIcon} alt="Suppliers Icon" className="svg-icon" />
