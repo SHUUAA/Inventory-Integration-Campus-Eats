@@ -20,10 +20,12 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import toast, { Toaster } from "react-hot-toast";
 import { atom, useAtom } from "jotai";
+import Supplier from "../pages/Supplier";
 export interface Product {
+  supplier: string;
   id: number;
   name: string;
-  buyingPrice: number;
+  sellingPrice: number;
   quantity: number;
   threshold: number;
   expiryDate: string;
@@ -44,26 +46,28 @@ export const productsUpdatedAtom = atom(0);
 
 const nameAtom = atom("");
 const categoryAtom = atom("");
-const buyingPriceAtom = atom(0);
+const sellingPriceAtom = atom(0);
 const quantityAtom = atom(0);
 const expiryDateAtom = atom("");
 const imageUrlAtom = atom("");
 const thresholdAtom = atom(0);
 const fileAtom = atom<File | null>(null);
 const openAtom = atom(false);
-const shouldRefetchAtom = atom(false); 
-
+const shouldRefetchAtom = atom(false);
+const suppliersAtom = atom<Supplier[]>([]);
+const selectedSupplierAtom = atom<Supplier | null>(null);
 
 const ProductList: React.FC = () => {
+  const [suppliers, setSuppliers] = useAtom(suppliersAtom);
   const [products, setProducts] = useAtom(productsAtom);
   const [, setProductsUpdated] = useAtom(productsUpdatedAtom);
   const [globalFilter, setGlobalFilter] = useAtom(globalFilterAtom);
   const [, setIsLoading] = useAtom(isLoadingAtom);
   const [, setError] = useAtom(errorAtom);
-
+  const [selectedSupplier, setSelectedSupplier] = useAtom(selectedSupplierAtom);
   const [name, setName] = useAtom(nameAtom);
   const [category, setCategory] = useAtom(categoryAtom);
-  const [buyingPrice, setBuyingPrice] = useAtom(buyingPriceAtom);
+  const [sellingPrice, setSellingPrice] = useAtom(sellingPriceAtom);
   const [quantity, setQuantity] = useAtom(quantityAtom);
   const [expiryDate, setExpiryDate] = useAtom(expiryDateAtom);
   const [threshold, setThreshold] = useAtom(thresholdAtom);
@@ -74,18 +78,6 @@ const ProductList: React.FC = () => {
 
   const [parent] = useAutoAnimate();
   const userID = user?.uid;
-
-  const foodCategories = [
-    "Prepared Foods",
-    "Frozen Foods",
-    "Canned/Jarred Foods",
-    "Boxed Foods",
-    "Fresh Foods",
-    "Baked Goods",
-    "Dairy Products",
-    "Snack Foods",
-    "Beverages",
-  ];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -127,9 +119,10 @@ const ProductList: React.FC = () => {
         "userProducts"
       );
       await addDoc(userProductsCollection, {
+        supplier: selectedSupplier,
         name,
         category,
-        buyingPrice,
+        sellingPrice,
         quantity,
         expiryDate,
         threshold,
@@ -184,13 +177,32 @@ const ProductList: React.FC = () => {
     navigate(`/products/${product.id}`);
   };
 
-  const getAvailabilityStatus = (quantity: number) => {
-    if (quantity <= 0) {
-      return { text: "Out of Stock", color: "red" };
-    } else if (quantity <= threshold) {
-      return { text: "Low Stock", color: "#FFBA18" };
-    } else {
-      return { text: "In Stock", color: "green" };
+  const fetchSuppliers = async () => {
+    setIsLoading(true);
+
+    try {
+      const user = authentication.currentUser;
+      const userID = user?.uid;
+
+      if (!userID) {
+        throw new Error("User not authenticated or missing UID!");
+      }
+
+      const userSupplierQuery = query(
+        collection(database, "suppliers", userID, "userSuppliers")
+      );
+      const querySnapshot = await getDocs(userSupplierQuery);
+      const supplierList = querySnapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() } as unknown as Supplier)
+      );
+
+      setSuppliers(supplierList);
+    } catch (err) {
+      console.error("Failed to fetch suppliers:", err);
+      //@ts-ignore
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -200,8 +212,8 @@ const ProductList: React.FC = () => {
       header: "Product",
     },
     {
-      accessorKey: "buyingPrice",
-      header: "Buying Price",
+      accessorKey: "sellingPrice",
+      header: "Selling Price",
     },
     {
       accessorKey: "quantity",
@@ -227,6 +239,16 @@ const ProductList: React.FC = () => {
       ),
     },
   ];
+
+  const getAvailabilityStatus = (quantity: number) => {
+    if (quantity <= 0) {
+      return { text: "Out of Stock", color: "red" };
+    } else if (quantity <= threshold) {
+      return { text: "Low Stock", color: "#FFBA18" };
+    } else {
+      return { text: "In Stock", color: "green" };
+    }
+  };
 
   const table = useReactTable({
     data: products,
@@ -280,7 +302,10 @@ const ProductList: React.FC = () => {
           </div>
           <div className="button-row">
             <Dialog.Trigger asChild>
-              <button className="p-3 text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative">
+              <button
+                onClick={fetchSuppliers}
+                className="p-3 text-white rounded-lg shadow-md bg-red-950 hover:bg-red-800 focus:relative"
+              >
                 Add Product
               </button>
             </Dialog.Trigger>
@@ -381,16 +406,52 @@ const ProductList: React.FC = () => {
 
             <fieldset className="mb-[15px] flex items-center gap-5">
               <label
+                className="text-black w-[90px] text-right text-[15px]"
+                htmlFor="supplier"
+              >
+                Supplier
+              </label>
+              <select
+                className="bg-neutral-950 text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                id="supplier"
+                value={selectedSupplier?.id || ""}
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const supplier = suppliers.find(
+                    (s) => s.id.toString() === selectedId
+                  );
+                  setSelectedSupplier(supplier || null);
+                }}
+              >
+                <option value="">Select Supplier</option>
+                {suppliers.map((supplier) => (
+                  <option key={supplier.id} value={supplier.id}>
+                    {supplier.name}
+                  </option>
+                ))}
+              </select>
+            </fieldset>
+
+            <fieldset className="mb-[15px] flex items-center gap-5">
+              <label
                 className="text-violet11 w-[90px] text-right text-[15px]"
-                htmlFor="name"
+                htmlFor="productName"
               >
                 Product Name
               </label>
-              <input
-                className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-                id="name"
+              <select
+                className="bg-neutral-950 text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
+                id="productName"
+                required
                 onChange={(e) => setName(e.target.value)}
-              />
+              >
+                <option value="">Select Product Name</option>
+                {suppliers.map((supplier) => (
+                  <option key={supplier.id} value={supplier.product}>
+                    {supplier.product}
+                  </option>
+                ))}
+              </select>
             </fieldset>
 
             <fieldset className="mb-[15px] flex items-center gap-5">
@@ -406,10 +467,10 @@ const ProductList: React.FC = () => {
                 required
                 onChange={(e) => setCategory(e.target.value)}
               >
-                <option value="">Select Category</option>
-                {foodCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
+                <option value="">Select Product Category</option>
+                {suppliers.map((supplier) => (
+                  <option key={supplier.id} value={supplier.category}>
+                    {supplier.category}
                   </option>
                 ))}
               </select>
@@ -418,15 +479,15 @@ const ProductList: React.FC = () => {
             <fieldset className="mb-[15px] flex items-center gap-5">
               <label
                 className="text-violet11 w-[90px] text-right text-[15px]"
-                htmlFor="buyingprice"
+                htmlFor="sellingPrice"
               >
-                Buying Price
+                Selling Price
               </label>
               <input
                 className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-                id="buyingprice"
+                id="sellingPrice"
                 type="number"
-                onChange={(e) => setBuyingPrice(e.target.valueAsNumber)}
+                onChange={(e) => setSellingPrice(e.target.valueAsNumber)}
               />
             </fieldset>
 
