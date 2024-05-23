@@ -276,7 +276,6 @@ const InventorySummary = () => {
               </tbody>
             </table>
           </div>
-          <div className="see-all">See All</div>
         </div>
         <div className="low-stock-container h-[500px] overflow-y-auto">
           <h1>Low Quantity Stock</h1>
@@ -310,7 +309,6 @@ const InventorySummary = () => {
               </tbody>
             </table>
           </div>
-          <div className="see-all">See All</div>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as Avatar from "@radix-ui/react-avatar";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { authentication, database, storage } from "../firebase/Config";
 import {
   addDoc,
@@ -264,7 +264,7 @@ const Supplier = () => {
       product: product,
       category: category,
       buyingPrice: buyingPrice,
-      imageUrl: suppliers.find((s) => s.id === supplierId)?.imageUrl, 
+      imageUrl: suppliers.find((s) => s.id === supplierId)?.imageUrl,
     };
 
     await handleUpdateSupplier(updatedSupplier, file);
@@ -325,45 +325,48 @@ const Supplier = () => {
     }
   };
 
-  const columns: ColumnDef<Supplier>[] = [
-    {
-      id: "avatar",
-      header: "Photo",
-      cell: ({ row }) => (
-        <Avatar.Root className="">
-          <Avatar.AvatarImage
-            src={row.original.imageUrl}
-            alt="Profile Picture"
-            className="ml-3 h-[40px] w-[40px] object-cover rounded-full"
-          />
-        </Avatar.Root>
-      ),
-    },
-    {
-      accessorKey: "name",
-      header: "Supplier",
-    },
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
-    {
-      accessorKey: "contactNumber",
-      header: "Contact Number",
-    },
-    {
-      accessorKey: "product",
-      header: "Product",
-    },
-    {
-      accessorKey: "category",
-      header: "Category",
-    },
-    {
-      accessorKey: "buyingPrice",
-      header: "Buying Price",
-    },
-  ];
+  const columns = useMemo<ColumnDef<Supplier>[]>(
+    () => [
+      {
+        id: "avatar",
+        header: "Photo",
+        cell: ({ row }) => (
+          <Avatar.Root className="">
+            <Avatar.AvatarImage
+              src={row.original.imageUrl}
+              alt="Profile Picture"
+              className="ml-3 h-[40px] w-[40px] object-cover rounded-full"
+            />
+          </Avatar.Root>
+        ),
+      },
+      {
+        accessorKey: "name",
+        header: "Supplier",
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+      },
+      {
+        accessorKey: "contactNumber",
+        header: "Contact Number",
+      },
+      {
+        accessorKey: "product",
+        header: "Product",
+      },
+      {
+        accessorKey: "category",
+        header: "Category",
+      },
+      {
+        accessorKey: "buyingPrice",
+        header: "Buying Price",
+      },
+    ],
+    [] 
+  );
 
   const table = useReactTable({
     data: suppliers,
