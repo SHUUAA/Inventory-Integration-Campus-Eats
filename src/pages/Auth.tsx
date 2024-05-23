@@ -142,7 +142,6 @@ const Auth = () => {
       );
       toggleForm();
     } catch (e: unknown) {
-      console.log("Error:", e);
       setError("Invalid email or password");
       if (e instanceof Error) {
         if (e.message === "Please verify your email before logging in.") {
@@ -177,7 +176,6 @@ const Auth = () => {
 
       await login(loginEmail, loginPwd);
     } catch (error: unknown) {
-      console.log("Error:", error);
       setError("Invalid email or password");
       if (error && typeof error === "object" && "message" in error) {
         if (error.message === "Please verify your email before logging in.") {

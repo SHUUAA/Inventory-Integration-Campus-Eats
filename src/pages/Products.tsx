@@ -65,8 +65,6 @@ const Products = () => {
             setExpiryDate(product.expiryDate);
             setThreshold(product.threshold);
           }
-        } else {
-          console.log("No such document!");
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -157,8 +155,8 @@ const Products = () => {
         email: "",
         contactNumber: 0,
         category: "",
-        buyingPrice: 0
-      }, 
+        buyingPrice: 0,
+      },
       name: "",
       category: "",
     };
@@ -199,11 +197,9 @@ const Products = () => {
       if (imageUrl) {
         const imageRef = ref(storage, imageUrl);
         await deleteObject(imageRef);
-        console.log("Image deleted successfully");
       }
       //@ts-ignore
       navigate(`/${userData.type}/inventory`);
-      console.log("Product deleted successfully");
     } catch (error) {
       console.error("Error deleting product: ", error);
     }

@@ -1,5 +1,5 @@
 //@ts-nocheck
-import React, { useState } from "react";
+import React from "react";
 import { authentication } from "../firebase/Config";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../auth/UserContext";
@@ -8,8 +8,6 @@ import logo from "../assets/logo.png";
 import ProfilePic from "../helpers/ProfilePic";
 
 const SearchBar: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showNotifications, setShowNotifications] = useState(false);
   const { userData } = useUserContext();
   const name = authentication.currentUser?.displayName;
   const [firstName, surname] = name.split(" ");
@@ -17,18 +15,6 @@ const SearchBar: React.FC = () => {
     firstName.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
   const image = ProfilePic();
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("Searching for:", searchTerm);
-  };
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
 
   return (
     <nav className="sticky top-0  bg-white-950 border-gray-200 p-4 mb-10">

@@ -64,17 +64,14 @@ const Profile = () => {
     getDocs(q)
       .then((querySnapshot) => {
         if (querySnapshot.empty) {
-          console.log("No document found with email:", userEmail);
           storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
         } else {
           const document = querySnapshot.docs[0];
-          console.log(document.ref);
           storageRef = ref(storage, `ProfilePictures/${userID}.jpg`);
           updateDoc(document.ref, {
             bio: bio,
           })
             .then(() => {
-              console.log("Document updated successfully!");
             })
             .catch((error) => {
               console.error("Error updating document:", error);
