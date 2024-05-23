@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { database } from "../firebase/Config";
-import { collection, getDocs, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import "../css/InventorySummary.css";
 import FirebaseController from "../firebase/FirebaseController";
 import SalesIcon from "../assets/cash-outline.svg";
@@ -11,15 +16,28 @@ import { atom, useAtom } from "jotai";
 import { Product } from "./ProductList";
 import Supplier from "../pages/Supplier";
 
+interface Order {
+  customerName: string;
+  items: object;
+  quantities: object;
+  sellerId: string;
+  timestamp: string;
+}
+const totalSalesAtom = atom(0); // Atom to track total sales
+const orderListAtom = atom<Order[]>([]);
 const productListAtom = atom<Product[]>([]);
 const suppliersAtom = atom<Supplier[]>([]);
 const isLoadingAtom = atom(true);
 const errorAtom = atom<string | null>(null);
 const countSuppliersAtom = atom(0);
+const countPurchasesAtom = atom(0);
 const InventorySummary = () => {
   const [productList, setProductList] = useAtom(productListAtom);
-  const [suppliers, setSuppliers] = useAtom(suppliersAtom);
+  const [, setOrderList] = useAtom(orderListAtom);
+  const [, setSuppliers] = useAtom(suppliersAtom);
   const [countSupplier, setCountSupplier] = useAtom(countSuppliersAtom);
+  const [countPurchases, setCountPurchases] = useAtom(countPurchasesAtom);
+  const [totalSales, setTotalSales] = useAtom(totalSalesAtom);
   const [, setIsLoading] = useAtom(isLoadingAtom);
   const [, setError] = useAtom(errorAtom);
   const firebaseController = new FirebaseController();
@@ -53,7 +71,7 @@ const InventorySummary = () => {
   };
 
   const fetchSuppliers = async () => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true); 
 
     try {
       const user = await firebaseController.getCurrentUser();
@@ -85,7 +103,68 @@ const InventorySummary = () => {
   useEffect(() => {
     getProductList();
     fetchSuppliers();
+    getOrders();
   }, []);
+
+  const getOrders = async () => {
+    try {
+      const user = await firebaseController.getCurrentUser();
+      if (!user) {
+        console.error("User not authenticated!");
+        return;
+      }
+      const userID = user.uid;
+
+      const userOrdersQuery = query(
+        collection(database, "orders"),
+        where("sellerId", "==", userID) 
+      );
+      const data = await getDocs(userOrdersQuery);
+      const orders = data.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      //@ts-ignore
+      setOrderList(orders);
+      setCountPurchases(orders.length);
+
+      const orderSnapshot = await getDocs(userOrdersQuery);
+      const userProductsQuery = query(
+        collection(database, "products", userID, "userProducts")
+      );
+      const productSnapshot = await getDocs(userProductsQuery);
+      const products = productSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as unknown as Product[]; 
+
+      let totalSales = 0;
+      for (const order of orderSnapshot.docs) {
+        const orderData = order.data() as Order;
+        //@ts-ignore
+        for (const itemId of orderData.items) {
+          const product = products.find((p) => p.id === itemId);
+          if (product) {
+            totalSales +=
+              //@ts-ignore
+              product.sellingPrice * (orderData.quantities[itemId] || 0);
+          } else {
+            console.warn(
+              `Product with ID ${itemId} not found for order ${order.id}`
+            );
+          }
+        }
+      }
+
+      setTotalSales(totalSales);
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+      //@ts-ignore
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const lowStockProducts = productList.filter(
     (product) => product.quantity <= product.threshold
@@ -96,7 +175,7 @@ const InventorySummary = () => {
       <div className="summary-containers">
         <div className="summary-container">
           <div>
-            <h3>₱ --</h3>
+            <h3>₱{totalSales}</h3>
             <span>Sales</span>
           </div>
           <img src={SalesIcon} alt="Sales Icon" className="svg-icon" />
@@ -115,8 +194,8 @@ const InventorySummary = () => {
         </div>
         <div className="summary-container">
           <div>
-            <h3>--</h3>
-            <span>Purchase</span>
+            <h3>{countPurchases}</h3>
+            <span>Purchases</span>
           </div>
           <img src={PurchaseIcon} alt="Purchase Icon" className="svg-icon" />
         </div>
