@@ -1,11 +1,6 @@
 import { useEffect } from "react";
 import { database } from "../firebase/Config";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import "../css/InventorySummary.css";
 import FirebaseController from "../firebase/FirebaseController";
 import SalesIcon from "../assets/cash-outline.svg";
@@ -23,7 +18,8 @@ interface Order {
   sellerId: string;
   timestamp: string;
 }
-const totalSalesAtom = atom(0); // Atom to track total sales
+const soldQuantitiesAtom = atom<Record<string, number>>({});
+const totalSalesAtom = atom(0); 
 const orderListAtom = atom<Order[]>([]);
 const productListAtom = atom<Product[]>([]);
 const suppliersAtom = atom<Supplier[]>([]);
@@ -38,6 +34,7 @@ const InventorySummary = () => {
   const [countSupplier, setCountSupplier] = useAtom(countSuppliersAtom);
   const [countPurchases, setCountPurchases] = useAtom(countPurchasesAtom);
   const [totalSales, setTotalSales] = useAtom(totalSalesAtom);
+  const [soldQuantities, setSoldQuantities] = useAtom(soldQuantitiesAtom); 
   const [, setIsLoading] = useAtom(isLoadingAtom);
   const [, setError] = useAtom(errorAtom);
   const firebaseController = new FirebaseController();
@@ -71,7 +68,7 @@ const InventorySummary = () => {
   };
 
   const fetchSuppliers = async () => {
-    setIsLoading(true); 
+    setIsLoading(true);
 
     try {
       const user = await firebaseController.getCurrentUser();
@@ -104,6 +101,7 @@ const InventorySummary = () => {
     getProductList();
     fetchSuppliers();
     getOrders();
+    getSoldQuantity();
   }, []);
 
   const getOrders = async () => {
@@ -117,7 +115,7 @@ const InventorySummary = () => {
 
       const userOrdersQuery = query(
         collection(database, "orders"),
-        where("sellerId", "==", userID) 
+        where("sellerId", "==", userID)
       );
       const data = await getDocs(userOrdersQuery);
       const orders = data.docs.map((doc) => ({
@@ -136,7 +134,7 @@ const InventorySummary = () => {
       const products = productSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      })) as unknown as Product[]; 
+      })) as unknown as Product[];
 
       let totalSales = 0;
       for (const order of orderSnapshot.docs) {
@@ -157,6 +155,46 @@ const InventorySummary = () => {
       }
 
       setTotalSales(totalSales);
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+      //@ts-ignore
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getSoldQuantity = async () => {
+    try {
+      const user = await firebaseController.getCurrentUser();
+      if (!user) {
+        console.error("User not authenticated!");
+        return;
+      }
+      const userID = user.uid;
+
+      const userOrdersQuery = query(
+        collection(database, "orders"),
+        where("sellerId", "==", userID)
+      );
+      const data = await getDocs(userOrdersQuery);
+      const orders = data.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const newSoldQuantities: Record<string, number> = {};
+      for (const order of orders) {
+        //@ts-ignore
+        for (const itemId of order.items) {
+          if (!newSoldQuantities[itemId]) {
+            newSoldQuantities[itemId] = 0;
+          }
+          //@ts-ignore
+          newSoldQuantities[itemId] += order.quantities[itemId];
+        }
+      }
+
+      setSoldQuantities(newSoldQuantities);
     } catch (err) {
       console.error("Failed to fetch products:", err);
       //@ts-ignore
@@ -229,7 +267,7 @@ const InventorySummary = () => {
                   productList.map((product) => (
                     <tr key={product.id}>
                       <td>{product.name}</td>
-                      <td>--</td>
+                      <td>{soldQuantities[product.id] || 0}</td>
                       <td>{product.quantity}</td>
                       <td>₱{product.sellingPrice}</td>
                     </tr>
