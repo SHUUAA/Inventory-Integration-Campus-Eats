@@ -35,6 +35,28 @@ const Products = () => {
   const [open, setOpen] = useState(false);
   const [productUpdated, setProductUpdated] = useState(false);
 
+  const validateProduct = () => {
+    let isValid = true;
+    if (sellingPrice <= 0 || isNaN(sellingPrice)) {
+      toast.error("Invalid selling price.");
+      isValid = false;
+    }
+    if (quantity <= 0 || isNaN(quantity)) {
+      toast.error("Invalid quantity.");
+      isValid = false;
+    }
+    if (threshold <= 0 || isNaN(threshold)) {
+      toast.error("Invalid threshold.");
+      isValid = false;
+    }
+    if (expiryDate === "") {
+      toast.error("Expiry date is required.");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -92,6 +114,9 @@ const Products = () => {
     newFile?: File
   ) => {
     try {
+      if (!validateProduct()) {
+        return;
+      }
       const user = authentication.currentUser;
       const userID = user?.uid;
 

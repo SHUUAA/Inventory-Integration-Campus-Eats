@@ -78,6 +78,43 @@ const Supplier = () => {
 
   const [parent] = useAutoAnimate();
 
+  const validateSupplier = () => {
+    let isValid = true;
+    if (name.trim() === "") {
+      toast.error("Name is required.");
+      isValid = false;
+    }
+    if (!validateEmail(email)) {
+      toast.error("Invalid email address.");
+      isValid = false;
+    }
+    if (product.trim() === "") {
+      toast.error("Product is required.");
+      isValid = false;
+    }
+    if (contactNumber <= 0 || isNaN(contactNumber)) {
+      toast.error("Invalid contact number.");
+      isValid = false;
+    }
+    if (category === "") {
+      toast.error("Category is required.");
+      isValid = false;
+    }
+    if (buyingPrice <= 0 || isNaN(buyingPrice)) {
+      toast.error("Invalid buying price.");
+      isValid = false;
+    }
+    return isValid;
+  };
+
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
   useEffect(() => {
     const fetchSuppliers = async () => {
       setIsLoading(true); // Start loading
@@ -166,6 +203,10 @@ const Supplier = () => {
       return;
     }
 
+    if (!validateSupplier()) {
+      return; 
+    }
+
     const random = crypto.randomUUID();
     let imageUrl = "";
     if (file) {
@@ -207,6 +248,9 @@ const Supplier = () => {
     newFile?: File | null
   ) => {
     try {
+      if (!validateSupplier()) {
+        return;
+      }
       const user = await firebaseController.getCurrentUser();
       const userID = user?.uid;
       //@ts-ignore
@@ -365,7 +409,7 @@ const Supplier = () => {
         header: "Buying Price",
       },
     ],
-    [] 
+    []
   );
 
   const table = useReactTable({
@@ -704,6 +748,7 @@ const Supplier = () => {
                         <input
                           className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                           id="contactNumber"
+                          type="number"
                           value={contactNumber === 0 ? "" : contactNumber}
                           onChange={(e) =>
                             setContactNumber(e.target.valueAsNumber)

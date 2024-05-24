@@ -22,7 +22,14 @@ import toast, { Toaster } from "react-hot-toast";
 import { atom, useAtom } from "jotai";
 import Supplier from "../pages/Supplier";
 export interface Product {
-  supplier: {name: string, email: string, contactNumber: number, category: string, buyingPrice: number, imageUrl?: string};
+  supplier: {
+    name: string;
+    email: string;
+    contactNumber: number;
+    category: string;
+    buyingPrice: number;
+    imageUrl?: string;
+  };
   id: number;
   name: string;
   sellingPrice: number;
@@ -79,6 +86,40 @@ const ProductList: React.FC = () => {
   const [parent] = useAutoAnimate();
   const userID = user?.uid;
 
+  const validateProduct = () => {
+    let isValid = true;
+    if (name.trim() === "") {
+      toast.error("Name is required.");
+      isValid = false;
+    }
+    if (selectedSupplier === null) {
+      toast.error("Please select a supplier.");
+      isValid = false;
+    }
+    if (category === "") {
+      toast.error("category is required.");
+      isValid = false;
+    }
+    if (sellingPrice <= 0 || isNaN(sellingPrice)) {
+      toast.error("Invalid selling price.");
+      isValid = false;
+    }
+    if (quantity <= 0 || isNaN(quantity)) {
+      toast.error("Invalid quantity.");
+      isValid = false;
+    }
+    if (threshold <= 0 || isNaN(threshold)) {
+      toast.error("Invalid threshold.");
+      isValid = false;
+    }
+    if (expiryDate === "") {
+      toast.error("Expiry date is required.");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const newFile = event.target.files[0];
@@ -88,6 +129,10 @@ const ProductList: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validateProduct()) {
+      return;
+    }
 
     const user = authentication.currentUser;
     if (!user) {
@@ -232,9 +277,17 @@ const ProductList: React.FC = () => {
       header: "Availability",
       cell: ({ row }) => (
         <div
-          style={{ color: getAvailabilityStatus(row.original.quantity, row.original.threshold).color }}
+          style={{
+            color: getAvailabilityStatus(
+              row.original.quantity,
+              row.original.threshold
+            ).color,
+          }}
         >
-          {getAvailabilityStatus(row.original.quantity, row.original.threshold).text}
+          {
+            getAvailabilityStatus(row.original.quantity, row.original.threshold)
+              .text
+          }
         </div>
       ),
     },
